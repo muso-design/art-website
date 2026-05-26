@@ -9,45 +9,49 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-.series-section { padding: 52px 56px 0; }
+.series-section {
+  padding: 64px 56px 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
 .section-label {
   font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
-  font-weight: 500; color: var(--mid); margin-bottom: 28px;
+  font-weight: 500; color: var(--mid); margin-bottom: 0;
 }
-.series-blocks {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 2px; margin-bottom: 80px;
+.series-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  padding: 48px 0 20px;
+  border-top: 1px solid var(--border);
+  gap: 40px;
 }
-.series-block {
-  background: var(--bg2); padding: 44px 36px 36px;
-  display: flex; flex-direction: column; min-height: 240px;
-  transition: background 0.3s ease;
+.series-row h3 {
+  font-size: clamp(48px, 6vw, 80px); font-style: italic; font-weight: 400;
+  color: var(--text); letter-spacing: 0.01em; line-height: 1.0;
+  grid-column: 1; grid-row: 1;
 }
-.series-block:hover { background: var(--bg3); }
-.series-block h3 {
-  font-size: clamp(26px, 3vw, 40px); font-style: italic; font-weight: 400;
-  color: var(--text); letter-spacing: 0.02em; line-height: 1.1;
+.series-row .series-meta {
+  font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--dim); font-weight: 500; white-space: nowrap;
+  grid-column: 2; grid-row: 1; align-self: start; padding-top: 16px;
 }
-.series-block p {
-  font-size: 16px; line-height: 1.8; color: var(--mid);
-  font-weight: 400; margin-top: 18px; flex: 1;
-}
-.series-block .block-footer {
-  margin-top: 32px; display: flex; justify-content: space-between;
-}
-.series-block .block-footer span {
-  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--dim); font-weight: 500;
+.series-row p {
+  font-size: 17px; line-height: 1.8; color: var(--mid);
+  font-weight: 400; max-width: 560px;
+  grid-column: 1; grid-row: 2; padding-bottom: 48px;
 }
 .all-label {
   font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
   font-weight: 500; color: var(--mid);
-  padding: 0 56px 28px; border-bottom: 1px solid var(--border);
+  padding: 56px 56px 28px; border-bottom: 1px solid var(--border);
 }
 @media (max-width: 900px) {
   .series-section { padding: 40px 28px 0; }
-  .series-blocks { grid-template-columns: 1fr; }
-  .all-label { padding: 0 28px 24px; }
+  .series-row { grid-template-columns: 1fr; gap: 16px; padding: 36px 0 0; }
+  .series-row .series-meta { grid-row: 2; grid-column: 1; padding-top: 0; }
+  .series-row p { grid-row: 3; padding-bottom: 36px; }
+  .all-label { padding: 48px 28px 24px; }
 }
 </style>
 </head>
@@ -64,36 +68,28 @@
 
 <section class="series-section">
   <div class="section-label">Series</div>
-  <div class="series-blocks">
 
-    <div class="series-block">
-      <h3>R&#233;flexions</h3>
-      <p>An inward turn &#8212; studies of the self in states of stillness,
-      introspection, and quiet dissolution. Forms that hold their breath.</p>
-      <div class="block-footer">
-        <span>Ongoing</span><span>Polymer clay</span>
-      </div>
-    </div>
-
-    <div class="series-block">
-      <h3>Songs</h3>
-      <p>Figures suspended in resonance &#8212; bodies as instruments,
-      gestures as melody. Each piece a posture caught mid-phrase.</p>
-      <div class="block-footer">
-        <span>Ongoing</span><span>Polymer clay</span>
-      </div>
-    </div>
-
-    <div class="series-block">
-      <h3>Variants of Love</h3>
-      <p>An investigation into the forms love takes when it overwhelms,
-      consumes, or dissolves the self. The series that defined a turning point.</p>
-      <div class="block-footer">
-        <span>2022&#8211;2024</span><span>Acquired by VVDE</span>
-      </div>
-    </div>
-
+  <div class="series-row">
+    <h3>R&#233;flexions</h3>
+    <span class="series-meta">Ongoing &nbsp;&mdash;&nbsp; Polymer clay</span>
+    <p>An inward turn &#8212; studies of the self in states of stillness,
+    introspection, and quiet dissolution. Forms that hold their breath.</p>
   </div>
+
+  <div class="series-row">
+    <h3>Songs</h3>
+    <span class="series-meta">Ongoing &nbsp;&mdash;&nbsp; Polymer clay</span>
+    <p>Figures suspended in resonance &#8212; bodies as instruments,
+    gestures as melody. Each piece a posture caught mid-phrase.</p>
+  </div>
+
+  <div class="series-row">
+    <h3>Variants of Love</h3>
+    <span class="series-meta">2022&#8211;2024 &nbsp;&mdash;&nbsp; Acquired by VVDE</span>
+    <p>An investigation into the forms love takes when it overwhelms,
+    consumes, or dissolves the self. The series that defined a turning point.</p>
+  </div>
+
 </section>
 
 <div class="all-label">All Works</div>

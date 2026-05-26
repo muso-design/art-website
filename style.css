@@ -52,7 +52,7 @@ nav.light .nav-links a:hover, nav.light .nav-links a.active { opacity: 1; }
 /* GRID */
 .grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 20px; padding: 20px 56px;
+  gap: 28px; padding: 28px 56px;
 }
 .grid-item {
   background: var(--bg2); cursor: pointer;
@@ -77,14 +77,14 @@ nav.light .nav-links a:hover, nav.light .nav-links a.active { opacity: 1; }
 }
 .grid-item:hover .grid-thumb,
 .grid-item:hover .grid-placeholder { transform: scale(1.03); }
-.grid-meta { padding: 18px 20px 26px; }
+.grid-meta { padding: 20px 24px 32px; }
 .grid-meta .title {
-  font-size: 20px; font-style: italic; font-weight: 400;
+  font-size: 22px; font-style: italic; font-weight: 400;
   color: var(--text); letter-spacing: 0.01em;
 }
 .grid-meta .series {
-  font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--dim); margin-top: 8px; font-weight: 500;
+  font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--dim); margin-top: 9px; font-weight: 500;
 }
 
 /* LIGHTBOX */
@@ -150,7 +150,7 @@ footer span {
   nav { padding: 24px 28px; }
   .nav-links { gap: 24px; }
   .page-header { padding: 110px 28px 44px; }
-  .grid { gap: 12px; padding: 12px 28px; grid-template-columns: repeat(2, 1fr); }
+  .grid { gap: 14px; padding: 14px 20px; grid-template-columns: repeat(2, 1fr); }
   footer { padding: 24px 28px; margin-top: 60px; }
   .lightbox { flex-direction: column; }
   .lb-img-pane { padding: 80px 20px 20px; }
