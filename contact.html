@@ -3,71 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact — Roman Chystakhovskyi</title>
+<title>Roman Chystakhovskyi — Contact</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-.contact-body {
-  padding: 64px 52px 0;
-  max-width: 560px;
+.contact-wrap { padding: 64px 56px 0; max-width: 580px; }
+.contact-wrap p {
+  font-size: clamp(18px, 1.7vw, 22px); font-style: italic; font-weight: 400;
+  line-height: 1.8; color: var(--text); opacity: 0.75; margin-bottom: 60px;
 }
-.contact-body p {
-  font-size: clamp(17px, 1.6vw, 20px); font-style: italic;
-  line-height: 1.8; color: var(--text); opacity: 0.72;
-  font-weight: 300; margin-bottom: 56px;
+.contact-list { display: flex; flex-direction: column; }
+.contact-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 22px 0; border-bottom: 1px solid var(--border);
 }
-.contact-links { display: flex; flex-direction: column; gap: 20px; }
-.contact-link {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 20px 0; border-bottom: 1px solid var(--border);
+.contact-row dt {
+  font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--dim); font-weight: 500;
 }
-.contact-link dt {
-  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--dim);
+.contact-row a, .contact-row span {
+  font-size: 16px; color: var(--text); opacity: 0.6;
+  text-decoration: none; font-style: italic; transition: opacity 0.2s;
 }
-.contact-link a {
-  font-size: 14px; color: var(--text); opacity: 0.55;
-  text-decoration: none; font-style: italic; letter-spacing: 0.02em;
-  transition: opacity 0.2s;
-}
-.contact-link a:hover { opacity: 1; }
-@media (max-width: 768px) {
-  .contact-body { padding: 48px 24px 0; }
-}
+.contact-row a:hover { opacity: 1; }
+@media (max-width: 900px) { .contact-wrap { padding: 48px 28px 0; } }
 </style>
 </head>
-<body><nav>
+<body><nav class="dark">
   <a href="index.html" class="nav-name">Roman Chystakhovskyi</a>
-  <div class="nav-links"><a href="works.html">Works</a><a href="bio.html">Bio</a><a href="contact.html" class="active">Contact</a></div>
+  <div class="nav-links">
+    <a href="works.html">Works</a>
+    <a href="bio.html">Bio</a>
+    <a href="contact.html" class="active">Contact</a>
+    
+  </div>
 </nav>
 <div class="page-header"><h1>Contact</h1></div>
-
-<div class="contact-body">
-  <p>
-    For exhibition proposals, acquisition enquiries,
-    or studio visits — get in touch.
-  </p>
-  <dl class="contact-links">
-    <div class="contact-link">
-      <dt>Email</dt>
-      <a href="mailto:your@email.com">your@email.com</a>
-    </div>
-    <div class="contact-link">
-      <dt>Instagram</dt>
-      <a href="https://instagram.com/yourhandle" target="_blank">@yourhandle</a>
-    </div>
-    <div class="contact-link">
-      <dt>Location</dt>
-      <a>Leipzig, Germany</a>
-    </div>
+<div class="contact-wrap">
+  <p>For exhibition proposals, acquisition enquiries,
+  or studio visits &#8212; get in touch.</p>
+  <dl class="contact-list">
+    <div class="contact-row"><dt>Email</dt><a href="mailto:your@email.com">your@email.com</a></div>
+    <div class="contact-row"><dt>Instagram</dt><a href="https://instagram.com/yourhandle" target="_blank">@yourhandle</a></div>
+    <div class="contact-row"><dt>Location</dt><span>Leipzig, Germany</span></div>
   </dl>
 </div>
-
 <footer>
-  <span>© 2025 Roman Chystakhovskyi</span>
+  <span>&copy; 2025 Roman Chystakhovskyi</span>
   <span>Leipzig, Germany</span>
-</footer>
-</body>
-</html>
+</footer></body></html>

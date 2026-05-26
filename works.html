@@ -3,113 +3,103 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Works — Roman Chystakhovskyi</title>
+<title>Roman Chystakhovskyi — Works</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-.series-section {
-  padding: 64px 52px 0;
+.series-section { padding: 52px 56px 0; }
+.section-label {
+  font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+  font-weight: 500; color: var(--mid); margin-bottom: 28px;
 }
-.series-section h2 {
-  font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase;
-  font-weight: 400; color: var(--mid); margin-bottom: 32px;
+.series-blocks {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2px; margin-bottom: 80px;
 }
 .series-block {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 28px 0; border-bottom: 1px solid var(--border);
-  gap: 40px;
+  background: var(--bg2); padding: 44px 36px 36px;
+  display: flex; flex-direction: column; min-height: 240px;
+  transition: background 0.3s ease;
 }
+.series-block:hover { background: var(--bg3); }
 .series-block h3 {
-  font-size: 20px; font-style: italic; font-weight: 400;
-  color: var(--text); margin-bottom: 10px; letter-spacing: 0.02em;
+  font-size: clamp(26px, 3vw, 40px); font-style: italic; font-weight: 400;
+  color: var(--text); letter-spacing: 0.02em; line-height: 1.1;
 }
 .series-block p {
-  font-size: 13px; line-height: 1.7; color: var(--mid);
-  font-weight: 300; max-width: 480px;
+  font-size: 14px; line-height: 1.8; color: var(--mid);
+  font-weight: 400; margin-top: 18px; flex: 1;
 }
-.series-stats {
-  display: flex; flex-direction: column; gap: 4px;
-  text-align: right; flex-shrink: 0;
+.series-block .block-footer {
+  margin-top: 32px; display: flex; justify-content: space-between;
 }
-.series-stats span {
-  font-size: 11px; letter-spacing: 0.14em; color: var(--dim);
-  text-transform: uppercase;
+.series-block .block-footer span {
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--dim); font-weight: 500;
 }
-.all-works-header {
-  padding: 80px 52px 48px;
-  border-bottom: 1px solid var(--border);
+.all-label {
+  font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+  font-weight: 500; color: var(--mid);
+  padding: 0 56px 28px; border-bottom: 1px solid var(--border);
 }
-.all-works-header h2 {
-  font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase;
-  font-weight: 400; color: var(--mid);
-}
-@media (max-width: 768px) {
-  .series-section { padding: 48px 24px 0; }
-  .all-works-header { padding: 60px 24px 36px; }
-  .series-block { flex-direction: column; gap: 16px; }
-  .series-stats { text-align: left; }
+@media (max-width: 900px) {
+  .series-section { padding: 40px 28px 0; }
+  .series-blocks { grid-template-columns: 1fr; }
+  .all-label { padding: 0 28px 24px; }
 }
 </style>
 </head>
-<body><nav>
+<body><nav class="dark">
   <a href="index.html" class="nav-name">Roman Chystakhovskyi</a>
-  <div class="nav-links"><a href="works.html" class="active">Works</a><a href="bio.html">Bio</a><a href="contact.html">Contact</a></div>
+  <div class="nav-links">
+    <a href="works.html" class="active">Works</a>
+    <a href="bio.html">Bio</a>
+    <a href="contact.html">Contact</a>
+    
+  </div>
 </nav>
 <div class="page-header"><h1>Works</h1></div>
 
 <section class="series-section">
-  <h2>Series</h2>
-  
+  <div class="section-label">Series</div>
+  <div class="series-blocks">
+
     <div class="series-block">
-      <div class="series-info">
-        <h3>Variants of Love</h3>
-        <p>Figurative series exploring emotional states through the human form. Clay, resin cast.</p>
-      </div>
-      <div class="series-stats">
-        <span>2022–2024</span>
-        <span>8 works</span>
+      <h3>R&#233;flexions</h3>
+      <p>An inward turn &#8212; studies of the self in states of stillness,
+      introspection, and quiet dissolution. Forms that hold their breath.</p>
+      <div class="block-footer">
+        <span>Ongoing</span><span>Polymer clay</span>
       </div>
     </div>
+
     <div class="series-block">
-      <div class="series-info">
-        <h3>Series II</h3>
-        <p>Placeholder — replace with your series name and description.</p>
-      </div>
-      <div class="series-stats">
-        <span>Year</span>
-        <span>N works</span>
+      <h3>Songs</h3>
+      <p>Figures suspended in resonance &#8212; bodies as instruments,
+      gestures as melody. Each piece a posture caught mid-phrase.</p>
+      <div class="block-footer">
+        <span>Ongoing</span><span>Polymer clay</span>
       </div>
     </div>
+
     <div class="series-block">
-      <div class="series-info">
-        <h3>Series III</h3>
-        <p>Placeholder — replace with your series name and description.</p>
-      </div>
-      <div class="series-stats">
-        <span>Year</span>
-        <span>N works</span>
+      <h3>Variants of Love</h3>
+      <p>An investigation into the forms love takes when it overwhelms,
+      consumes, or dissolves the self. The series that defined a turning point.</p>
+      <div class="block-footer">
+        <span>2022&#8211;2024</span><span>Acquired by VVDE</span>
       </div>
     </div>
-    <div class="series-block">
-      <div class="series-info">
-        <h3>Standalone Works</h3>
-        <p>Individual sculptures outside of any defined series.</p>
-      </div>
-      <div class="series-stats">
-        <span>Various</span>
-        <span>N works</span>
-      </div>
-    </div>
+
+  </div>
 </section>
 
-<div class="all-works-header"><h2>All Works</h2></div>
+<div class="all-label">All Works</div>
 
 <div class="grid" id="grid">
-  <!-- Replace placeholders: add <img class="grid-thumb" src="images/your-file.jpg"> -->
-  <!-- and fill in data-title, data-year, data-medium, data-dimensions, data-series -->
-  
+
     <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
       <div class="grid-placeholder"><span>image</span></div>
       <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
@@ -159,8 +149,6 @@
       <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
     </div>
 </div>
-
-
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lb-close">Close</button>
   <div class="lb-img-pane"><img id="lb-img" src="" alt="" /></div>
@@ -174,49 +162,44 @@
     <span class="lb-series" id="lb-series"></span>
   </div>
   <div class="lb-nav">
-    <button id="lb-prev">← Prev</button>
-    <button id="lb-next">Next →</button>
+    <button id="lb-prev">&#8592; Prev</button>
+    <button id="lb-next">Next &#8594;</button>
   </div>
-</div>
-<footer>
-  <span>© 2025 Roman Chystakhovskyi</span>
+</div><footer>
+  <span>&copy; 2025 Roman Chystakhovskyi</span>
   <span>Leipzig, Germany</span>
-</footer>
-<script>
-  const lightbox = document.getElementById("lightbox");
+</footer><script>
+  const lightbox = document.getElementById('lightbox');
   let items = [], idx = 0;
-
   function lbOpen(i) {
     idx = i;
     const el = items[i];
-    const img = el.querySelector("img.grid-thumb");
-    document.getElementById("lb-img").src     = img ? img.src : "";
-    document.getElementById("lb-title").textContent  = el.dataset.title || "";
-    document.getElementById("lb-year").textContent   = el.dataset.year || "";
-    document.getElementById("lb-medium").textContent = el.dataset.medium || "";
-    document.getElementById("lb-dims").textContent   = el.dataset.dimensions || "";
-    document.getElementById("lb-series").textContent = el.dataset.series || "";
-    lightbox.classList.add("open");
-    document.body.style.overflow = "hidden";
+    const img = el.querySelector('img.grid-thumb');
+    document.getElementById('lb-img').src = img ? img.src : '';
+    document.getElementById('lb-title').textContent  = el.dataset.title || '';
+    document.getElementById('lb-year').textContent   = el.dataset.year || '';
+    document.getElementById('lb-medium').textContent = el.dataset.medium || '';
+    document.getElementById('lb-dims').textContent   = el.dataset.dimensions || '';
+    document.getElementById('lb-series').textContent = el.dataset.series || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
   }
   function lbClose() {
-    lightbox.classList.remove("open");
-    document.body.style.overflow = "";
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
   }
-  document.addEventListener("DOMContentLoaded", () => {
-    items = Array.from(document.querySelectorAll(".grid-item"));
-    items.forEach((el, i) => el.addEventListener("click", () => lbOpen(i)));
+  document.addEventListener('DOMContentLoaded', () => {
+    items = Array.from(document.querySelectorAll('.grid-item'));
+    items.forEach((el, i) => el.addEventListener('click', () => lbOpen(i)));
   });
-  document.getElementById("lb-close").addEventListener("click", lbClose);
-  document.getElementById("lb-prev").addEventListener("click", () => lbOpen((idx - 1 + items.length) % items.length));
-  document.getElementById("lb-next").addEventListener("click", () => lbOpen((idx + 1) % items.length));
-  document.addEventListener("keydown", e => {
-    if (!lightbox.classList.contains("open")) return;
-    if (e.key === "Escape")     lbClose();
-    if (e.key === "ArrowLeft")  document.getElementById("lb-prev").click();
-    if (e.key === "ArrowRight") document.getElementById("lb-next").click();
+  document.getElementById('lb-close').addEventListener('click', lbClose);
+  document.getElementById('lb-prev').addEventListener('click', () => lbOpen((idx - 1 + items.length) % items.length));
+  document.getElementById('lb-next').addEventListener('click', () => lbOpen((idx + 1) % items.length));
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') lbClose();
+    if (e.key === 'ArrowLeft')  document.getElementById('lb-prev').click();
+    if (e.key === 'ArrowRight') document.getElementById('lb-next').click();
   });
-  lightbox.addEventListener("click", e => { if (e.target === lightbox) lbClose(); });
-</script>
-</body>
-</html>
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) lbClose(); });
+</script></body></html>

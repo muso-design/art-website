@@ -3,101 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bio — Roman Chystakhovskyi</title>
+<title>Roman Chystakhovskyi — Bio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-.bio-body {
-  padding: 64px 52px 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  max-width: 1100px;
+.bio-wrap {
+  padding: 64px 56px 0;
+  display: grid; grid-template-columns: 1fr 340px; gap: 80px; max-width: 1200px;
 }
 .bio-text p {
-  font-size: clamp(17px, 1.6vw, 21px);
-  line-height: 1.85; font-style: italic; font-weight: 300;
-  color: var(--text); opacity: 0.82; margin-bottom: 28px;
+  font-size: clamp(18px, 1.7vw, 22px); line-height: 1.88;
+  font-style: italic; font-weight: 400; color: var(--text);
+  opacity: 0.85; margin-bottom: 28px;
 }
-.bio-details { padding-top: 6px; }
-.bio-details dl { display: flex; flex-direction: column; gap: 20px; }
-.bio-details dt {
-  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--dim); margin-bottom: 4px;
+.bio-aside { padding-top: 4px; }
+.bio-aside dl { display: flex; flex-direction: column; gap: 24px; }
+.bio-aside dt {
+  font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 5px; font-weight: 500;
 }
-.bio-details dd {
-  font-size: 14px; color: var(--text); opacity: 0.7;
-  font-style: italic; letter-spacing: 0.02em;
+.bio-aside dd {
+  font-size: 15px; color: var(--text); opacity: 0.75;
+  font-style: italic; line-height: 1.55;
 }
-@media (max-width: 768px) {
-  .bio-body { grid-template-columns: 1fr; gap: 48px; padding: 48px 24px 0; }
+@media (max-width: 900px) {
+  .bio-wrap { grid-template-columns: 1fr; gap: 48px; padding: 48px 28px 0; }
 }
 </style>
 </head>
-<body><nav>
+<body><nav class="dark">
   <a href="index.html" class="nav-name">Roman Chystakhovskyi</a>
-  <div class="nav-links"><a href="works.html">Works</a><a href="bio.html" class="active">Bio</a><a href="contact.html">Contact</a></div>
+  <div class="nav-links">
+    <a href="works.html">Works</a>
+    <a href="bio.html" class="active">Bio</a>
+    <a href="contact.html">Contact</a>
+    
+  </div>
 </nav>
 <div class="page-header"><h1>Bio</h1></div>
-
-<div class="bio-body">
+<div class="bio-wrap">
   <div class="bio-text">
-    <p>
-      Roman Chystakhovskyi is a figurative sculptor working at the threshold
-      between physical and digital material. His practice explores the human
-      body as a site of psychological tension — presence, vulnerability,
-      and the weight of emotion made tangible in form.
-    </p>
-    <p>
-      Trained at the National Academy of Fine Arts and Architecture in Kyiv,
-      Roman brings a classical foundation to a contemporary sensibility.
-      His sculptures are hand-built in polymer clay and cast in resin,
-      each piece emerging from an extended process of observation
-      and psychological excavation.
-    </p>
-    <p>
-      His series <em>Variants of Love</em> — acquired by Vincent Van Dyke Effects —
-      marked a defining moment in his fine art practice: an investigation
-      into the forms love takes when it overwhelms, consumes, or dissolves the self.
-    </p>
-    <p>
-      Alongside his sculpture practice, Roman works as a senior 3D character
-      and creature artist with credits at Blizzard, NetEase, and Romero Games.
-      He lives and works in Leipzig, Germany.
-    </p>
-  </div>
+    <p>Roman Chystakhovskyi is a figurative sculptor working at the threshold
+    between physical and digital material. His practice explores the human
+    body as a site of psychological tension &#8212; presence, vulnerability,
+    and the weight of emotion made tangible in form.</p>
 
-  <div class="bio-details">
+    <p>Trained at the National Academy of Fine Arts and Architecture in Kyiv,
+    Roman brings a classical foundation to a contemporary sensibility.
+    His sculptures are hand-built in polymer clay and cast in resin,
+    each piece emerging from an extended process of observation
+    and psychological excavation.</p>
+
+    <p>His series <em>Variants of Love</em> &#8212; acquired by Vincent Van Dyke Effects &#8212;
+    marked a defining moment in his fine art practice: an investigation
+    into the forms love takes when it overwhelms, consumes, or dissolves the self.</p>
+
+    <p>Alongside his sculpture practice, Roman works as a senior 3D character
+    and creature artist with credits at Blizzard, NetEase, and Romero Games.
+    He lives and works in Leipzig, Germany.</p>
+  </div>
+  <aside class="bio-aside">
     <dl>
-      <div>
-        <dt>Born</dt>
-        <dd>1997, Ukraine</dd>
-      </div>
-      <div>
-        <dt>Education</dt>
-        <dd>National Academy of Fine Arts and Architecture, Kyiv</dd>
-      </div>
-      <div>
-        <dt>Based</dt>
-        <dd>Leipzig, Germany</dd>
-      </div>
-      <div>
-        <dt>Collections</dt>
-        <dd>Vincent Van Dyke Effects — <em>Variants of Love</em> series</dd>
-      </div>
-      <div>
-        <dt>Materials</dt>
-        <dd>Polymer clay, resin cast, bronze (forthcoming)</dd>
-      </div>
+      <div><dt>Born</dt><dd>1997, Ukraine</dd></div>
+      <div><dt>Education</dt><dd>National Academy of Fine Arts and Architecture, Kyiv</dd></div>
+      <div><dt>Based</dt><dd>Leipzig, Germany</dd></div>
+      <div><dt>Collections</dt><dd>Vincent Van Dyke Effects &#8212; <em>Variants of Love</em></dd></div>
+      <div><dt>Materials</dt><dd>Polymer clay, resin cast, bronze (forthcoming)</dd></div>
     </dl>
-  </div>
+  </aside>
 </div>
-
 <footer>
-  <span>© 2025 Roman Chystakhovskyi</span>
+  <span>&copy; 2025 Roman Chystakhovskyi</span>
   <span>Leipzig, Germany</span>
-</footer>
-</body>
-</html>
+</footer></body></html>
