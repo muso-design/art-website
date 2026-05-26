@@ -79,12 +79,12 @@ nav.light .nav-links a:hover, nav.light .nav-links a.active { opacity: 1; }
 .grid-item:hover .grid-placeholder { transform: scale(1.03); }
 .grid-meta { padding: 18px 20px 26px; }
 .grid-meta .title {
-  font-size: 17px; font-style: italic; font-weight: 400;
+  font-size: 20px; font-style: italic; font-weight: 400;
   color: var(--text); letter-spacing: 0.01em;
 }
 .grid-meta .series {
-  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--dim); margin-top: 7px; font-weight: 500;
+  font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--dim); margin-top: 8px; font-weight: 500;
 }
 
 /* LIGHTBOX */
@@ -106,11 +106,11 @@ nav.light .nav-links a:hover, nav.light .nav-links a.active { opacity: 1; }
   display: flex; flex-direction: column;
 }
 .lb-info h2 {
-  font-size: 28px; font-style: italic; font-weight: 400;
+  font-size: 34px; font-style: italic; font-weight: 400;
   color: var(--text); line-height: 1.2; margin-bottom: 32px;
 }
 .lb-meta { display: flex; flex-direction: column; gap: 10px; }
-.lb-meta span { font-size: 14px; letter-spacing: 0.04em; color: var(--mid); }
+.lb-meta span { font-size: 16px; letter-spacing: 0.04em; color: var(--mid); }
 .lb-series {
   font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
   color: var(--dim); margin-top: auto; font-weight: 500;
