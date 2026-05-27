@@ -6,6 +6,7 @@
 
 
 const CONFIG = {
+const CONFIG = {
 
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -14,7 +15,7 @@ const CONFIG = {
   name:     "Roman Chystakhovskyi",
   role:     "Sculptor",
   location: "Leipzig, Germany",
-  year:     "2025",
+  year:     "2026",
 
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -216,13 +217,12 @@ const CONFIG = {
   // ─────────────────────────────────────────────────────────────────────────
   //  HERO (landing page slideshow)
   //  Add images to your images/ folder, then list them here.
-  //  Each slide needs: image path and caption.
   // ─────────────────────────────────────────────────────────────────────────
   hero: {
     slides: [
-      { image: "images/too_much.jpg",  caption: "Too Much, 2024" },
-      { image: "",                     caption: "" },  // replace with your image
-      { image: "",                     caption: "" },  // replace with your image
+      { image: "images/too_much.jpg",  caption: "Too Much, 2024" }
+      // To add more slides, use this format:
+      // ,{ image: "images/another_sculpture.jpg", caption: "Title, Year" }
     ],
     interval:      5500,   // milliseconds between slides
     transition:    2000,   // fade duration in milliseconds
@@ -247,7 +247,7 @@ const CONFIG = {
   // ─────────────────────────────────────────────────────────────────────────
   footer: {
     show:        true,
-    leftText:    "",       // leave empty to auto-generate "© 2025 Roman Chystakhovskyi"
+    leftText:    "",       // leave empty to auto-generate "© 2026 Roman Chystakhovskyi"
     rightText:   "",       // leave empty to use location from identity above
   },
 
@@ -259,6 +259,76 @@ const CONFIG = {
     email:        "your@email.com",
     instagram:    "@yourhandle",
     instagramUrl: "https://instagram.com/yourhandle",
+    intro:        "For exhibition proposals, acquisition enquiries, or studio visits — get in touch.",
+  },
+
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  BIO
+  // ─────────────────────────────────────────────────────────────────────────
+  bio: {
+    paragraphs: [
+      "Roman Chystakhovskyi is a figurative sculptor working at the threshold between physical and digital material. His practice explores the human body as a site of psychological tension — presence, vulnerability, and the weight of emotion made tangible in form.",
+      "Trained at the National Academy of Fine Arts and Architecture in Kyiv, Roman brings a classical foundation to a contemporary sensibility. His sculptures are hand-built in polymer clay and cast in resin, each piece emerging from an extended process of observation and psychological excavation.",
+      "His series Variants of Love — acquired by Vincent Van Dyke Effects — marked a defining moment in his fine art practice: an investigation into the forms love takes when it overwhelms, consumes, or dissolves the self.",
+      "Alongside his sculpture practice, Roman works as a senior 3D character and creature artist with credits at Blizzard, NetEase, and Romero Games. He lives and works in Leipzig, Germany.",
+    ],
+    details: [
+      { label: "Born",        value: "1997, Ukraine" },
+      { label: "Education",   value: "National Academy of Fine Arts and Architecture, Kyiv" },
+      { label: "Based",       value: "Leipzig, Germany" },
+      { label: "Collections", value: "Vincent Van Dyke Effects — Variants of Love" },
+      { label: "Materials",   value: "Polymer clay, resin cast, bronze (forthcoming)" },
+    ],
+  },
+
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  SERIES
+  //  Order here = order on the Works page.
+  // ─────────────────────────────────────────────────────────────────────────
+  series: [
+    {
+      name:        "Réflexions",
+      meta:        "Ongoing — Polymer clay",
+      description: "An inward turn — studies of the self in states of stillness, introspection, and quiet dissolution. Forms that hold their breath.",
+    },
+    {
+      name:        "Songs",
+      meta:        "Ongoing — Polymer clay",
+      description: "Figures suspended in resonance — bodies as instruments, gestures as melody. Each piece a posture caught mid-phrase.",
+    },
+    {
+      name:        "Variants of Love",
+      meta:        "2022–2024 — Acquired by VVDE",
+      description: "An investigation into the forms love takes when it overwhelms, consumes, or dissolves the self. The series that defined a turning point.",
+    },
+  ],
+
+
+  // ─────────────────────────────────────────────────────────────────────────
+  //  WORKS
+  //  This is your full portfolio. Add a new block for each piece.
+  // ─────────────────────────────────────────────────────────────────────────
+  works: [
+    {
+      image:      "images/too_much.jpg",
+      title:      "Too Much",
+      year:       "2024",
+      medium:     "Polymer clay, resin cast",
+      dimensions: "60 × 60 cm",
+      series:     "Variants of Love",
+      edition:    "",
+      status:     "sold",
+      price:      "",
+      order:      1,
+    }
+  ],
+
+};
+    email:        "chistahovskiy12@email.com",
+    instagram:    "@roman_chistahovskiy",
+    instagramUrl: "https://instagram.com/roman_chistahovskiy",
     intro:        "For exhibition proposals, acquisition enquiries, or studio visits — get in touch.",
   },
 
