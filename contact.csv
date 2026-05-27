@@ -1,0 +1,28 @@
+key,value,description
+# ════════════════════════════════════════════════════════════════════════════════
+# CONTACT.CSV  —  Controls the Contact page content.
+# HOW TO EDIT:  Change only the "value" column. Never rename the "key" column.
+# LINKS:        For each contact item you can optionally add a clickable link.
+#               Fill in item_link_N with a full URL (https://…) or mailto: address.
+# COMMENTS:     Any row whose key starts with # is ignored by the site.
+# ════════════════════════════════════════════════════════════════════════════════
+#
+# ── INTRO TEXT ────────────────────────────────────────────────────────────────
+intro,"For exhibition proposals, acquisition enquiries, or studio visits — get in touch.",The introductory sentence shown above the contact list. Can be as long as you like.
+#
+# ── CONTACT ITEMS ─────────────────────────────────────────────────────────────
+# Each item appears as one row in the contact list: label on the left  value on the right.
+# item_link_N is optional — leave empty if the item should not be a clickable link.
+# Add more items as needed: item_label_4 / item_value_4 / item_link_4  etc.
+#
+item_label_1,Email,Label shown on the left of the first contact row
+item_value_1,your@email.com,The actual email address (or any text) shown on the right
+item_link_1,mailto:your@email.com,Makes the value a clickable link. Use mailto: for emails  https:// for web links. Leave empty for plain text.
+#
+item_label_2,Instagram,Label for the second row
+item_value_2,@yourhandle,Instagram handle or any display text
+item_link_2,https://instagram.com/yourhandle,Full URL for the Instagram profile
+#
+item_label_3,Location,Label for the third row
+item_value_3,"Leipzig, Germany",Your city or any location text
+item_link_3,,Leave empty — location is not a link
