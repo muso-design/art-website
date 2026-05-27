@@ -220,7 +220,7 @@ const CONFIG = {
   // ─────────────────────────────────────────────────────────────────────────
   hero: {
     slides: [
-      { image: "images/too_much.jpg",  caption: "Too Much, 2024" }
+      { image: "images/images/roman_chystakhovskyi_too_much.webp",  caption: "Too Much, 2024" }
       // To add more slides, use this format:
       // ,{ image: "images/another_sculpture.jpg", caption: "Title, Year" }
     ],
@@ -312,7 +312,7 @@ const CONFIG = {
   // ─────────────────────────────────────────────────────────────────────────
   works: [
     {
-      image:      "images/too_much.jpg",
+      image:      "images/images/roman_chystakhovskyi_too_much.webp",
       title:      "Too Much",
       year:       "2024",
       medium:     "Polymer clay, resin cast",
@@ -394,7 +394,7 @@ const CONFIG = {
   // ─────────────────────────────────────────────────────────────────────────
   works: [
     {
-      image:      "images/too_much.jpg",
+      image:      "images/images/roman_chystakhovskyi_too_much.webp",
       title:      "Too Much",
       year:       "2024",
       medium:     "Polymer clay, resin cast",
