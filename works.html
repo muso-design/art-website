@@ -9,120 +9,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="config.js"></script>
-<style>
-.series-section {{
-  padding: 64px var(--page-padding) 0;
-  border-bottom: 1px solid var(--border);
-}}
-.section-label {{
-  font-size: var(--label-size); letter-spacing: 0.28em; text-transform: uppercase;
-  font-weight: 500; color: var(--mid); padding-bottom: 0;
-}}
-.series-row {{
-  display: grid; grid-template-columns: 1fr auto;
-  align-items: baseline; padding: 48px 0 20px;
-  border-top: 1px solid var(--border); gap: 40px;
-}}
-.series-row h3 {{
-  font-size: var(--series-name-size); font-style: italic; font-weight: 400;
-  color: var(--text); letter-spacing: 0.01em; line-height: 1.0;
-  grid-column: 1; grid-row: 1;
-}}
-.series-meta {{
-  font-size: var(--label-size); letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--dim); font-weight: 500; white-space: nowrap;
-  grid-column: 2; grid-row: 1; align-self: start; padding-top: 14px;
-}}
-.series-row p {{
-  font-size: var(--body-size); line-height: var(--body-lh); color: var(--mid);
-  font-weight: 400; max-width: 560px;
-  grid-column: 1; grid-row: 2; padding-bottom: 48px;
-}}
-.all-label {{
-  font-size: var(--label-size); letter-spacing: 0.28em; text-transform: uppercase;
-  font-weight: 500; color: var(--mid);
-  padding: 56px var(--page-padding) 28px;
-  border-bottom: 1px solid var(--border);
-}}
-@media (max-width: 900px) {{
-  .series-row {{ grid-template-columns: 1fr; gap: 16px; padding: 36px 0 0; }}
-  .series-meta {{ grid-row: 2; grid-column: 1; padding-top: 0; }}
-  .series-row p {{ grid-row: 3; padding-bottom: 36px; }}
-  .all-label {{ padding: 48px var(--page-padding) 24px; }}
-}}
-</style>
 </head>
 <body><nav class="dark">
   <a href="index.html" class="nav-name"></a>
   <div class="nav-links"><a href="works.html" class="active">Works</a><a href="bio.html">Bio</a><a href="contact.html">Contact</a></div>
 </nav>
 <div class="page-header"><h1>Works</h1></div>
-<section class="series-section">
+<section class="series-section" id="series-section">
   <div class="section-label">Series</div>
   <div id="series-rows"></div>
 </section>
-<div class="all-label">All Works</div>
-<div class="grid" id="grid">
-
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-    <div class="grid-item" data-title="Title" data-year="" data-medium="" data-dimensions="" data-series="">
-      <div class="grid-placeholder"><span>image</span></div>
-      <div class="grid-meta"><div class="title">Title</div><div class="series">Series</div></div>
-    </div>
-</div>
+<div class="all-label" id="all-works-section">All Works</div>
+<div class="grid" id="grid"></div>
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lb-close">Close</button>
   <div class="lb-img-pane"><img id="lb-img" src="" alt="" /></div>
   <div class="lb-info">
     <h2 id="lb-title"></h2>
-    <div class="lb-meta">
-      <span id="lb-year"></span>
-      <span id="lb-medium"></span>
-      <span id="lb-dims"></span>
-    </div>
+    <div id="lb-meta"></div>
     <span class="lb-series" id="lb-series"></span>
   </div>
   <div class="lb-nav">
@@ -139,11 +43,7 @@
     idx = i; const el = items[i];
     const img = el.querySelector('img.grid-thumb');
     document.getElementById('lb-img').src = img ? img.src : '';
-    document.getElementById('lb-title').textContent  = el.dataset.title || '';
-    document.getElementById('lb-year').textContent   = el.dataset.year || '';
-    document.getElementById('lb-medium').textContent = el.dataset.medium || '';
-    document.getElementById('lb-dims').textContent   = el.dataset.dimensions || '';
-    document.getElementById('lb-series').textContent = el.dataset.series || '';
+    renderLightboxItem(el);
     lightbox.classList.add('open'); document.body.style.overflow = 'hidden';
   }
   function lbClose() { lightbox.classList.remove('open'); document.body.style.overflow = ''; }
