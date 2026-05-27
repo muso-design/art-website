@@ -3,54 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roman Chystakhovskyi — Contact</title>
+<title>Contact — Roman Chystakhovskyi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
 <style>
-.contact-wrap { padding: 64px 56px 0; max-width: 580px; }
-.contact-wrap p {
-  font-size: clamp(20px, 1.8vw, 24px); font-style: italic; font-weight: 400;
+.contact-wrap {{ padding: 64px var(--page-padding) 0; max-width: 580px; }}
+.contact-wrap p {{
+  font-size: var(--body-size); font-style: italic; font-weight: 400;
   line-height: 1.8; color: var(--text); opacity: 0.75; margin-bottom: 60px;
-}
-.contact-list { display: flex; flex-direction: column; }
-.contact-row {
+}}
+.contact-list {{ display: flex; flex-direction: column; }}
+.contact-row {{
   display: flex; justify-content: space-between; align-items: baseline;
   padding: 22px 0; border-bottom: 1px solid var(--border);
-}
-.contact-row dt {
-  font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase;
+}}
+.contact-row dt {{
+  font-size: var(--label-size); letter-spacing: 0.26em; text-transform: uppercase;
   color: var(--dim); font-weight: 500;
-}
-.contact-row a, .contact-row span {
+}}
+.contact-row a, .contact-row span {{
   font-size: 18px; color: var(--text); opacity: 0.6;
   text-decoration: none; font-style: italic; transition: opacity 0.2s;
-}
-.contact-row a:hover { opacity: 1; }
-@media (max-width: 900px) { .contact-wrap { padding: 48px 28px 0; } }
+}}
+.contact-row a:hover {{ opacity: 1; }}
 </style>
 </head>
 <body><nav class="dark">
-  <a href="index.html" class="nav-name">Roman Chystakhovskyi</a>
-  <div class="nav-links">
-    <a href="works.html">Works</a>
-    <a href="bio.html">Bio</a>
-    <a href="contact.html" class="active">Contact</a>
-    
-  </div>
+  <a href="index.html" class="nav-name"></a>
+  <div class="nav-links"><a href="works.html">Works</a><a href="bio.html">Bio</a><a href="contact.html" class="active">Contact</a></div>
 </nav>
 <div class="page-header"><h1>Contact</h1></div>
 <div class="contact-wrap">
-  <p>For exhibition proposals, acquisition enquiries,
-  or studio visits &#8212; get in touch.</p>
+  <p id="contact-intro"></p>
   <dl class="contact-list">
-    <div class="contact-row"><dt>Email</dt><a href="mailto:your@email.com">your@email.com</a></div>
-    <div class="contact-row"><dt>Instagram</dt><a href="https://instagram.com/yourhandle" target="_blank">@yourhandle</a></div>
-    <div class="contact-row"><dt>Location</dt><span>Leipzig, Germany</span></div>
+    <div class="contact-row"><dt>Email</dt><a id="contact-email" href=""></a></div>
+    <div class="contact-row"><dt>Instagram</dt><a id="contact-ig" href="" target="_blank"></a></div>
+    <div class="contact-row"><dt>Location</dt><span id="contact-loc"></span></div>
   </dl>
 </div>
 <footer>
-  <span>&copy; 2025 Roman Chystakhovskyi</span>
-  <span>Leipzig, Germany</span>
+  <span class="footer-name"></span>
+  <span class="footer-loc"></span>
 </footer></body></html>

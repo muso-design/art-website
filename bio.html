@@ -3,86 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Roman Chystakhovskyi — Bio</title>
+<title>Bio — Roman Chystakhovskyi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
 <style>
-.bio-wrap {
-  padding: 64px 56px 0;
-  max-width: 760px;
-  margin: 0 auto;
-}
-.bio-text p {
-  font-size: clamp(20px, 1.8vw, 24px); line-height: 1.88;
+.bio-wrap {{ padding: 64px var(--page-padding) 0; max-width: 760px; margin: 0 auto; }}
+.bio-text p {{
+  font-size: var(--body-size); line-height: var(--body-lh);
   font-style: italic; font-weight: 400; color: var(--text);
   opacity: 0.85; margin-bottom: 32px;
-}
-.bio-aside {
-  margin-top: 64px;
-  border-top: 1px solid var(--border);
-  padding-top: 48px;
-}
-.bio-aside dl {
+}}
+.bio-aside {{
+  margin-top: 64px; border-top: 1px solid var(--border); padding-top: 48px;
+}}
+.bio-aside dl {{
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 40px;
-}
-.bio-aside dt {
-  font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase;
+}}
+.bio-aside dt {{
+  font-size: var(--label-size); letter-spacing: 0.26em; text-transform: uppercase;
   color: var(--dim); margin-bottom: 6px; font-weight: 500;
-}
-.bio-aside dd {
+}}
+.bio-aside dd {{
   font-size: 17px; color: var(--text); opacity: 0.75;
   font-style: italic; line-height: 1.55;
-}
-@media (max-width: 900px) {
-  .bio-wrap { padding: 48px 28px 0; }
-  .bio-aside dl { grid-template-columns: 1fr; }
-}
+}}
+@media (max-width: 900px) {{
+  .bio-wrap {{ padding-top: 48px; }}
+  .bio-aside dl {{ grid-template-columns: 1fr; }}
+}}
 </style>
 </head>
 <body><nav class="dark">
-  <a href="index.html" class="nav-name">Roman Chystakhovskyi</a>
-  <div class="nav-links">
-    <a href="works.html">Works</a>
-    <a href="bio.html" class="active">Bio</a>
-    <a href="contact.html">Contact</a>
-    
-  </div>
+  <a href="index.html" class="nav-name"></a>
+  <div class="nav-links"><a href="works.html">Works</a><a href="bio.html" class="active">Bio</a><a href="contact.html">Contact</a></div>
 </nav>
 <div class="page-header"><h1>Bio</h1></div>
 <div class="bio-wrap">
-  <div class="bio-text">
-    <p>Roman Chystakhovskyi is a figurative sculptor working at the threshold
-    between physical and digital material. His practice explores the human
-    body as a site of psychological tension &#8212; presence, vulnerability,
-    and the weight of emotion made tangible in form.</p>
-
-    <p>Trained at the National Academy of Fine Arts and Architecture in Kyiv,
-    Roman brings a classical foundation to a contemporary sensibility.
-    His sculptures are hand-built in polymer clay and cast in resin,
-    each piece emerging from an extended process of observation
-    and psychological excavation.</p>
-
-    <p>His series <em>Variants of Love</em> &#8212; acquired by Vincent Van Dyke Effects &#8212;
-    marked a defining moment in his fine art practice: an investigation
-    into the forms love takes when it overwhelms, consumes, or dissolves the self.</p>
-
-    <p>Alongside his sculpture practice, Roman works as a senior 3D character
-    and creature artist with credits at Blizzard, NetEase, and Romero Games.
-    He lives and works in Leipzig, Germany.</p>
-  </div>
+  <div class="bio-text" id="bio-text"></div>
   <aside class="bio-aside">
-    <dl>
-      <div><dt>Born</dt><dd>1997, Ukraine</dd></div>
-      <div><dt>Education</dt><dd>National Academy of Fine Arts and Architecture, Kyiv</dd></div>
-      <div><dt>Based</dt><dd>Leipzig, Germany</dd></div>
-      <div><dt>Collections</dt><dd>Vincent Van Dyke Effects &#8212; <em>Variants of Love</em></dd></div>
-      <div><dt>Materials</dt><dd>Polymer clay, resin cast, bronze (forthcoming)</dd></div>
-    </dl>
+    <dl id="bio-aside"></dl>
   </aside>
 </div>
 <footer>
-  <span>&copy; 2025 Roman Chystakhovskyi</span>
-  <span>Leipzig, Germany</span>
+  <span class="footer-name"></span>
+  <span class="footer-loc"></span>
 </footer></body></html>
