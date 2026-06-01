@@ -26,20 +26,26 @@ if errorlevel 1 (
   exit /b 1
 )
 
-:: ── Step 3: stage + commit + push ──────────────────────────────────────
+:: ── Step 3: commit any local changes (optional — push happens either way)
 git add -A
 
-set /p msg=Commit message (or press Enter for default):
-if "%msg%"=="" set msg=Update site
-
-git commit -m "%msg%"
+:: Check if there is anything to commit
+git diff --cached --quiet
 if errorlevel 1 (
-  echo.
-  echo Nothing to commit - no changes detected.
-  pause
-  exit /b 0
+  set /p msg=Commit message (or press Enter for default):
+  if "!msg!"=="" set msg=Update site
+  git commit -m "%msg%"
+  if errorlevel 1 (
+    echo.
+    echo Commit failed unexpectedly.
+    pause
+    exit /b 1
+  )
+) else (
+  echo No local changes to commit.
 )
 
+:: ── Step 4: push all commits (including ones committed outside deploy.bat)
 git push
 if errorlevel 1 (
   echo.
