@@ -309,7 +309,15 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
   font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim)
 }
 
+
+</style>
+<style id="responsive">
 /* ── RESPONSIVE ──────────────────────────────────────────── */
+/* applySettings() injects settings.csv values as <style id="site-settings">
+   BEFORE this block, so these media-query :root overrides always win by
+   CSS source order — no !important needed for custom property overrides.
+   !important is still used where we fight inline styles on elements
+   (grid-template-columns) or class-based selectors (nav.light).          */
 
 /* ─ Tablet (≤1024px) ─ */
 @media(max-width:1024px){
@@ -340,64 +348,78 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 
 /* ─ Mobile (≤700px) ─ */
 @media(max-width:700px){
-  :root{--page-padding:20px;--grid-gap:16px;--body-size:17px;--content-pad:20px}
+  :root{
+    --page-padding:20px;--grid-gap:14px;--content-pad:16px;
+    --body-size:17px;--nav-name-size:14px;--nav-link-size:11px;
+    --nav-v-pad:12px;--footer-v-pad:12px;
+    --grid-title-size:18px;--grid-series-size:11px;
+    --lb-title-size:18px;--lb-img-width:88vw;--lb-dots-offset:20px
+  }
 
-  /* ── NAV: always solid + dark on mobile ───────────────────
-     nav.light (home page) = white text on transparent bg:
-     invisible against bright artwork. Force white bg + dark
-     text on all mobile screens regardless of nav class.      */
+  /* NAV: force solid + readable — nav.light = transparent/white on home page */
   nav,nav.light,nav.dark{
     background:var(--bg)!important;
-    border-bottom:1px solid var(--border)!important;
-    padding:12px var(--page-padding);
+    border-bottom:1px solid var(--border)!important
   }
-  nav .nav-name,nav.light .nav-name{color:var(--text)!important}
-  nav .nav-links a,nav.light .nav-links a{
+  nav .nav-name,nav.light .nav-name,nav.dark .nav-name{color:var(--text)!important}
+  nav .nav-links a,nav.light .nav-links a,nav.dark .nav-links a{
     color:var(--text)!important;opacity:0.4;
-    /* 44px touch target: padding + line-height gets us there */
-    display:block;padding:14px 2px;
-    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+    display:block;padding:14px 4px;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent
   }
-  nav .nav-links a.active,nav.light .nav-links a.active,
+  nav .nav-links a.active,nav.light .nav-links a.active,nav.dark .nav-links a.active,
   nav .nav-links a:hover,nav.light .nav-links a:hover{opacity:1!important}
   .nav-links{gap:20px}
 
-  .works-grid{grid-template-columns:repeat(2,1fr)!important;max-width:100%}
-  .bio-wrap,.contact-wrap{padding-top:96px}
+  /* Hard-coded pixel padding — bypasses CSS variables entirely so layout
+     is guaranteed regardless of what settings.csv contains.               */
+  .works-grid{
+    grid-template-columns:repeat(2,1fr)!important;max-width:100%;
+    padding:64px 16px 72px!important
+  }
+  .bio-wrap{padding:64px 16px 60px!important;max-width:100%}
+  .contact-wrap{padding:64px 16px 60px!important}
+  .site-footer{padding:10px 20px!important;font-size:10px}
+  .slide-caption{left:20px!important;bottom:52px}
+  .ss-dots{right:20px!important;bottom:16px}
+  .ss-dot{width:6px;height:6px;padding:6px;box-sizing:content-box}
 
+  /* Lightbox */
   .lb-gallery{padding-bottom:200px;-webkit-overflow-scrolling:touch}
   .lb-gallery-img{width:88vw}
   .lb-title{font-size:16px;margin-bottom:6px}
   .lb-meta dd{font-size:14px}
   .lb-compact{font-size:11px;margin-top:6px;padding-top:6px;line-height:1.7}
   .lb-close{font-size:42px;top:64px;right:20px}
-  .lb-panel{padding:1.2em var(--page-padding)}
-  /* Larger dot tap areas */
+  .lb-panel{padding:1.2em 20px!important}
   .lb-dot{width:9px;height:9px}
-  .ss-dot{width:6px;height:6px;padding:6px;box-sizing:content-box}
 
-  .work-info{padding:10px 12px 28px}
-  .bio-details{gap:24px 40px}
+  .work-info{padding:10px 12px 24px}
+  .bio-details{gap:20px 32px}
   .contact-list li{flex-direction:column;gap:4px;padding:14px 0}
   .contact-value{font-size:16px}
 }
 
 /* ─ Small mobile (≤480px) ─ */
 @media(max-width:480px){
-  :root{--body-size:16px}
-  .works-grid{grid-template-columns:1fr!important}
-  .bio-wrap{padding-top:80px}
-  .nav-links{gap:14px}
-  .nav-links a{letter-spacing:0.14em}
+  :root{--body-size:15px;--page-padding:14px;--content-pad:14px}
+  .works-grid{grid-template-columns:1fr!important;padding:60px 14px 64px!important}
+  .bio-wrap{padding-left:14px!important;padding-right:14px!important}
+  .contact-wrap{padding-left:14px!important;padding-right:14px!important}
+  .nav-links{gap:12px}
+  .nav-links a{letter-spacing:0.1em}
   .lb-gallery-img{width:94vw}
 }
 
 /* ─ Very small (≤360px) ─ */
 @media(max-width:360px){
-  :root{--page-padding:16px}
-  .nav-name{font-size:12px;letter-spacing:0.12em}
-  .nav-links{gap:10px}
-  .nav-links a{font-size:9px;letter-spacing:0.06em}
+  :root{--page-padding:12px;--content-pad:12px}
+  nav,nav.light,nav.dark{padding-left:12px!important;padding-right:12px!important}
+  .nav-name{font-size:11px!important;letter-spacing:0.1em}
+  .nav-links{gap:8px}
+  .nav-links a{font-size:9px!important;letter-spacing:0.06em}
+  .works-grid{padding-left:12px!important;padding-right:12px!important}
+  .site-footer{padding-left:12px!important;padding-right:12px!important}
 }
 </style>
 </head>
@@ -1018,8 +1040,9 @@ function renderContact(c,s){
 // APPLY SETTINGS → CSS VARIABLES + TITLE
 // ═══════════════════════════════════════════════════════════
 function applySettings(s){
-  const r=document.documentElement.style;
-  const v=(cssVar,key)=>{if(s[key])r.setProperty(cssVar,s[key])};
+  /* Build CSS variable declarations from settings.csv values */
+  const parts=[];
+  const v=(cssVar,key)=>{if(s[key])parts.push(cssVar+':'+s[key])};
   v('--bg','color_background');
   v('--bg2','color_surface');
   v('--bg3','color_surface_hover');
@@ -1054,6 +1077,16 @@ function applySettings(s){
   v('--ss-gradient-height','slideshow_gradient_height');
   v('--ss-gradient-opacity','slideshow_gradient_opacity');
   v('--slide-transition','slideshow_fade_duration');
+  /* KEY FIX: inject as a <style> block (not inline style on :root).
+     Inline styles beat every media-query rule — that's why the old code
+     made the site look broken on phones despite the responsive CSS.
+     By inserting this block BEFORE <style id="responsive">, the media
+     queries in that block win by CSS source order on small screens.        */
+  const st=document.createElement('style');
+  st.id='site-settings';
+  st.textContent=':root{'+parts.join(';')+'}';
+  const rsp=document.getElementById('responsive');
+  rsp?document.head.insertBefore(st,rsp):document.head.appendChild(st);
   if(s.lightbox_zoom_level)_lbZoomLevel=parseFloat(s.lightbox_zoom_level)||2.5;
   if(s.font_url){
     const l=document.createElement('link');l.rel='stylesheet';l.href=s.font_url;
