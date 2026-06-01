@@ -456,19 +456,26 @@ a.nav-name{text-decoration:none}
     --lb-title-size:18px;--lb-img-width:88vw;--lb-dots-offset:20px
   }
 
-  /* NAV: force solid + readable — nav.light = transparent/white on home page */
-  nav,nav.light,nav.dark{
+  /* NAV: transparent on home (nav.light) — solid only on inner pages (nav.dark) */
+  nav.dark{
     background:var(--bg)!important;
     border-bottom:1px solid var(--border)!important
   }
-  nav .nav-name,nav.light .nav-name,nav.dark .nav-name{color:var(--text)!important}
-  nav .nav-links a,nav.light .nav-links a,nav.dark .nav-links a{
+  nav.light{background:transparent!important;border-bottom:1px solid transparent!important}
+  nav.dark .nav-name{color:var(--text)!important}
+  nav.light .nav-name{color:#ffffff!important}
+  nav.dark .nav-links a{
     color:var(--text)!important;opacity:0.4;
     display:block;padding:14px 4px;
     touch-action:manipulation;-webkit-tap-highlight-color:transparent
   }
-  nav .nav-links a.active,nav.light .nav-links a.active,nav.dark .nav-links a.active,
-  nav .nav-links a:hover,nav.light .nav-links a:hover{opacity:1!important}
+  nav.light .nav-links a{
+    color:#ffffff!important;opacity:0.6;
+    display:block;padding:14px 4px;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent
+  }
+  nav.dark .nav-links a.active,nav.dark .nav-links a:hover{opacity:1!important}
+  nav.light .nav-links a.active,nav.light .nav-links a:hover{opacity:1!important}
   .nav-links{gap:20px}
 
   /* Hard-coded pixel padding — bypasses CSS variables entirely so layout
@@ -484,14 +491,29 @@ a.nav-name{text-decoration:none}
   .ss-dots{right:20px!important;bottom:16px}
   .ss-dot{width:6px;height:6px;padding:6px;box-sizing:content-box}
 
-  /* Lightbox */
-  .lb-gallery{padding-bottom:200px;-webkit-overflow-scrolling:touch}
+  /* Lightbox — whole container scrolls; panel flows below gallery */
+  .lightbox{overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .lb-gallery{
+    height:auto!important;overflow-y:visible!important;
+    padding:72px 0 2em!important
+  }
   .lb-gallery-img{width:88vw}
-  .lb-title{font-size:16px;margin-bottom:6px}
+  .lb-dots{display:none!important}
+  .lb-panel{
+    position:relative!important;width:100%!important;
+    height:auto!important;top:auto!important;bottom:auto!important;
+    left:auto!important;right:auto!important;
+    flex-direction:column!important;flex-wrap:nowrap!important;
+    justify-content:flex-start!important;align-content:flex-start!important;
+    border-left:none;border-top:1px solid var(--border);
+    padding:1.5em 20px 5em!important;
+    background:var(--bg);overflow-y:visible!important
+  }
+  .lb-title{font-size:16px;margin-bottom:10px}
+  .lb-meta{display:block}
   .lb-meta dd{font-size:14px}
-  .lb-compact{font-size:11px;margin-top:6px;padding-top:6px;line-height:1.7}
-  .lb-close{font-size:42px;top:64px;right:20px}
-  .lb-panel{padding:1.2em 20px!important}
+  .lb-compact{font-size:11px;margin-top:10px;padding-top:10px;line-height:1.7}
+  .lb-close{position:fixed;font-size:42px;top:14px;right:20px}
   .lb-dot{width:9px;height:9px}
 
   .work-info{padding:10px 12px 24px}
@@ -689,7 +711,7 @@ let currentPage='home';
 const SITE_URL='https://muso-design.github.io/art-website';
 
 function navigate(page,skipPush){
-  if(document.getElementById('lightbox').classList.contains('open'))closeLb();
+  if(document.getElementById('lightbox').classList.contains('open'))closeLb(true);
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   document.getElementById('main-nav').className=page==='home'?'light':'dark';
@@ -848,16 +870,18 @@ function openLb(i){
     ldEl.dataset.mode='artwork';
   }
 }
-function closeLb(){
+function closeLb(skipHash){
   if(document.getElementById('lb-zoom').classList.contains('open'))closeZoom();
   document.getElementById('lightbox').classList.remove('open');
   document.body.style.overflow='';
   if(window._lbObs){window._lbObs.disconnect();window._lbObs=null;}
   document.getElementById('main-nav').style.zIndex='';
 
-  /* Restore hash to current page */
-  const hash=currentPage==='home'?'':('#/'+currentPage);
-  history.pushState(null,'',hash||location.pathname.replace(/\/$/,'')+'/');
+  if(!skipHash){
+    /* Restore hash to current page */
+    const hash=currentPage==='home'?'':('#/'+currentPage);
+    history.pushState(null,'',hash||location.pathname.replace(/\/$/,'')+'/');
+  }
 
   /* Restore Person JSON-LD */
   const ldEl=document.getElementById('ld-json');
@@ -872,8 +896,10 @@ function lbStep(d){lbIdx=(lbIdx+d+works.length)%works.length;lbRender();
 function lbRender(){
   const w=works[lbIdx];
   const gallery=document.getElementById('lb-gallery');
+  const lb=document.getElementById('lightbox');
   gallery.innerHTML='';
   gallery.scrollTop=0;
+  lb.scrollTop=0;
 
   // Build images — 3 placeholder copies (swap in real multi-angle images later)
   _zoomImgs=[];
@@ -936,11 +962,12 @@ function lbRender(){
 }
 
 let _lbZoomLevel=2.5;
-const _zoom={zoomed:false,tx:0,ty:0,dragging:false,startX:0,startY:0,lx:0,ly:0,didDrag:false,
-  swipeReady:false,swipeDir:0,swipeOffset:0,swipeNextIdx:-1};
+const _zoom={zoomed:false,scale:0,tx:0,ty:0,dragging:false,startX:0,startY:0,lx:0,ly:0,didDrag:false,
+  swipeReady:false,swipeDir:0,swipeOffset:0,swipeNextIdx:-1,
+  pinch:false,pinchDist:0,pinchStartScale:1};
 
 function applyZoomTransform(){
-  const s=_zoom.zoomed?_lbZoomLevel:1;
+  const s=_zoom.zoomed?(_zoom.scale||_lbZoomLevel):1;
   document.getElementById('lb-zoom-img').style.transform=
     `translate(${_zoom.tx}px,${_zoom.ty}px) scale(${s})`;
   if(_zoom.swipeReady){
@@ -952,8 +979,9 @@ function applyZoomTransform(){
 
 function openZoom(idx){
   _zoomImgIdx=idx;
-  _zoom.zoomed=false;_zoom.tx=0;_zoom.ty=0;
+  _zoom.zoomed=false;_zoom.scale=0;_zoom.tx=0;_zoom.ty=0;
   _zoom.swipeReady=false;_zoom.swipeDir=0;_zoom.swipeOffset=0;_zoom.swipeNextIdx=-1;
+  _zoom.pinch=false;_zoom.pinchDist=0;
   const img=document.getElementById('lb-zoom-img');
   const img2=document.getElementById('lb-zoom-img2');
   const d=_zoomImgs[_zoomImgIdx]||{src:'',alt:''};
@@ -1089,6 +1117,7 @@ function initZoomInteraction(){
   function doZoomIn(clientX,clientY){
     const r=overlay.getBoundingClientRect();
     const cx=clientX-r.left-r.width/2,cy=clientY-r.top-r.height/2;
+    _zoom.scale=_lbZoomLevel;
     _zoom.tx=cx*(1-_lbZoomLevel);_zoom.ty=cy*(1-_lbZoomLevel);
     _zoom.zoomed=true;
     // Clamp initial position so image covers screen
@@ -1103,7 +1132,7 @@ function initZoomInteraction(){
   function doZoomOut(){
     const img=document.getElementById('lb-zoom-img');
     img.style.transition='transform 0.25s ease';
-    _zoom.zoomed=false;_zoom.tx=0;_zoom.ty=0;
+    _zoom.zoomed=false;_zoom.scale=0;_zoom.tx=0;_zoom.ty=0;
     applyZoomTransform();
     setTimeout(()=>img.style.transition='',250);
     wrap.style.cursor='zoom-in';_updateZoomNav();
@@ -1160,17 +1189,48 @@ function initZoomInteraction(){
   document.addEventListener('mousemove',wrap._mm);
   document.addEventListener('mouseup',wrap._mu);
 
-  // ── Touch ──
+  // ── Touch (single-finger swipe/pan + two-finger pinch-zoom) ──
+  function _pd(e){return Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY)}
   wrap._ts=e=>{
     e.preventDefault();
-    if(e.touches.length===1){
+    if(e.touches.length===2){
+      // Begin pinch — cancel any swipe in progress
+      _zoom.pinch=true;_zoom.dragging=false;_zoom.didDrag=false;
+      if(_zoom.swipeReady){snapBack();}
+      _zoom.pinchDist=_pd(e);
+      _zoom.pinchStartScale=_zoom.zoomed?(_zoom.scale||_lbZoomLevel):1;
+      return;
+    }
+    if(e.touches.length===1&&!_zoom.pinch){
       _zoom.dragging=true;_zoom.didDrag=false;
       _zoom.startX=_zoom.lx=e.touches[0].clientX;_zoom.startY=_zoom.ly=e.touches[0].clientY;
     }
   };
   wrap._tm=e=>{
     e.preventDefault();
-    if(e.touches.length===1&&_zoom.dragging){
+    // Two-finger pinch
+    if(e.touches.length===2&&_zoom.pinch){
+      const d=_pd(e);
+      const newScale=Math.max(1,Math.min(6,_zoom.pinchStartScale*(d/_zoom.pinchDist)));
+      if(newScale>1.05){
+        if(!_zoom.zoomed){
+          const cx=(e.touches[0].clientX+e.touches[1].clientX)/2;
+          const cy=(e.touches[0].clientY+e.touches[1].clientY)/2;
+          const r=overlay.getBoundingClientRect();
+          _zoom.tx=(cx-r.left-r.width/2)*(1-newScale);
+          _zoom.ty=(cy-r.top-r.height/2)*(1-newScale);
+          _zoom.zoomed=true;
+        }
+        _zoom.scale=newScale;
+      }else{
+        _zoom.zoomed=false;_zoom.scale=0;_zoom.tx=0;_zoom.ty=0;
+      }
+      applyZoomTransform();_updateZoomNav();
+      wrap.style.cursor=_zoom.zoomed?'grab':'zoom-in';
+      return;
+    }
+    // Single-finger pan/swipe
+    if(e.touches.length===1&&_zoom.dragging&&!_zoom.pinch){
       const tx=e.touches[0].clientX,ty=e.touches[0].clientY;
       if(Math.abs(tx-_zoom.startX)>5||Math.abs(ty-_zoom.startY)>5)_zoom.didDrag=true;
       if(_zoom.zoomed){panZoom(tx-_zoom.lx,ty-_zoom.ly);}
@@ -1183,6 +1243,14 @@ function initZoomInteraction(){
     }
   };
   wrap._te=e=>{
+    // Pinch ended when fewer than 2 fingers remain
+    if(e.touches.length<2&&_zoom.pinch){
+      _zoom.pinch=false;
+      // If pinch left us zoomed, stay zoomed; if back to 1x, zoom out cleanly
+      if(!_zoom.zoomed){_zoom.scale=0;_zoom.tx=0;_zoom.ty=0;applyZoomTransform();}
+      return;
+    }
+    if(_zoom.pinch)return;
     if(e.changedTouches.length===1&&_zoom.dragging){
       _zoom.dragging=false;
       const t=e.changedTouches[0],dx=t.clientX-_zoom.startX;
@@ -1211,7 +1279,7 @@ function cleanupZoomInteraction(){
   if(wrap._ts)wrap.removeEventListener('touchstart',wrap._ts);
   if(wrap._tm)wrap.removeEventListener('touchmove',wrap._tm);
   if(wrap._te)wrap.removeEventListener('touchend',wrap._te);
-  _zoom.dragging=false;wrap.style.cursor='';
+  _zoom.dragging=false;_zoom.pinch=false;wrap.style.cursor='';
 }
 
 // ═══════════════════════════════════════════════════════════
