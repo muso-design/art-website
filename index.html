@@ -3,8 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loading…</title>
+
+<!-- Static title + description — valid even without JS (BRIEF §SEO) -->
+<title>Roman Chystakhovskyi — Sculptor</title>
+<meta name="description" content="Portfolio of Roman Chystakhovskyi — figurative sculptor working at the intersection of physical and digital material. Leipzig, Germany.">
+
+<!-- Favicon set (BRIEF §Site identity) -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" id="meta-theme-color" content="#E4E4E4">
+
+<!-- Canonical link — updated per page state by navigate() -->
+<link rel="canonical" id="link-canonical" href="https://muso-design.github.io/art-website/">
+
+<!-- OpenGraph (BRIEF §SEO) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Roman Chystakhovskyi">
+<meta property="og:url" id="og-url" content="https://muso-design.github.io/art-website/">
+<meta property="og:title" id="og-title" content="Roman Chystakhovskyi — Sculptor">
+<meta property="og:description" id="og-description" content="Portfolio of Roman Chystakhovskyi — figurative sculptor working at the intersection of physical and digital material. Leipzig, Germany.">
+<meta property="og:image" id="og-image" content="https://muso-design.github.io/art-website/images/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Twitter Card (BRIEF §SEO) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" id="tw-title" content="Roman Chystakhovskyi — Sculptor">
+<meta name="twitter:description" id="tw-description" content="Portfolio of Roman Chystakhovskyi — figurative sculptor working at the intersection of physical and digital material. Leipzig, Germany.">
+<meta name="twitter:image" id="tw-image" content="https://muso-design.github.io/art-website/images/og-image.png">
+
+<!-- Hero preload — set by applySettings() once settings.csv is loaded -->
+<link rel="preload" id="hero-preload" as="image" href="" fetchpriority="high">
+
+<!-- JSON-LD Person schema — updated by JS (BRIEF §SEO) -->
+<script type="application/ld+json" id="ld-json">{"@context":"https://schema.org","@type":"Person","name":"Roman Chystakhovskyi","jobTitle":"Sculptor","url":"https://muso-design.github.io/art-website/","description":"Figurative sculptor working at the threshold of physical and digital material. Leipzig, Germany.","sameAs":[]}</script>
 <style>
+/* ── SELF-HOSTED FONTS (BRIEF §Legal — no Google Fonts CDN) ─────────── */
+@font-face{font-family:"Cormorant Garamond";font-style:normal;font-weight:300;font-display:swap;src:url("fonts/CormorantGaramond-Light.woff2") format("woff2")}
+@font-face{font-family:"Cormorant Garamond";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/CormorantGaramond-Regular.woff2") format("woff2")}
+@font-face{font-family:"Cormorant Garamond";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/CormorantGaramond-Medium.woff2") format("woff2")}
+@font-face{font-family:"Cormorant Garamond";font-style:italic;font-weight:300;font-display:swap;src:url("fonts/CormorantGaramond-LightItalic.woff2") format("woff2")}
+@font-face{font-family:"Cormorant Garamond";font-style:italic;font-weight:400;font-display:swap;src:url("fonts/CormorantGaramond-Italic.woff2") format("woff2")}
+
+/* ── ACCESSIBILITY UTILITIES ─────────────────────────────────────────── */
+/* Visually hidden but accessible to screen readers */
+.visually-hidden{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0
+}
+/* Skip-to-content link — visible on focus only */
+.skip-link{
+  position:fixed;top:-100%;left:20px;z-index:9999;
+  background:var(--text,#0c0b0a);color:var(--bg,#fff);
+  padding:8px 16px;font-size:12px;letter-spacing:0.12em;
+  text-transform:uppercase;text-decoration:none;border-radius:2px;
+  transition:top 0.15s;outline:none
+}
+.skip-link:focus{top:8px}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
@@ -301,12 +359,54 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
   font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);
   z-index:90
 }
+.footer-legal{display:flex;gap:24px}
+.footer-legal a{
+  color:var(--dim);text-decoration:none;font-size:11px;
+  letter-spacing:0.14em;text-transform:uppercase;
+  border-bottom:1px solid transparent;transition:color 0.2s,border-color 0.2s
+}
+.footer-legal a:hover{color:var(--text);border-bottom-color:var(--text)}
+
+/* nav-name is now an <a> — inherit button-like appearance */
+a.nav-name{text-decoration:none}
 
 /* ── LOADING ─────────────────────────────────────────────── */
 #loading{
   position:fixed;inset:0;background:var(--bg);display:flex;
   align-items:center;justify-content:center;z-index:999;
   font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim)
+}
+
+/* ── FOCUS VISIBLE (BRIEF §Accessibility) ─────────────────── */
+:focus-visible{
+  outline:2px solid var(--text);outline-offset:3px;border-radius:2px
+}
+/* Remove focus ring on mouse click, keep for keyboard */
+:focus:not(:focus-visible){outline:none}
+
+/* ── REDUCED MOTION (BRIEF §Accessibility) ──────────────────── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:0.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:0.01ms!important;
+    scroll-behavior:auto!important
+  }
+  .slide{transition:none!important}
+  .lb-gallery-img{transition:none!important}
+  .work-img{transition:none!important}
+}
+
+/* ── BROKEN IMAGE FALLBACK (BRIEF §Resilience) ──────────────── */
+/* When an artwork image fails to load, show a neutral placeholder */
+.work-img-wrap{position:relative}
+.work-img.error,.work-img[src=""]{visibility:hidden}
+.work-img-wrap:has(.work-img.error)::after,
+.work-img-wrap:has(.work-img[src=""])::after{
+  content:'';position:absolute;inset:0;
+  background:var(--bg3)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%239c9890' stroke-width='1'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'/%3E%3Cpath d='m21 15-5-5L5 21'/%3E%3C/svg%3E")
+    center/32px no-repeat
 }
 
 
@@ -425,19 +525,35 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 </head>
 <body>
 
+<!-- Skip-to-content (BRIEF §Accessibility — first focusable element) -->
+<a class="skip-link" href="#main-content">Skip to content</a>
+
+<noscript>
+  <style>.page,.site-footer{display:block!important}</style>
+  <div style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#E4E4E4;font-family:Georgia,serif;font-size:16px;color:#5c5855;text-align:center;padding:40px;line-height:1.7">
+    This portfolio requires JavaScript to display.<br>
+    Please enable JavaScript in your browser settings.
+  </div>
+</noscript>
+
 <div id="loading">Loading…</div>
 
-<nav id="main-nav" class="light">
-  <span class="nav-name" id="nav-name" onclick="navigate('home')">—</span>
+<nav id="main-nav" class="light" aria-label="Main navigation">
+  <!-- nav-name uses <a> for keyboard navigation; href updated by JS -->
+  <a class="nav-name" id="nav-name" href="#/">—</a>
   <ul class="nav-links">
-    <li><a id="nl-works"   onclick="navigate('works')">Works</a></li>
-    <li><a id="nl-bio"     onclick="navigate('bio')">Bio</a></li>
-    <li><a id="nl-contact" onclick="navigate('contact')">Contact</a></li>
+    <li><a id="nl-works"   href="#/works">Works</a></li>
+    <li><a id="nl-bio"     href="#/bio">Bio</a></li>
+    <li><a id="nl-contact" href="#/contact">Contact</a></li>
   </ul>
 </nav>
 
-<!-- HOME -->
-<section id="page-home" class="page active">
+<!-- main-content anchor for skip link -->
+<main id="main-content">
+
+<!-- HOME — h1 updated from settings.csv by applySettings() -->
+<section id="page-home" class="page active" aria-labelledby="h1-home">
+  <h1 class="visually-hidden" id="h1-home">Roman Chystakhovskyi — Sculptor</h1>
   <div class="slideshow" id="slideshow">
     <div class="ss-arrows">
       <button class="ss-arrow" onclick="slidePrev()">&#8592;</button>
@@ -448,33 +564,38 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 </section>
 
 <!-- WORKS -->
-<section id="page-works" class="page">
+<section id="page-works" class="page" aria-labelledby="h1-works">
+  <h1 class="visually-hidden" id="h1-works">Works</h1>
   <div class="works-grid" id="works-grid"></div>
 </section>
 
 <!-- BIO -->
-<section id="page-bio" class="page">
+<section id="page-bio" class="page" aria-labelledby="h1-bio">
+  <h1 class="visually-hidden" id="h1-bio">Biography</h1>
   <div class="bio-wrap">
     <div class="bio-text" id="bio-text"></div>
     <div class="bio-meta">
-      <img id="bio-photo" class="bio-photo-full" style="display:none" alt="Portrait">
+      <img id="bio-photo" class="bio-photo-full" style="display:none" alt="Portrait of Roman Chystakhovskyi">
       <dl class="bio-details" id="bio-details"></dl>
     </div>
   </div>
 </section>
 
 <!-- CONTACT -->
-<section id="page-contact" class="page">
+<section id="page-contact" class="page" aria-labelledby="h1-contact">
+  <h1 class="visually-hidden" id="h1-contact">Contact</h1>
   <div class="contact-wrap">
-    <div class="contact-header">Contact</div>
+    <div class="contact-header" aria-hidden="true">Contact</div>
     <p class="contact-intro" id="contact-intro"></p>
     <ul class="contact-list" id="contact-list"></ul>
   </div>
 </section>
 
+</main>
+
 <!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-  <button class="lb-close" onclick="closeLb()">&#215;</button>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lb-title">
+  <button class="lb-close" onclick="closeLb()" aria-label="Close lightbox">&#215;</button>
   <div class="lb-dots" id="lb-dots"></div>
   <div class="lb-gallery" id="lb-gallery"></div>
   <div class="lb-panel">
@@ -565,7 +686,9 @@ async function loadCSV(name){
 // ═══════════════════════════════════════════════════════════
 let currentPage='home';
 
-function navigate(page){
+const SITE_URL='https://muso-design.github.io/art-website';
+
+function navigate(page,skipPush){
   if(document.getElementById('lightbox').classList.contains('open'))closeLb();
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
@@ -578,6 +701,47 @@ function navigate(page){
   window.scrollTo(0,0);
   const ft=document.getElementById('site-footer');
   if(ft)ft.style.display=page==='home'?'none':'flex';
+
+  /* ── Hash routing (BRIEF §Architecture) ─────────────────── */
+  if(!skipPush){
+    const hash=page==='home'?'':('#/'+page);
+    if(location.hash!==(hash||'')&&!(page==='home'&&!location.hash))
+      history.pushState(null,'',hash||location.pathname.replace(/\/$/,'')+'/');
+  }
+
+  /* ── Update meta tags per page state (BRIEF §SEO) ───────── */
+  const name=document.getElementById('nav-name').textContent||'Roman Chystakhovskyi';
+  const pageTitles={
+    home:name+' — Sculptor',
+    works:name+' — Works',
+    bio:name+' — Bio',
+    contact:name+' — Contact'
+  };
+  const pageDescs={
+    home:'Portfolio of '+name+' — figurative sculptor working at the threshold of physical and digital material. Leipzig, Germany.',
+    works:'Selected works by '+name+' — figurative sculpture in polymer clay and resin.',
+    bio:'Biography of '+name+' — figurative sculptor trained in Kyiv, based in Leipzig.',
+    contact:'Contact '+name+' for exhibition proposals, acquisition enquiries, or studio visits.'
+  };
+  const title=pageTitles[page]||pageTitles.home;
+  const desc=pageDescs[page]||pageDescs.home;
+  const pageHash=page==='home'?'':('#/'+page);
+  const canonical=SITE_URL+'/'+pageHash;
+
+  document.title=title;
+  const setMeta=(id,val)=>{const el=document.getElementById(id);if(el)el.content=val};
+  setMeta('og-title',title);setMeta('og-description',desc);setMeta('og-url',canonical);
+  setMeta('tw-title',title);setMeta('tw-description',desc);
+  const canon=document.getElementById('link-canonical');
+  if(canon)canon.href=canonical;
+
+  /* ── JSON-LD — reset to Person when not on a work detail ── */
+  if(!document.getElementById('lightbox').classList.contains('open')){
+    const ldEl=document.getElementById('ld-json');
+    if(ldEl&&ldEl.dataset.mode!=='person'){
+      /* Keep existing Person schema */
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -633,7 +797,7 @@ function renderWorks(data){
     c.innerHTML=`
       <div class="work-img-wrap">
         <img class="work-img" src="${esc(w.image)}" alt="${esc(w.title)}" loading="lazy"
-             onerror="this.parentElement.style.background='var(--bg3)'">
+             onerror="this.classList.add('error')" width="800" height="1000">
       </div>
       <div class="work-info">
         <div class="work-title">${esc(w.title)}</div>
@@ -643,14 +807,46 @@ function renderWorks(data){
   });
 }
 
+function slugify(str){
+  return(str||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+
 function openLb(i){
   lbIdx=i;lbRender();
   document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow='hidden';
-  // Lift nav above lightbox so name + links stay visible
   const nav=document.getElementById('main-nav');
   nav.style.zIndex='201';
   nav.className='dark';
+
+  /* ── Hash routing: #/works/<slug> (BRIEF §Architecture) ─── */
+  const w=works[i];
+  const slug=w.id||slugify(w.title);
+  history.pushState(null,'','#/works/'+slug);
+
+  /* ── VisualArtwork JSON-LD (BRIEF §SEO) ─────────────────── */
+  const ldEl=document.getElementById('ld-json');
+  if(ldEl&&w){
+    const artworkSchema={
+      '@context':'https://schema.org','@type':'VisualArtwork',
+      name:w.title,
+      description:w.description||undefined,
+      dateCreated:w.year||undefined,
+      artMedium:w.material||undefined,
+      artworkSurface:undefined,
+      height:undefined,
+      creator:{
+        '@type':'Person',
+        name:document.getElementById('nav-name').textContent||'Roman Chystakhovskyi'
+      },
+      image:w.image?SITE_URL+'/'+w.image:undefined,
+      url:SITE_URL+'/#/works/'+slug
+    };
+    // Clean up undefined values
+    Object.keys(artworkSchema).forEach(k=>{if(artworkSchema[k]===undefined)delete artworkSchema[k]});
+    ldEl.textContent=JSON.stringify(artworkSchema);
+    ldEl.dataset.mode='artwork';
+  }
 }
 function closeLb(){
   if(document.getElementById('lb-zoom').classList.contains('open'))closeZoom();
@@ -658,8 +854,20 @@ function closeLb(){
   document.body.style.overflow='';
   if(window._lbObs){window._lbObs.disconnect();window._lbObs=null;}
   document.getElementById('main-nav').style.zIndex='';
+
+  /* Restore hash to current page */
+  const hash=currentPage==='home'?'':('#/'+currentPage);
+  history.pushState(null,'',hash||location.pathname.replace(/\/$/,'')+'/');
+
+  /* Restore Person JSON-LD */
+  const ldEl=document.getElementById('ld-json');
+  if(ldEl)ldEl.dataset.mode='person';
 }
-function lbStep(d){lbIdx=(lbIdx+d+works.length)%works.length;lbRender()}
+function lbStep(d){lbIdx=(lbIdx+d+works.length)%works.length;lbRender();
+  /* Update hash when navigating between works */
+  const w=works[lbIdx];const slug=w.id||slugify(w.title);
+  history.replaceState(null,'','#/works/'+slug);
+}
 
 function lbRender(){
   const w=works[lbIdx];
@@ -1087,14 +1295,56 @@ function applySettings(s){
   st.textContent=':root{'+parts.join(';')+'}';
   const rsp=document.getElementById('responsive');
   rsp?document.head.insertBefore(st,rsp):document.head.appendChild(st);
+
   if(s.lightbox_zoom_level)_lbZoomLevel=parseFloat(s.lightbox_zoom_level)||2.5;
-  if(s.font_url){
+
+  /* BRIEF §Legal — no Google Fonts CDN requests (GDPR violation in DE).
+     Self-hosted fonts are declared via @font-face in the stylesheet.
+     Only load font_url if it is NOT a Google Fonts URL.                   */
+  if(s.font_url && !s.font_url.includes('googleapis.com') && !s.font_url.includes('fonts.google')){
     const l=document.createElement('link');l.rel='stylesheet';l.href=s.font_url;
     document.head.appendChild(l);
   }
-  const name=s.site_name||'';
-  document.title=name;
+
+  const name=s.site_name||'Roman Chystakhovskyi';
+  const role=s.site_role||'Sculptor';
+  const siteTitle=name+' — '+role;
+
+  /* Update static meta tags with dynamic values from settings.csv */
+  document.title=siteTitle;
+  const desc=document.querySelector('meta[name="description"]');
+  if(desc&&s.site_description)desc.content=s.site_description;
+
+  /* Home h1 */
+  const h1Home=document.getElementById('h1-home');
+  if(h1Home)h1Home.textContent=siteTitle;
+
+  /* Nav name */
   document.getElementById('nav-name').textContent=name;
+
+  /* Theme color */
+  const themeMeta=document.getElementById('meta-theme-color');
+  if(themeMeta&&s.color_background)themeMeta.content=s.color_background;
+
+  /* Preload first slideshow image (BRIEF §Performance) */
+  if(s.slideshow_1){
+    const preload=document.getElementById('hero-preload');
+    if(preload)preload.href=s.slideshow_1;
+  }
+
+  /* JSON-LD Person schema */
+  const ldEl=document.getElementById('ld-json');
+  if(ldEl){
+    const instagram=s.instagram_url||'';
+    ldEl.textContent=JSON.stringify({
+      '@context':'https://schema.org','@type':'Person',
+      name:name,jobTitle:role,
+      url:'https://muso-design.github.io/art-website/',
+      description:document.querySelector('meta[name="description"]')?.content||'',
+      sameAs:instagram?[instagram]:[]
+    });
+  }
+
   const cols=parseInt(s.grid_columns)||3;
   document.getElementById('works-grid').style.gridTemplateColumns=`repeat(${cols},1fr)`;
 }
@@ -1109,8 +1359,36 @@ function esc(s){
 }
 function footerHTML(s){
   const name=s.site_name||'',year=s.site_year||new Date().getFullYear(),loc=s.site_location||'';
-  return`<span>&#169; ${esc(String(year))} ${esc(name)}</span><span>${esc(loc)}</span>`;
+  return`<span>&#169; ${esc(String(year))} ${esc(name)}</span>`+
+    `<span class="footer-legal">`+
+    `<a href="impressum.html">Impressum</a>`+
+    `<a href="datenschutz.html">Datenschutz</a>`+
+    `</span>`;
 }
+
+// ═══════════════════════════════════════════════════════════
+// HASH ROUTING (BRIEF §Architecture)
+// ═══════════════════════════════════════════════════════════
+function handleHash(hash){
+  if(!hash||hash==='#/'||hash==='#'){navigate('home',true);return;}
+  const PAGES=['works','bio','contact'];
+  for(const p of PAGES){
+    if(hash==='#/'+p){navigate(p,true);return;}
+    if(hash.startsWith('#/'+p+'/')){
+      navigate(p,true);
+      const slug=hash.slice(('#/'+p+'/').length);
+      if(p==='works'&&works.length){
+        const idx=works.findIndex(w=>String(w.id)===slug||slugify(w.title)===slug);
+        if(idx>=0)openLb(idx);
+      }
+      return;
+    }
+  }
+  navigate('home',true);
+}
+
+window.addEventListener('hashchange',()=>handleHash(location.hash));
+window.addEventListener('popstate',()=>handleHash(location.hash));
 
 // ═══════════════════════════════════════════════════════════
 // KEYBOARD
@@ -1147,7 +1425,12 @@ async function init(){
     renderBio(b,s);
     renderContact(c,s);
     document.getElementById('site-footer').innerHTML=footerHTML(s);
-    navigate('home');
+    /* Read hash before showing UI so the correct page/work is open first */
+    if(location.hash&&location.hash.length>1){
+      handleHash(location.hash);
+    }else{
+      navigate('home');
+    }
     ld.style.display='none';
   }catch(err){
     const isFile=location.protocol==='file:';

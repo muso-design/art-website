@@ -1,0 +1,23 @@
+{
+  "name": "Roman Chystakhovskyi",
+  "short_name": "R.C.",
+  "description": "Figurative sculptor — Leipzig, Germany",
+  "start_url": "/art-website/",
+  "scope": "/art-website/",
+  "display": "standalone",
+  "background_color": "#E4E4E4",
+  "theme_color": "#E4E4E4",
+  "icons": [
+    {
+      "src": "favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
