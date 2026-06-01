@@ -1,60 +1,65 @@
 @echo off
+setlocal
 cd /d "%~dp0"
 
 :: ── Step 1: validate CSVs and image paths ──────────────────────────────
 echo.
 echo Validating content...
 python scripts\validate-csv.py
-if errorlevel 1 (
-  echo.
-  echo Deploy aborted — fix the errors above first.
-  pause
-  exit /b 1
-)
+if errorlevel 1 goto :err_validate
 
 :: ── Step 2: check git identity ─────────────────────────────────────────
 git config user.email >nul 2>&1
-if errorlevel 1 (
-  echo.
-  echo ERROR: Git does not know who you are.
-  echo Run these two commands in a terminal, then try again:
-  echo.
-  echo   git config --global user.email "your@email.com"
-  echo   git config --global user.name "Your Name"
-  echo.
-  pause
-  exit /b 1
-)
+if errorlevel 1 goto :err_identity
 
-:: ── Step 3: commit any local changes (optional — push happens either way)
+:: ── Step 3: stage + commit if there are local changes ──────────────────
 git add -A
+git diff --cached --quiet 2>nul
+if errorlevel 1 goto :do_commit
+echo No local changes to commit.
+goto :push
 
-:: Check if there is anything to commit
-git diff --cached --quiet
-if errorlevel 1 (
-  set /p msg=Commit message (or press Enter for default):
-  if "!msg!"=="" set msg=Update site
-  git commit -m "%msg%"
-  if errorlevel 1 (
-    echo.
-    echo Commit failed unexpectedly.
-    pause
-    exit /b 1
-  )
-) else (
-  echo No local changes to commit.
-)
+:do_commit
+set COMMIT_MSG=
+set /p COMMIT_MSG=Commit message (or press Enter for default):
+if "%COMMIT_MSG%"=="" set COMMIT_MSG=Update site
+git commit -m "%COMMIT_MSG%"
+if errorlevel 1 goto :err_commit
 
-:: ── Step 4: push all commits (including ones committed outside deploy.bat)
+:: ── Step 4: push ───────────────────────────────────────────────────────
+:push
 git push
-if errorlevel 1 (
-  echo.
-  echo Push failed. Make sure you are signed in to GitHub.
-  echo Sign in by running:  gh auth login
-  pause
-  exit /b 1
-)
+if errorlevel 1 goto :err_push
 
 echo.
 echo Done. Site is live on GitHub Pages in about 30 seconds.
 pause
+exit /b 0
+
+:: ── Error handlers ─────────────────────────────────────────────────────
+:err_validate
+echo.
+echo Deploy aborted — fix the CSV errors above first.
+pause
+exit /b 1
+
+:err_identity
+echo.
+echo ERROR: Git does not know who you are. Run:
+echo   git config --global user.email "your@email.com"
+echo   git config --global user.name  "Your Name"
+pause
+exit /b 1
+
+:err_commit
+echo.
+echo Commit failed unexpectedly.
+pause
+exit /b 1
+
+:err_push
+echo.
+echo Push failed. Make sure you are signed in to GitHub.
+echo Sign in by running:  gh auth login
+pause
+exit /b 1
