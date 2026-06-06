@@ -138,7 +138,7 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 .ss-arrows{display:none}
 .ss-dots{
   position:absolute;bottom:52px;right:var(--page-padding);
-  display:flex;gap:12px;z-index:5
+  display:none;gap:12px;z-index:5
 }
 .ss-dot{
   width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.3);
@@ -169,12 +169,16 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 .work-img{width:100%;height:100%;object-fit:cover;transition:transform 0.7s ease;display:block}
 /* hover: subtle zoom */
 .work-card:hover .work-img{transform:scale(1.04)}
-/* Below-image text — aligned flush with image edge */
-.work-info{padding:12px 16px 40px}
-.work-title{font-size:var(--grid-title-size);font-weight:400;letter-spacing:0.01em}
+/* Below-image text — flush with the left edge of the square */
+.work-info{padding:12px 0 40px}
+.work-title{
+  font-size:var(--grid-title-size);font-weight:400;letter-spacing:0.01em;
+  transition:font-weight 0.2s ease
+}
+.work-card:hover .work-title{font-weight:500}
 .work-series{
   font-size:var(--grid-series-size);letter-spacing:0.12em;
-  text-transform:uppercase;color:var(--dim);margin-top:6px
+  text-transform:uppercase;color:var(--dim);margin-top:5px
 }
 
 /* ── LIGHTBOX ────────────────────────────────────────────── */
@@ -278,15 +282,31 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
   line-height:1;padding:0;font-family:var(--font)
 }
 .lb-zoom-close:hover{opacity:0.9}
+/* Main lightbox: prev/next work arrows */
+.lb-prev,.lb-next{
+  position:fixed;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--text);
+  font-size:72px;font-weight:300;line-height:1;
+  cursor:pointer;opacity:0.14;z-index:202;
+  padding:20px 28px;letter-spacing:-0.04em;
+  transition:opacity 0.2s;font-family:var(--font);
+  user-select:none
+}
+.lb-prev{left:0}.lb-next{right:0}
+.lb-prev:hover,.lb-next:hover{opacity:0.8}
+
+/* Zoom overlay: prev/next image arrows */
 .lb-zoom-prev,.lb-zoom-next{
   position:absolute;top:50%;transform:translateY(-50%);
   background:none;border:none;color:var(--text);
-  font-size:26px;cursor:pointer;opacity:0.3;
-  z-index:211;padding:20px 28px;line-height:1;
-  transition:opacity 0.2s;font-family:var(--font)
+  font-size:72px;font-weight:300;line-height:1;letter-spacing:-0.04em;
+  cursor:pointer;opacity:0.18;
+  z-index:211;padding:20px 32px;
+  transition:opacity 0.2s;font-family:var(--font);
+  user-select:none
 }
-.lb-zoom-prev:hover,.lb-zoom-next:hover{opacity:0.9}
-.lb-zoom-prev:disabled,.lb-zoom-next:disabled{opacity:0.08;cursor:default;pointer-events:none}
+.lb-zoom-prev:hover,.lb-zoom-next:hover{opacity:0.85}
+.lb-zoom-prev:disabled,.lb-zoom-next:disabled{opacity:0.06;cursor:default;pointer-events:none}
 .lb-zoom-prev{left:0}.lb-zoom-next{right:0}
 #lb-zoom-img2{
   position:absolute;top:50%;left:50%;
@@ -311,14 +331,35 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 }
 .bio-text p{margin-bottom:1.6em;color:var(--mid);font-size:var(--body-size)}
 
-/* Photo: full width (when present) */
+/* Photo: full width (when present) — legacy element, kept hidden */
 .bio-photo-full{
   width:100%;max-width:420px;aspect-ratio:3/4;object-fit:cover;
   display:block;margin-bottom:60px
 }
 
-/* Details: horizontal strip of facts */
-.bio-meta{border-top:1px solid var(--border);padding-top:48px}
+/* ── BIO FIGURES (flexible placement via bio.csv) ───────────────
+   Placement presets: full | wide | center | left | right
+   Each image supports an optional aspect ratio, rotation, width and
+   caption — all driven from bio.csv. See that file for the keys.      */
+.bio-fig{margin:0.2em 0 2.2em;line-height:0;transform-origin:center center}
+.bio-fig .bio-fig-inner{overflow:hidden;background:var(--bg2)}
+.bio-fig img{display:block;width:100%;height:auto;object-fit:cover}
+.bio-fig figcaption{
+  margin-top:11px;line-height:1.45;
+  font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim)
+}
+.bio-fig--full{width:100%}
+.bio-fig--wide{
+  width:auto;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);
+  padding-left:max(var(--content-pad),calc(50vw - 50%));
+  padding-right:max(var(--content-pad),calc(50vw - 50%))
+}
+.bio-fig--center{width:min(100%,var(--fig-w,560px));margin-left:auto;margin-right:auto}
+.bio-fig--left{float:left;width:min(46%,var(--fig-w,420px));margin:0.4em 2.6em 1.4em 0}
+.bio-fig--right{float:right;width:min(46%,var(--fig-w,420px));margin:0.4em 0 1.4em 2.6em}
+
+/* Details: horizontal strip of facts — clears any floated bio figures */
+.bio-meta{border-top:1px solid var(--border);padding-top:48px;clear:both}
 .bio-details{display:flex;flex-wrap:wrap;gap:40px 72px}
 .bio-details>div{min-width:120px}
 .bio-details dt{
@@ -516,7 +557,14 @@ a.nav-name{text-decoration:none}
   .lb-close{position:fixed;font-size:42px;top:14px;right:20px}
   .lb-dot{width:9px;height:9px}
 
-  .work-info{padding:10px 12px 24px}
+  .lb-prev,.lb-next{display:none!important}
+  .work-info{padding:10px 0 24px}
+  /* Bio figures: floats collapse to full-width blocks on phones */
+  .bio-fig--left,.bio-fig--right,.bio-fig--center{
+    float:none!important;width:100%!important;margin:0.4em 0 1.8em!important
+  }
+  .bio-fig--wide{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding-left:16px;padding-right:16px}
+  .bio-fig{transform:none!important}
   .bio-details{gap:20px 32px}
   .contact-list li{flex-direction:column;gap:4px;padding:14px 0}
   .contact-value{font-size:16px}
@@ -618,6 +666,8 @@ a.nav-name{text-decoration:none}
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lb-title">
   <button class="lb-close" onclick="closeLb()" aria-label="Close lightbox">&#215;</button>
+  <button class="lb-prev" id="lb-prev" onclick="lbStep(-1)" aria-label="Previous work">&lt;</button>
+  <button class="lb-next" id="lb-next" onclick="lbStep(1)" aria-label="Next work">&gt;</button>
   <div class="lb-dots" id="lb-dots"></div>
   <div class="lb-gallery" id="lb-gallery"></div>
   <div class="lb-panel">
@@ -628,8 +678,8 @@ a.nav-name{text-decoration:none}
   </div>
   <div class="lb-zoom" id="lb-zoom">
     <button class="lb-zoom-close" onclick="closeZoom()">&#215;</button>
-    <button class="lb-zoom-prev" id="lb-zoom-prev" onclick="prevZoomImg()">&#8592;</button>
-    <button class="lb-zoom-next" id="lb-zoom-next" onclick="nextZoomImg()">&#8594;</button>
+    <button class="lb-zoom-prev" id="lb-zoom-prev" onclick="prevZoomImg()">&lt;</button>
+    <button class="lb-zoom-next" id="lb-zoom-next" onclick="nextZoomImg()">&gt;</button>
     <div class="lb-zoom-wrap" id="lb-zoom-wrap">
       <img id="lb-zoom-img" src="" alt="">
       <img id="lb-zoom-img2" src="" alt="">
@@ -945,6 +995,11 @@ function lbRender(){
   },{root:gallery,threshold:0.5});
   imgs.forEach(img=>window._lbObs.observe(img));
 
+  // Prev/next arrows — only show when there are multiple works
+  const lbPrev=document.getElementById('lb-prev'),lbNext=document.getElementById('lb-next');
+  if(lbPrev)lbPrev.style.display=works.length>1?'':'none';
+  if(lbNext)lbNext.style.display=works.length>1?'':'none';
+
   // Info panel
   document.getElementById('lb-title').textContent=w.title;
   document.getElementById('lb-desc').textContent=w.description||'';
@@ -964,7 +1019,8 @@ function lbRender(){
 let _lbZoomLevel=2.5;
 const _zoom={zoomed:false,scale:0,tx:0,ty:0,dragging:false,startX:0,startY:0,lx:0,ly:0,didDrag:false,
   swipeReady:false,swipeDir:0,swipeOffset:0,swipeNextIdx:-1,
-  pinch:false,pinchDist:0,pinchStartScale:1};
+  pinch:false,pinchDist:0,pinchStartScale:1,
+  vx:0,vy:0,animFrame:null,rawTx:0,rawTy:0};
 
 function applyZoomTransform(){
   const s=_zoom.zoomed?(_zoom.scale||_lbZoomLevel):1;
@@ -1088,21 +1144,73 @@ function _syncGalleryScroll(){
   const imgs=gallery?gallery.querySelectorAll('.lb-gallery-img'):[];
   if(imgs[_zoomImgIdx])imgs[_zoomImgIdx].scrollIntoView({behavior:'smooth',block:'center'});
 }
-function panZoom(dx,dy){
-  _zoom.tx+=dx;_zoom.ty+=dy;
+// ── PAN PHYSICS (rubber-band overscroll + spring-magnet settle) ───────────────
+// Passepartout: a generous, responsive "mat" the zoomed image can drift into
+// before the magnet engages. Bigger = looser boundary. Scales with the smaller
+// viewport dimension and is clamped to a sensible range.
+function _panGap(){
+  const m=Math.min(window.innerWidth,window.innerHeight);
+  return Math.max(56,Math.min(220,m*0.18));
+}
+// Allowed translation range. When the image is larger than the viewport it can
+// travel until its leading edge sits exactly _panGap() inside the screen edge.
+function _panBounds(){
+  const r=document.getElementById('lb-zoom-img').getBoundingClientRect();
+  const vW=window.innerWidth,vH=window.innerHeight,G=_panGap();
+  const Hx=r.width/2-vW/2,Hy=r.height/2-vH/2;
+  return{
+    minX:Hx>0?-(Hx+G):0,maxX:Hx>0?(Hx+G):0,
+    minY:Hy>0?-(Hy+G):0,maxY:Hy>0?(Hy+G):0
+  };
+}
+// iOS-style diminishing-resistance rubber band: the further you pull past the
+// bound, the harder it resists — so there is "luft" but it never runs away.
+function _rubberOver(over,dim){const c=0.55;return(over*dim*c)/(dim+c*over);}
+function _rubber(x,min,max,dim){
+  if(x<min)return min-_rubberOver(min-x,dim);
+  if(x>max)return max+_rubberOver(x-max,dim);
+  return x;
+}
+// Called on every pointer-move while zoomed: track the raw (unconstrained)
+// finger position, then display a rubber-banded version of it.
+function panDrag(dx,dy){
+  _zoom.rawTx+=dx;_zoom.rawTy+=dy;
+  const b=_panBounds(),vW=window.innerWidth,vH=window.innerHeight;
+  _zoom.tx=_rubber(_zoom.rawTx,b.minX,b.maxX,vW);
+  _zoom.ty=_rubber(_zoom.rawTy,b.minY,b.maxY,vH);
   applyZoomTransform();
-  const img=document.getElementById('lb-zoom-img');
-  const r=img.getBoundingClientRect();
-  const vW=window.innerWidth,vH=window.innerHeight;
-  if(r.width>=vW){
-    if(r.left>0)_zoom.tx-=r.left;
-    else if(r.right<vW)_zoom.tx+=vW-r.right;
-  }else{_zoom.tx=0;}
-  if(r.height>=vH){
-    if(r.top>0)_zoom.ty-=r.top;
-    else if(r.bottom<vH)_zoom.ty+=vH-r.bottom;
-  }else{_zoom.ty=0;}
-  applyZoomTransform();
+}
+function _stopSettle(){
+  if(_zoom.animFrame){cancelAnimationFrame(_zoom.animFrame);_zoom.animFrame=null;}
+  _zoom.vx=0;_zoom.vy=0;
+}
+// Release physics: momentum-glide inside the bounds (friction), spring-magnet
+// back when outside them. One unified loop handles both, per axis.
+function _settle(){
+  _stopSettle();
+  const stiff=0.10,springDamp=0.82,friction=0.92;
+  const tick=()=>{
+    if(!_zoom.zoomed){_zoom.animFrame=null;return;}
+    const b=_panBounds();
+    if(_zoom.tx<b.minX){_zoom.vx+=(b.minX-_zoom.tx)*stiff;_zoom.vx*=springDamp;}
+    else if(_zoom.tx>b.maxX){_zoom.vx+=(b.maxX-_zoom.tx)*stiff;_zoom.vx*=springDamp;}
+    else _zoom.vx*=friction;
+    if(_zoom.ty<b.minY){_zoom.vy+=(b.minY-_zoom.ty)*stiff;_zoom.vy*=springDamp;}
+    else if(_zoom.ty>b.maxY){_zoom.vy+=(b.maxY-_zoom.ty)*stiff;_zoom.vy*=springDamp;}
+    else _zoom.vy*=friction;
+    _zoom.tx+=_zoom.vx;_zoom.ty+=_zoom.vy;
+    applyZoomTransform();
+    const inX=_zoom.tx>=b.minX-0.5&&_zoom.tx<=b.maxX+0.5;
+    const inY=_zoom.ty>=b.minY-0.5&&_zoom.ty<=b.maxY+0.5;
+    if(inX&&inY&&Math.abs(_zoom.vx)<0.25&&Math.abs(_zoom.vy)<0.25){
+      _zoom.tx=Math.max(b.minX,Math.min(b.maxX,_zoom.tx));
+      _zoom.ty=Math.max(b.minY,Math.min(b.maxY,_zoom.ty));
+      applyZoomTransform();
+      _zoom.vx=0;_zoom.vy=0;_zoom.animFrame=null;return;
+    }
+    _zoom.animFrame=requestAnimationFrame(tick);
+  };
+  _zoom.animFrame=requestAnimationFrame(tick);
 }
 
 function initZoomInteraction(){
@@ -1114,33 +1222,45 @@ function initZoomInteraction(){
     const r=document.getElementById('lb-zoom-img').getBoundingClientRect();
     return cx>=r.left&&cx<=r.right&&cy>=r.top&&cy<=r.bottom;
   }
+
+  // ── Smooth zoom-in: compute clamped target, reset to identity, animate in ──
   function doZoomIn(clientX,clientY){
+    const img=document.getElementById('lb-zoom-img');
     const r=overlay.getBoundingClientRect();
     const cx=clientX-r.left-r.width/2,cy=clientY-r.top-r.height/2;
     _zoom.scale=_lbZoomLevel;
     _zoom.tx=cx*(1-_lbZoomLevel);_zoom.ty=cy*(1-_lbZoomLevel);
     _zoom.zoomed=true;
-    // Clamp initial position so image covers screen
+    img.style.transition='none';
     applyZoomTransform();
-    const imgZ=document.getElementById('lb-zoom-img'),r2=imgZ.getBoundingClientRect();
-    const vW=window.innerWidth,vH=window.innerHeight;
+    const r2=img.getBoundingClientRect(),vW=window.innerWidth,vH=window.innerHeight;
     if(r2.width>=vW){if(r2.left>0)_zoom.tx-=r2.left;else if(r2.right<vW)_zoom.tx+=vW-r2.right;}else _zoom.tx=0;
     if(r2.height>=vH){if(r2.top>0)_zoom.ty-=r2.top;else if(r2.bottom<vH)_zoom.ty+=vH-r2.bottom;}else _zoom.ty=0;
+    const ftx=_zoom.tx,fty=_zoom.ty;
+    // Reset to identity, then animate to clamped target
+    _zoom.zoomed=false;_zoom.scale=0;_zoom.tx=0;_zoom.ty=0;
     applyZoomTransform();
+    img.offsetWidth; // force reflow so transition fires from identity
+    img.style.transition='transform 0.34s cubic-bezier(0.25,0.46,0.45,0.94)';
+    _zoom.tx=ftx;_zoom.ty=fty;_zoom.zoomed=true;_zoom.scale=_lbZoomLevel;
+    _zoom.rawTx=ftx;_zoom.rawTy=fty;
+    applyZoomTransform();
+    setTimeout(()=>{img.style.transition=''},340);
     wrap.style.cursor='grab';_updateZoomNav();
   }
   function doZoomOut(){
+    _stopSettle();
     const img=document.getElementById('lb-zoom-img');
-    img.style.transition='transform 0.25s ease';
+    img.style.transition='transform 0.28s cubic-bezier(0.25,0.46,0.45,0.94)';
     _zoom.zoomed=false;_zoom.scale=0;_zoom.tx=0;_zoom.ty=0;
     applyZoomTransform();
-    setTimeout(()=>img.style.transition='',250);
+    setTimeout(()=>img.style.transition='',280);
     wrap.style.cursor='zoom-in';_updateZoomNav();
   }
   function snapBack(){
     const img=document.getElementById('lb-zoom-img');
     img.style.transition='transform 0.25s ease';
-    _zoom.tx=0;applyZoomTransform(); // img2 also snaps back if swipeReady (math: swipeOffset+0)
+    _zoom.tx=0;applyZoomTransform();
     if(_zoom.swipeReady){
       const img2=document.getElementById('lb-zoom-img2');
       img2.style.transition='transform 0.25s ease';
@@ -1152,17 +1272,22 @@ function initZoomInteraction(){
     }else{setTimeout(()=>img.style.transition='',250);}
   }
 
-  // ── Mouse ──
+  // ── Mouse ─────────────────────────────────────────────────────────────────
   wrap._md=e=>{
     if(e.button!==0)return;
+    _stopSettle();
     _zoom.dragging=true;_zoom.didDrag=false;
     _zoom.startX=_zoom.lx=e.clientX;_zoom.startY=_zoom.ly=e.clientY;
+    _zoom.vx=0;_zoom.vy=0;
+    _zoom.rawTx=_zoom.tx;_zoom.rawTy=_zoom.ty;
   };
   wrap._mm=e=>{
     if(!_zoom.dragging)return;
+    const dx=e.clientX-_zoom.lx,dy=e.clientY-_zoom.ly;
     if(Math.abs(e.clientX-_zoom.startX)>5||Math.abs(e.clientY-_zoom.startY)>5)_zoom.didDrag=true;
     if(_zoom.zoomed){
-      panZoom(e.clientX-_zoom.lx,e.clientY-_zoom.ly);
+      _zoom.vx=dx;_zoom.vy=dy;
+      panDrag(dx,dy);
       wrap.style.cursor='grabbing';
     }else{
       _zoom.tx=e.clientX-_zoom.startX;
@@ -1183,32 +1308,37 @@ function initZoomInteraction(){
       if(_zoom.zoomed){doZoomOut();}
       else if(onImg(e.clientX,e.clientY)){doZoomIn(e.clientX,e.clientY);}
       else{closeZoom();}
-    }else if(_zoom.zoomed){wrap.style.cursor='grab';}
+    }else if(_zoom.zoomed){
+      wrap.style.cursor='grab';
+      _settle();
+    }
   };
   wrap.addEventListener('mousedown',wrap._md);
   document.addEventListener('mousemove',wrap._mm);
   document.addEventListener('mouseup',wrap._mu);
 
-  // ── Touch (single-finger swipe/pan + two-finger pinch-zoom) ──
+  // ── Touch (single-finger swipe/pan + two-finger pinch-zoom) ──────────────
   function _pd(e){return Math.hypot(e.touches[1].clientX-e.touches[0].clientX,e.touches[1].clientY-e.touches[0].clientY)}
   wrap._ts=e=>{
     e.preventDefault();
     if(e.touches.length===2){
-      // Begin pinch — cancel any swipe in progress
+      _stopSettle();
       _zoom.pinch=true;_zoom.dragging=false;_zoom.didDrag=false;
-      if(_zoom.swipeReady){snapBack();}
+      if(_zoom.swipeReady)snapBack();
       _zoom.pinchDist=_pd(e);
       _zoom.pinchStartScale=_zoom.zoomed?(_zoom.scale||_lbZoomLevel):1;
       return;
     }
     if(e.touches.length===1&&!_zoom.pinch){
+      _stopSettle();
       _zoom.dragging=true;_zoom.didDrag=false;
       _zoom.startX=_zoom.lx=e.touches[0].clientX;_zoom.startY=_zoom.ly=e.touches[0].clientY;
+      _zoom.vx=0;_zoom.vy=0;
+      _zoom.rawTx=_zoom.tx;_zoom.rawTy=_zoom.ty;
     }
   };
   wrap._tm=e=>{
     e.preventDefault();
-    // Two-finger pinch
     if(e.touches.length===2&&_zoom.pinch){
       const d=_pd(e);
       const newScale=Math.max(1,Math.min(6,_zoom.pinchStartScale*(d/_zoom.pinchDist)));
@@ -1229,12 +1359,14 @@ function initZoomInteraction(){
       wrap.style.cursor=_zoom.zoomed?'grab':'zoom-in';
       return;
     }
-    // Single-finger pan/swipe
     if(e.touches.length===1&&_zoom.dragging&&!_zoom.pinch){
       const tx=e.touches[0].clientX,ty=e.touches[0].clientY;
+      const dx=tx-_zoom.lx,dy=ty-_zoom.ly;
       if(Math.abs(tx-_zoom.startX)>5||Math.abs(ty-_zoom.startY)>5)_zoom.didDrag=true;
-      if(_zoom.zoomed){panZoom(tx-_zoom.lx,ty-_zoom.ly);}
-      else{
+      if(_zoom.zoomed){
+        _zoom.vx=dx;_zoom.vy=dy;
+        panDrag(dx,dy);
+      }else{
         _zoom.tx=tx-_zoom.startX;
         if(!_zoom.swipeReady&&Math.abs(_zoom.tx)>15)_setupSwipe(_zoom.tx);
         applyZoomTransform();
@@ -1243,11 +1375,10 @@ function initZoomInteraction(){
     }
   };
   wrap._te=e=>{
-    // Pinch ended when fewer than 2 fingers remain
     if(e.touches.length<2&&_zoom.pinch){
       _zoom.pinch=false;
-      // If pinch left us zoomed, stay zoomed; if back to 1x, zoom out cleanly
       if(!_zoom.zoomed){_zoom.scale=0;_zoom.tx=0;_zoom.ty=0;applyZoomTransform();}
+      else{_zoom.rawTx=_zoom.tx;_zoom.rawTy=_zoom.ty;_settle();}
       return;
     }
     if(_zoom.pinch)return;
@@ -1262,6 +1393,8 @@ function initZoomInteraction(){
         if(_zoom.zoomed){doZoomOut();}
         else if(onImg(t.clientX,t.clientY)){doZoomIn(t.clientX,t.clientY);}
         else{closeZoom();}
+      }else if(_zoom.zoomed){
+        _settle();
       }
     }
   };
@@ -1279,18 +1412,71 @@ function cleanupZoomInteraction(){
   if(wrap._ts)wrap.removeEventListener('touchstart',wrap._ts);
   if(wrap._tm)wrap.removeEventListener('touchmove',wrap._tm);
   if(wrap._te)wrap.removeEventListener('touchend',wrap._te);
-  _zoom.dragging=false;_zoom.pinch=false;wrap.style.cursor='';
+  if(_zoom.animFrame){cancelAnimationFrame(_zoom.animFrame);_zoom.animFrame=null;}
+  _zoom.dragging=false;_zoom.pinch=false;_zoom.vx=0;_zoom.vy=0;wrap.style.cursor='';
 }
 
 // ═══════════════════════════════════════════════════════════
 // BIO
 // ═══════════════════════════════════════════════════════════
 function renderBio(bio,s){
+  // ── Paragraphs ──────────────────────────────────────────────────
+  const paras=[];
+  for(let i=1;bio['bio_'+i];i++)paras.push(bio['bio_'+i]);
+
+  // ── Flexible images (placement / ratio / rotation / width / caption) ──
+  const PLACEMENTS=['full','wide','center','left','right'];
+  const imgs=[];
+  for(let i=1;bio['image_'+i];i++){
+    let pl=(bio['image_'+i+'_placement']||'full').toLowerCase().trim();
+    if(!PLACEMENTS.includes(pl))pl='full';
+    imgs.push({
+      src:bio['image_'+i],
+      placement:pl,
+      ratio:(bio['image_'+i+'_ratio']||'').trim(),
+      rotation:parseFloat(bio['image_'+i+'_rotation']||'0')||0,
+      width:(bio['image_'+i+'_width']||'').trim(),
+      caption:(bio['image_'+i+'_caption']||'').trim(),
+      after:(bio['image_'+i+'_after']||'').toString().toLowerCase().trim()
+    });
+  }
+  // Legacy fallback: a single `photo` key becomes a right-floated image
+  if(!imgs.length&&bio.photo)
+    imgs.push({src:bio.photo,placement:'right',ratio:'',rotation:0,width:'',caption:'',after:'1'});
+
+  // Resolve each image's insertion point (0 = before first paragraph,
+  // N = after paragraph N, blank/"bottom" = after the last paragraph)
+  function pos(im){
+    if(im.after==='top'||im.after==='0')return 0;
+    if(im.after===''||im.after==='bottom')return paras.length;
+    const n=parseInt(im.after,10);
+    return isNaN(n)?paras.length:Math.max(0,Math.min(paras.length,n));
+  }
+  function figHTML(im){
+    const style=[];
+    if(im.rotation)style.push('transform:rotate('+im.rotation+'deg)');
+    if(im.width)style.push('--fig-w:'+im.width);
+    const imgStyle=im.ratio?` style="aspect-ratio:${esc(im.ratio)}"`:'';
+    const cap=im.caption?`<figcaption>${esc(im.caption)}</figcaption>`:'';
+    return `<figure class="bio-fig bio-fig--${im.placement}"`+
+      `${style.length?` style="${esc(style.join(';'))}"`:''}>`+
+      `<div class="bio-fig-inner"><img src="${esc(im.src)}" `+
+      `alt="${esc(im.caption||(s&&s.site_name)||'Roman Chystakhovskyi')}" loading="lazy" `+
+      `onerror="var f=this.closest('.bio-fig');if(f)f.style.display='none'"${imgStyle}></div>`+
+      cap+`</figure>`;
+  }
+
   let html='';
-  for(let i=1;bio['bio_'+i];i++)html+=`<p>${bio['bio_'+i]}</p>`;
+  for(let p=0;p<=paras.length;p++){
+    imgs.filter(im=>pos(im)===p).forEach(im=>{html+=figHTML(im)});
+    if(p<paras.length)html+=`<p>${paras[p]}</p>`;
+  }
   document.getElementById('bio-text').innerHTML=html;
-  const photo=document.getElementById('bio-photo');
-  if(bio.photo){photo.src=bio.photo;photo.style.display='block'}
+
+  const oldPhoto=document.getElementById('bio-photo');
+  if(oldPhoto)oldPhoto.style.display='none';
+
+  // ── Details list ────────────────────────────────────────────────
   let det='';
   for(let i=1;bio['detail_label_'+i];i++)
     det+=`<div><dt>${esc(bio['detail_label_'+i])}</dt><dd>${esc(bio['detail_value_'+i]||'')}</dd></div>`;

@@ -20,5 +20,6 @@
 "#   image       — Path to the image file. E.g.  images/too_much.webp",,,,,,,,
 "#   available   — Availability status shown in lightbox. E.g.  Available  Sold  NFS  On loan",,,,,,,,
 "#",,,,,,,,
-1,"Too Much","Reflexions",2026,"Acrylyc gypsum","58 x 58 x 15 cm","A figure overwhelmed — the body folding inward under the weight of feeling it cannot contain.","images/roman_chystakhovskyi_too_much.webp","available"
-2,"Through your eyes","Reflexions",2026,"Acrylyc gypsum","58 x 58 x 15 cm","A figure overwhelmed — the body folding inward under the weight of feeling it cannot contain.","images/roman_chystakhovskyi_through_your_eyes.jpg","available"
+1,"Too Much","Reflexions",2026,"Acrylyc gypsum","58 x 58 x 15 cm","""Too Much Will Never Be Enough"" ","images/roman_chystakhovskyi_too_much.webp","available"
+2,"Through your eyes","Reflexions",2026,"Acrylyc gypsum","57 x 45 x 15 cm","“Few, if anyone, will ever see the world Through your eyes” ","images/roman_chystakhovskyi_through_your_eyes_main.webp","available"
+3,"With A Smile","Reflexions",2026,"Acrylyc gypsum","58 x 30 x 15 cm","“It's all started with a smile, I know, but it won't come back” ","images\roman_chystakhovskyi_with_smile_main.jpg","available"

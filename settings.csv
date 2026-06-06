@@ -28,14 +28,14 @@
 "font_size_body","25px","Main reading text size (bio paragraphs  contact intro)"
 "font_size_nav_name","25px","Size of your name in the top-left corner of the nav"
 "font_size_nav_links","20px","Size of the Works / Bio / Contact nav links"
-"font_size_grid_title","25px","Artwork title shown below each image in the works grid"
+"font_size_grid_title","16px","Artwork title shown below each image in the works grid"
 "font_size_grid_series","12px","Series label shown below the artwork title in the grid"
 "font_size_lightbox_title","34px","Artwork title inside the lightbox (large overlay)"
 "font_size_lightbox_meta","17px","Metadata text inside the lightbox (year  material  etc.)"
 "#",,
 "# ── LINE HEIGHT & SPACING ──────────────────────────────────────────────────────",,
 "# IMPORTANT: use a dot as decimal separator here  not a comma. Write 1.88  not 1",88,
-"line_height_body","1,88","Line spacing for body text. 1.0 = very tight  1.5 = normal  2.0 = airy"
+"line_height_body","1.88","Line spacing for body text. 1.0 = very tight  1.5 = normal  2.0 = airy"
 "#",,
 "# ── COLORS ────────────────────────────────────────────────────────────────────",,
 "# Any valid CSS color works:  hex (#ffffff)  rgb(255 255 255)  or a name (white)",,
@@ -48,16 +48,16 @@
 "color_border","rgba(12,11,10,0.09)","Subtle divider line color. rgba gives transparency control."
 "#",,
 "# ── SPACING ───────────────────────────────────────────────────────────────────",,
-"spacing_page_padding","400px","Left and right padding on all pages. Reduce for less white space."
-"spacing_grid_gap","28px","Gap between artwork cards in the works grid. Use 0 for no gap  16px for tight  48px for generous gallery spacing."
+"spacing_page_padding","60px","Left and right padding on all pages. Reduce for less white space."
+"spacing_grid_gap","48px","Gap between artwork cards in the works grid. Use 0 for no gap  16px for tight  48px for generous gallery spacing."
 "spacing_nav_padding","28px","Vertical padding inside the navigation bar (top and bottom). Larger = taller nav."
 "spacing_footer_padding","40px","Vertical padding inside the footer bar."
-"spacing_content_padding","100px","Minimum side padding for page content (works grid  bio  contact). Changing this does NOT affect the nav or footer — those use spacing_page_padding."
+"spacing_content_padding","48px","Minimum side padding for page content (works grid  bio  contact). Changing this does NOT affect the nav or footer — those use spacing_page_padding."
 "#",,
 "# ── WORKS GRID ────────────────────────────────────────────────────────────────",,
 "grid_columns",3,"Number of columns in the works grid. Use 2 or 3. (On mobile it automatically reduces.)"
-"grid_max_width","1100px","Maximum width of the works grid. Use a smaller value (e.g. 800px) to make it more centered and compact."
-"grid_image_ratio","4/5","Aspect ratio of work thumbnails. Use 4/5 (portrait)  1/1 (square)  3/4  or 16/9 (landscape)."
+"grid_max_width","1900px","Maximum width of the works grid. Use a smaller value (e.g. 800px) to make it more centered and compact."
+"grid_image_ratio","1/1","Aspect ratio of work thumbnails. Use 4/5 (portrait)  1/1 (square)  3/4  or 16/9 (landscape)."
 "#",,
 "# ── LIGHTBOX ──────────────────────────────────────────────────────────────────",,
 "# Settings for the artwork detail view (the full-screen gallery that opens when you click a work).",,
@@ -83,8 +83,8 @@
 "slideshow_interval",5000,"Time between automatic slide changes in milliseconds. 5000 = 5 seconds. Set to 0 to disable auto-advance."
 "slideshow_fade_duration","700ms","Duration of the crossfade transition between slides. Use ms (milliseconds)."
 "slideshow_1","images/roman_chystakhovskyi_too_much.webp","First slideshow image — path relative to the site folder"
-"slideshow_caption_1","Too much","Caption for slide 1 — leave empty for no caption"
-"slideshow_2","images\roman_chystakhovskyi_through_your_eyes.jpg","Second image path — add slideshow_3  slideshow_4  etc. as needed"
-"slideshow_caption_2","Through your eyes","Caption for slide 2"
-"slideshow_3",,"Third image path"
-"slideshow_caption_3",,"Caption for slide 3"
+"slideshow_caption_1","Too Much","Caption for slide 1 — leave empty for no caption"
+"slideshow_2","images\roman_chystakhovskyi_through_your_eyes_main.webp","Second image path — add slideshow_3  slideshow_4  etc. as needed"
+"slideshow_caption_2","Through Your Eyes","Caption for slide 2"
+"slideshow_3","images\roman_chystakhovskyi_with_smile_main.jpg","Third image path"
+"slideshow_caption_3","With A Smile","Caption for slide 3"

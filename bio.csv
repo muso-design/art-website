@@ -1,34 +1,54 @@
-key,value,description
-# ════════════════════════════════════════════════════════════════════════════════
-# BIO.CSV  —  Controls the Bio page content.
-# HOW TO EDIT:  Change only the "value" column. Never rename the "key" column.
-# LONG TEXT:    You can write a full paragraph in any value cell. Wrap it in double
-#               quotes if it contains commas. Line breaks inside quotes are supported.
-# COMMENTS:     Any row whose key starts with # is ignored by the site.
-# ════════════════════════════════════════════════════════════════════════════════
-#
-# ── PORTRAIT PHOTO ────────────────────────────────────────────────────────────
-photo,,Optional portrait photo path (e.g. images/portrait.webp). Leave empty to hide the photo.
-#
-# ── BIO PARAGRAPHS ────────────────────────────────────────────────────────────
-# Add as many paragraphs as you need: bio_1  bio_2  bio_3  …
-# Each value becomes one paragraph of text on the Bio page.
-# To remove a paragraph  delete its row or leave the value empty.
-bio_1,"Roman Chystakhovskyi is a figurative sculptor working at the threshold between physical and digital material. His practice explores the human body as a site of psychological tension — presence, vulnerability, and the weight of emotion made tangible in form.",First paragraph of the bio
-bio_2,"Trained at the National Academy of Fine Arts and Architecture in Kyiv, Roman brings a classical foundation to a contemporary sensibility. His sculptures are hand-built in polymer clay and cast in resin, each piece emerging from an extended process of observation and psychological excavation.",Second paragraph
-bio_3,"His series Variants of Love — acquired by Vincent Van Dyke Effects — marked a defining moment in his fine art practice: an investigation into the forms love takes when it overwhelms, consumes, or dissolves the self.",Third paragraph
-bio_4,"Alongside his sculpture practice, Roman works as a senior 3D character and creature artist with credits at Blizzard, NetEase, and Romero Games. He lives and works in Leipzig, Germany.",Fourth paragraph
-#
-# ── DETAILS SIDEBAR ───────────────────────────────────────────────────────────
-# Shown as a label + value list on the right side of the bio.
-# Add more rows as needed: detail_label_5 / detail_value_5  etc.
-detail_label_1,Born,Label for the first detail row
-detail_value_1,"1997, Ukraine",Value for the first detail row
-detail_label_2,Education,Label for the second detail row
-detail_value_2,"National Academy of Fine Arts and Architecture, Kyiv",Value for the second detail row
-detail_label_3,Based,Label for the third detail row
-detail_value_3,"Leipzig, Germany",Value for the third detail row
-detail_label_4,Collections,Label for the fourth detail row
-detail_value_4,Vincent Van Dyke Effects — Variants of Love,Value for the fourth detail row
-detail_label_5,Materials,Label for the fifth detail row
-detail_value_5,"Polymer clay, resin cast, bronze (forthcoming)",Value for the fifth detail row
+"key","value","description"
+"# ════════════════════════════════════════════════════════════════════════════════",,
+"# BIO.CSV  —  Controls the Bio page content.",,
+"# HOW TO EDIT:  Change only the ""value"" column. Never rename the ""key"" column.",,
+"# LONG TEXT:    You can write a full paragraph in any value cell. Wrap it in double",,
+"#               quotes if it contains commas. Line breaks inside quotes are supported.",,
+"# COMMENTS:     Any row whose key starts with # is ignored by the site.",,
+"# ════════════════════════════════════════════════════════════════════════════════",,
+"#",,
+"# ── BIO IMAGES (flexible) ─────────────────────────────────────────────────────",,
+"# Add as many images as you like: image_1  image_2  image_3  …",,
+"# For each image_N you can ALSO set these optional companion rows:",,
+"#   image_N_placement  →  full | wide | center | left | right",,
+"#                          full   = spans the text column",,
+"#                          wide   = full-bleed"," edge to edge of the screen",
+"#                          center = centered"," narrower (use image_N_width)",
+"#                          left   = floats left"," text wraps to the right",
+"#                          right  = floats right"," text wraps to the left",
+"#   image_N_after      →  where it sits: a paragraph number (1 = after bio_1)",,
+"#                          ""top"" (before all text)"," or ""bottom"" (after all text)",
+"#   image_N_ratio      →  crop aspect ratio"," e.g. 3/2  1/1  4/5  16/9  (blank = natural)",
+"#   image_N_rotation   →  tilt in degrees"," e.g. -2  or  1.5  (blank/0 = straight)",
+"#   image_N_width      →  size for center/left/right"," e.g. 460px or 60%  (blank = default)",
+"#   image_N_caption    →  small caption shown under the image  (blank = none)",,
+"image_1","images/roman_chystakhovskyi_studio.jpg","Path to the image file"
+"image_1_placement","left","How this image sits in the text (see options above)"
+"image_1_after",1,"Place it after the first paragraph"
+"image_1_ratio","3/2","Crop ratio (this studio photo is landscape 3:2)"
+"image_1_rotation",0,"Tilt in degrees (0 = straight)"
+"image_1_width","460px","Width when floated/centered"
+"image_1_caption",,"Caption under the image"
+"#",,
+"# ── BIO PARAGRAPHS ────────────────────────────────────────────────────────────",,
+"# Add as many paragraphs as you need: bio_1  bio_2  bio_3  …",,
+"# Each value becomes one paragraph of text on the Bio page.",,
+"# To remove a paragraph  delete its row or leave the value empty.",,
+"bio_1","Roman Chystakhovskyi is a figurative sculptor working at the threshold between physical and digital material. His practice explores the human body as a site of psychological tension — presence, vulnerability, and the weight of emotion made tangible in form.","First paragraph of the bio"
+"bio_2","Trained at the National Academy of Fine Arts and Architecture in Kyiv, Roman brings a classical foundation to a contemporary sensibility. His sculptures are hand-built in polymer clay and cast in resin, each piece emerging from an extended process of observation and psychological excavation.","Second paragraph"
+"bio_3","His series Variants of Love — acquired by Vincent Van Dyke Effects — marked a defining moment in his fine art practice: an investigation into the forms love takes when it overwhelms, consumes, or dissolves the self.","Third paragraph"
+"bio_4","Alongside his sculpture practice, Roman works as a senior 3D character and creature artist with credits at Blizzard, NetEase, and Romero Games. He lives and works in Leipzig, Germany.","Fourth paragraph"
+"#",,
+"# ── DETAILS SIDEBAR ───────────────────────────────────────────────────────────",,
+"# Shown as a label + value list on the right side of the bio.",,
+"# Add more rows as needed: detail_label_5 / detail_value_5  etc.",,
+"detail_label_1","Born","Label for the first detail row"
+"detail_value_1","1997, Ukraine","Value for the first detail row"
+"detail_label_2","Education","Label for the second detail row"
+"detail_value_2","National Academy of Fine Arts and Architecture, Kyiv","Value for the second detail row"
+"detail_label_3","Based","Label for the third detail row"
+"detail_value_3","Leipzig, Germany","Value for the third detail row"
+"detail_label_4","Collections","Label for the fourth detail row"
+"detail_value_4","Vincent Van Dyke Effects — Variants of Love","Value for the fourth detail row"
+"detail_label_5","Materials","Label for the fifth detail row"
+"detail_value_5","Gypsum, Resin cast, bronze (forthcoming)","Value for the fifth detail row"
