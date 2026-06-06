@@ -20,7 +20,7 @@
 "# To use system fonts  leave font_url empty and set font_family to:",,
 "#   system-ui  -apple-system  sans-serif    (clean modern look)",,
 "#   Georgia  serif                          (classic serif)",,
-"font_url","https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap","Paste a Google Fonts stylesheet URL here  or leave empty for system fonts"
+"font_url",,"Leave EMPTY — Cormorant Garamond is self-hosted from /fonts/ (GDPR). Do not paste a Google Fonts URL here."
 "font_family","""Cormorant Garamond"", serif","CSS font-family value. Use quotes around names with spaces. Must match the font loaded by font_url."
 "#",,
 "# ── FONT SIZES ────────────────────────────────────────────────────────────────",,
@@ -51,7 +51,7 @@
 "spacing_page_padding","60px","Left and right padding on all pages. Reduce for less white space."
 "spacing_grid_gap","48px","Gap between artwork cards in the works grid. Use 0 for no gap  16px for tight  48px for generous gallery spacing."
 "spacing_nav_padding","28px","Vertical padding inside the navigation bar (top and bottom). Larger = taller nav."
-"spacing_footer_padding","40px","Vertical padding inside the footer bar."
+"spacing_footer_padding","20px","Vertical padding inside the footer bar."
 "spacing_content_padding","48px","Minimum side padding for page content (works grid  bio  contact). Changing this does NOT affect the nav or footer — those use spacing_page_padding."
 "#",,
 "# ── WORKS GRID ────────────────────────────────────────────────────────────────",,
