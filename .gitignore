@@ -1,2 +1,5 @@
 # Claude Code local settings (contains secrets — never commit)
 .claude/settings.local.json
+
+# Local newsletter test captures (emails — never commit)
+subscribers.txt

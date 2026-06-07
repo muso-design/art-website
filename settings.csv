@@ -66,6 +66,7 @@
 "grid_max_width","1500px","Max total width of the gallery. SMALLER = smaller thumbnails. Bigger = larger."
 "grid_image_ratio","1/1","Thumbnail shape. 1/1 (square)  4/5 (portrait)  3/4  16/9 (landscape)."
 "gallery_hover_swap","yes","Hover a thumbnail to cross-fade to its hover_image (set per work in works.csv). yes = swap  no = just the zoom."
+"gallery_hover_swap_mobile","no","Also do the hover-swap on phones/tablets (tap-and-hold). Usually no — touch screens have no real hover."
 "#",,
 "# ── LIGHTBOX ──────────────────────────────────────────────────────────────────",,
 "# Settings for the artwork detail view (the full-screen gallery that opens when you click a work).",,
@@ -93,7 +94,7 @@
 "# In the provider's ""embedded form"" / ""form action"" settings, copy the form's POST",,
 "# URL into newsletter_action, and the email field's name into newsletter_email_field",,
 "# (Buttondown: email   Mailchimp: EMAIL   EmailOctopus: usually email_address).",,
-"newsletter_action",,"Paste your provider's form POST URL here to switch the signup ON. Empty = hidden."
+"newsletter_action","/subscribe","Where the form sends to. /subscribe = the local test server (serve.bat → subscribers.txt). Later: your real endpoint URL. Empty = hidden."
 "newsletter_email_field","email","The name of the email field your provider expects (see note above)."
 "newsletter_heading","Newsletter","Small heading above the signup."
 "newsletter_note","Occasional notes on new work, exhibitions, and studio happenings. No spam, unsubscribe anytime.","One line shown above the email field."

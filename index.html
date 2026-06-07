@@ -495,6 +495,8 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
   padding:12px 28px;cursor:pointer;transition:background 0.2s,color 0.2s;white-space:nowrap
 }
 .newsletter-form button:hover{background:var(--text);color:var(--bg)}
+.newsletter-msg{font-size:15px;color:var(--text);margin-top:16px}
+.newsletter-msg.is-error{color:#9a3b3b}
 .newsletter-consent{font-size:12px;color:var(--dim);line-height:1.5;margin-top:16px}
 .newsletter-consent a{color:var(--mid)}
 
@@ -639,6 +641,9 @@ a.nav-name{text-decoration:none}
     max-width:100%;
     padding:92px 16px 72px!important
   }
+  /* No hover-swap on touch screens by default (gallery_hover_swap_mobile) */
+  .work-img-hover{display:none}
+  .works-grid.mobile-hover-on .work-img-hover{display:block}
   .bio-wrap{padding:96px 16px 40px!important;max-width:100%}
   .contact-wrap{padding:92px 16px 60px!important}
   /* Slim single-line footer on mobile (no wrapping) */
@@ -1671,9 +1676,10 @@ function renderBio(bio,s){
     det+=`<div><dt>${esc(bio['detail_label_'+i])}</dt><dd>${esc(bio['detail_value_'+i]||'')}</dd></div>`;
   document.getElementById('bio-details').innerHTML=det;
 
-  // ── Collapsible credits: Exhibitions / Collections ──────────────
+  // ── Collapsible credits: Exhibitions / Collections / Education ──
   // A dropdown is shown for each group whose *_heading is set in bio.csv
-  // (clear the heading to hide it). Items: exhibition_N / collection_N.
+  // (clear the heading to hide it). Items: exhibition_N / collection_N /
+  // education_N. To add another group, copy the pattern below.
   function creditGroup(heading,items){
     if(!heading)return'';
     const body=items.length
@@ -1691,7 +1697,8 @@ function renderBio(bio,s){
   if(credits){
     const html=
       creditGroup((bio.exhibitions_heading||'').trim(),collect('exhibition_'))+
-      creditGroup((bio.collections_heading||'').trim(),collect('collection_'));
+      creditGroup((bio.collections_heading||'').trim(),collect('collection_'))+
+      creditGroup((bio.education_heading||'').trim(),collect('education_'));
     credits.innerHTML=html;
     credits.style.display=html?'':'none';
   }
@@ -1710,63 +1717,92 @@ function renderBio(bio,s){
 function renderProcess(bio){
   const wrap=document.getElementById('bio-process');
   if(!wrap)return;
+  const norm=s=>(s||'').trim().replace(/\\/g,'/').replace(/^images\//i,'images/');
   const items=[];
   for(let i=1;bio['process_'+i];i++){
-    const src=(bio['process_'+i]||'').trim().replace(/\\/g,'/');
+    const src=norm(bio['process_'+i]);
     if(src)items.push({src,cap:(bio['process_caption_'+i]||'').trim()});
   }
   if(bio.process_images){
-    bio.process_images.split(/[|;\n\r]+/).forEach(s=>{
-      s=(s||'').trim().replace(/\\/g,'/');
-      if(s)items.push({src:s,cap:''});
-    });
+    bio.process_images.split(/[|;\n\r]+/).forEach(s=>{s=norm(s);if(s)items.push({src:s,cap:''});});
   }
   if(!items.length){wrap.style.display='none';wrap.innerHTML='';return;}
   wrap.style.display='';
   const heading=(bio.process_heading||'Studio').trim();
-  const multi=items.length>1;
-  const slides=items.map((it,i)=>
-    `<div class="studio-slide" data-idx="${i}">`+
-    `<img src="${esc(it.src)}" alt="${esc(it.cap||heading+' '+(i+1))}" `+
-    `loading="${i===0?'eager':'lazy'}" `+
+  const n=items.length;
+  const loop=n>1; // wrap around endlessly when there is more than one photo
+
+  // When looping, clone the last photo before the first and the first after the
+  // last. Scrolling onto a clone snaps, then we silently jump to the real one —
+  // so a swipe/arrow past the end continues straight into the start.
+  const seq=[];
+  if(loop)seq.push(items[n-1]);
+  items.forEach(it=>seq.push(it));
+  if(loop)seq.push(items[0]);
+
+  const slidesHTML=seq.map((it,i)=>
+    `<div class="studio-slide">`+
+    `<img src="${esc(it.src)}" alt="${esc(it.cap||heading)}" loading="${i<=1?'eager':'lazy'}" `+
     `onerror="var s=this.closest('.studio-slide');if(s)s.style.visibility='hidden'"></div>`).join('');
-  const arrows=multi
+  const arrows=loop
     ? `<button class="studio-arrow studio-prev" type="button" aria-label="Previous">&lt;</button>`+
       `<button class="studio-arrow studio-next" type="button" aria-label="Next">&gt;</button>`
     : '';
-  const dots=multi
+  const dotsHTML=loop
     ? `<div class="studio-dots">`+items.map((it,i)=>
         `<button class="studio-dot${i===0?' on':''}" type="button" data-idx="${i}" aria-label="Photo ${i+1}"></button>`).join('')+`</div>`
     : '';
   wrap.innerHTML=
     `<div class="process-head"><span class="process-title">${esc(heading)}</span></div>`+
-    `<div class="studio-stage"><div class="studio-track" id="studio-track">${slides}</div>${arrows}</div>`+
-    dots+
+    `<div class="studio-stage"><div class="studio-track" id="studio-track">${slidesHTML}</div>${arrows}</div>`+
+    dotsHTML+
     `<div class="studio-caption" id="studio-caption"></div>`;
 
-  const n=items.length;
   const track=wrap.querySelector('#studio-track');
   const dotEls=[...wrap.querySelectorAll('.studio-dot')];
   const capEl=wrap.querySelector('#studio-caption');
-  function current(){return track.clientWidth?Math.round(track.scrollLeft/track.clientWidth):0;}
-  function update(){
-    const i=Math.max(0,Math.min(n-1,current()));
-    dotEls.forEach((d,j)=>d.classList.toggle('on',j===i));
-    if(capEl)capEl.textContent=(items[i]&&items[i].cap)||'';
+  let w=0,curReal=0;
+  const rawIndex=()=>w?Math.round(track.scrollLeft/w):0;
+  const realFromRaw=raw=>loop?(((raw-1)%n)+n)%n:Math.max(0,Math.min(n-1,raw));
+  function paint(real){
+    curReal=real;
+    dotEls.forEach((d,j)=>d.classList.toggle('on',j===real));
+    if(capEl)capEl.textContent=(items[real]&&items[real].cap)||'';
   }
-  function goTo(i){
-    i=Math.max(0,Math.min(n-1,i));
-    track.scrollTo({left:i*track.clientWidth,behavior:'smooth'});
+  function settle(){
+    if(!loop||!w)return;
+    const raw=rawIndex();
+    if(raw<=0)track.scrollLeft=n*w;          // clone of last → real last
+    else if(raw>=n+1)track.scrollLeft=w;     // clone of first → real first
+    paint(realFromRaw(rawIndex()));
   }
+  function step(dir){ if(w)track.scrollTo({left:(rawIndex()+dir)*w,behavior:'smooth'}); }
+  function goTo(real){ if(w)track.scrollTo({left:(loop?real+1:real)*w,behavior:'smooth'}); }
+
   let raf=false;
   track.addEventListener('scroll',()=>{
-    if(!raf){raf=true;requestAnimationFrame(()=>{raf=false;update();});}
+    if(!raf){raf=true;requestAnimationFrame(()=>{raf=false;paint(realFromRaw(rawIndex()));});}
+    clearTimeout(track._settleT);
+    track._settleT=setTimeout(settle,120);
   },{passive:true});
+  if('onscrollend' in window)track.addEventListener('scrollend',settle);
   dotEls.forEach((d,i)=>d.onclick=()=>goTo(i));
   const prev=wrap.querySelector('.studio-prev'),next=wrap.querySelector('.studio-next');
-  if(prev)prev.onclick=()=>goTo(current()-1);
-  if(next)next.onclick=()=>goTo(current()+1);
-  update();
+  if(prev)prev.onclick=()=>step(-1);
+  if(next)next.onclick=()=>step(1);
+
+  // Position the track once it actually has a width (the bio page is
+  // display:none at first render) and re-centre on resize.
+  function layout(){
+    const nw=track.clientWidth;
+    if(!nw||nw===w)return;
+    w=nw;
+    track.scrollLeft=(loop?curReal+1:curReal)*w;
+    paint(curReal);
+  }
+  if(window.ResizeObserver){new ResizeObserver(layout).observe(track);}
+  else{window.addEventListener('resize',layout);}
+  requestAnimationFrame(layout);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1783,9 +1819,13 @@ function renderContact(c,s){
     </li>`;
   }
 
-  // ── Newsletter (only renders once you paste your provider's form URL) ──
-  // Posts straight to your email service (Buttondown / Mailchimp / EmailOctopus
-  // …) — no backend here. Use a provider with DOUBLE OPT-IN for GDPR.
+  // ── Newsletter ──────────────────────────────────────────────────
+  // Submits over fetch() to whatever URL is in newsletter_action:
+  //   • now (testing): the bundled dev server (serve.bat) accepts POST and
+  //     appends each address to subscribers.txt.
+  //   • later (your domain): point newsletter_action at your real endpoint —
+  //     a tiny server that accepts a POST with an "email" field and stores it,
+  //     OR a GDPR provider's form URL. Nothing else changes.
   const nl=document.getElementById('newsletter');
   if(nl){
     const action=(s&&s.newsletter_action||'').trim();
@@ -1795,17 +1835,41 @@ function renderContact(c,s){
       const heading=esc((s.newsletter_heading||'Newsletter').trim());
       const note=(s.newsletter_note||'').trim();
       const btn=esc((s.newsletter_button||'Subscribe').trim());
-      const field=esc((s.newsletter_email_field||'email').trim());
+      const field=(s.newsletter_email_field||'email').trim()||'email';
       const consent=(s.newsletter_consent||
-        'By subscribing you agree your email is processed by our newsletter provider. See the privacy policy.').trim();
+        'By subscribing you agree your email is processed for this newsletter only.').trim();
       nl.innerHTML=
         `<div class="newsletter-heading">${heading}</div>`+
         (note?`<p class="newsletter-note">${esc(note)}</p>`:'')+
-        `<form class="newsletter-form" action="${esc(action)}" method="post" target="_blank" rel="noopener">`+
-        `<input type="email" name="${field}" required autocomplete="email" placeholder="your@email.com" aria-label="Email address">`+
+        `<form class="newsletter-form" id="nl-form" action="${esc(action)}" method="post">`+
+        `<input type="email" name="${esc(field)}" required autocomplete="email" placeholder="your@email.com" aria-label="Email address">`+
         `<button type="submit">${btn}</button>`+
         `</form>`+
+        `<p class="newsletter-msg" id="nl-msg" role="status" hidden></p>`+
         `<p class="newsletter-consent">${esc(consent)} <a href="datenschutz.html">Datenschutz</a></p>`;
+      const form=nl.querySelector('#nl-form');
+      const msg=nl.querySelector('#nl-msg');
+      const input=form.querySelector('input[type=email]');
+      const button=form.querySelector('button');
+      const say=(text,ok)=>{msg.hidden=false;msg.textContent=text;msg.classList.toggle('is-error',!ok);};
+      form.addEventListener('submit',async e=>{
+        e.preventDefault();
+        const email=input.value.trim();
+        if(!email)return;
+        button.disabled=true;
+        try{
+          const res=await fetch(action,{
+            method:'POST',
+            headers:{'Content-Type':'application/x-www-form-urlencoded'},
+            body:new URLSearchParams({[field]:email})
+          });
+          if(res.ok){say('Thank you — you’re on the list.',true);form.reset();}
+          else say('Hm, that didn’t go through. Please try again.',false);
+        }catch(err){
+          say('Could not reach the server. Please try again later.',false);
+        }
+        button.disabled=false;
+      });
     }
   }
 }
@@ -1849,8 +1913,11 @@ function applySettings(s){
   v('--studio-max-width','studio_max_width');
   v('--studio-ratio','studio_ratio');
 
-  /* Gallery thumbnail hover-swap toggle (default on) */
+  /* Gallery thumbnail hover-swap toggle (default on) + mobile toggle (default off) */
   _hoverSwap=!['no','off','false','0'].includes(String(s.gallery_hover_swap||'').toLowerCase().trim());
+  const hoverMobile=['yes','on','true','1'].includes(String(s.gallery_hover_swap_mobile||'').toLowerCase().trim());
+  const wg=document.getElementById('works-grid');
+  if(wg)wg.classList.toggle('mobile-hover-on',hoverMobile);
   v('--contact-max-width','contact_max_width');
   v('--content-pad','spacing_content_padding');
   v('--ss-gradient-height','slideshow_gradient_height');
