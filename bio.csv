@@ -48,6 +48,13 @@
 "detail_label_3","Materials","Label for the third fact"
 "detail_value_3","Gypsum, resin cast, bronze (forthcoming)","Value for the third fact"
 "#",,
+"# ── EDUCATIONS (collapsible dropdowns) ─────────────────────────",,
+"# Each group appears as a dropdown. To HIDE a group entirely, clear its heading.",,
+"# Add entries as education_1, education_2 ...",,
+"education_heading","Education","Heading for the education dropdown (clear to hide)"
+"# education_1","2015 – 2019 | Bachelor of Fine Arts, National Academy of Fine Arts and Architecture (NAOMA), Kyiv. ","(example — uncomment & edit when you have one)"
+"# education_1","2012 – 2015 | Fine Arts Diploma, Shevchenko State Art School, Kyiv",
+"#",,
 "# ── EXHIBITIONS & COLLECTIONS (collapsible dropdowns) ─────────────────────────",,
 "# Each group appears as a dropdown. To HIDE a group entirely, clear its heading.",,
 "# Add entries as exhibition_1, exhibition_2 … and collection_1, collection_2 …",,
