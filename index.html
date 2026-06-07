@@ -44,6 +44,7 @@
 @font-face{font-family:"Cormorant Garamond";font-style:normal;font-weight:300;font-display:swap;src:url("fonts/CormorantGaramond-Light.woff2") format("woff2")}
 @font-face{font-family:"Cormorant Garamond";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/CormorantGaramond-Regular.woff2") format("woff2")}
 @font-face{font-family:"Cormorant Garamond";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/CormorantGaramond-Medium.woff2") format("woff2")}
+@font-face{font-family:"Cormorant Garamond";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/CormorantGaramond-SemiBold.woff2") format("woff2")}
 @font-face{font-family:"Cormorant Garamond";font-style:italic;font-weight:300;font-display:swap;src:url("fonts/CormorantGaramond-LightItalic.woff2") format("woff2")}
 @font-face{font-family:"Cormorant Garamond";font-style:italic;font-weight:400;font-display:swap;src:url("fonts/CormorantGaramond-Italic.woff2") format("woff2")}
 
@@ -183,7 +184,7 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
   font-size:var(--grid-title-size);font-weight:400;letter-spacing:0.01em;
   transition:font-weight 0.2s ease
 }
-.work-card:hover .work-title{font-weight:500}
+.work-card:hover .work-title{font-weight:600}
 .work-series{
   font-size:var(--grid-series-size);letter-spacing:0.12em;
   text-transform:uppercase;color:var(--dim);margin-top:5px
@@ -325,19 +326,19 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 /* ── BIO ─────────────────────────────────────────────────── */
 #page-bio{padding-top:0;background:var(--bg)}
 .bio-wrap{
-  padding:160px var(--content-pad) 120px;
+  padding:160px var(--content-pad) 72px;
   max-width:calc(var(--bio-max-width) + var(--content-pad) * 2);
   margin:0 auto
 }
 /* Full-width text, no sidebar */
 .bio-text{margin-bottom:80px}
-/* First paragraph: large editorial lead */
+/* First paragraph: a gently emphasised lead (not oversized) */
 .bio-text p:first-child{
-  font-size:calc(var(--body-size) * 1.35);
-  line-height:1.55;font-weight:400;color:var(--text);
-  margin-bottom:1.8em
+  font-size:calc(var(--body-size) * 1.12);
+  line-height:1.6;font-weight:400;color:var(--text);
+  margin-bottom:1.5em
 }
-.bio-text p{margin-bottom:1.6em;color:var(--mid);font-size:var(--body-size)}
+.bio-text p{margin-bottom:1.4em;color:var(--mid);font-size:var(--body-size);line-height:1.7}
 
 /* Photo: full width (when present) — legacy element, kept hidden */
 .bio-photo-full{
@@ -374,6 +375,36 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
   font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim);font-weight:500
 }
 .bio-details dd{font-size:18px;color:var(--mid);margin:8px 0 0;line-height:1.5;font-weight:400}
+
+/* ── PROCESS / STUDIO SLIDESHOW (below the bio) ─────────────────
+   Horizontal scroll-snap filmstrip: arrows on desktop, native swipe
+   on mobile. Images come from bio.csv (process_* rows).            */
+.process{max-width:1080px;margin:0 auto;padding:0 var(--content-pad) 130px}
+.process-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:26px}
+.process-title{
+  font-size:var(--label-size);letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--dim);font-weight:500
+}
+.process-arrows{display:flex;gap:6px}
+.process-arrow{
+  background:none;border:none;color:var(--text);font-family:var(--font);
+  font-size:34px;font-weight:300;line-height:1;letter-spacing:-0.04em;
+  cursor:pointer;opacity:0.28;padding:0 8px;transition:opacity 0.2s
+}
+.process-arrow:hover{opacity:0.85}
+.process-strip{
+  display:flex;gap:20px;overflow-x:auto;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:6px
+}
+.process-strip::-webkit-scrollbar{display:none}
+.process-item{flex:0 0 auto;width:min(70%,440px);scroll-snap-align:center;margin:0;line-height:0}
+.process-item-img{overflow:hidden;background:var(--bg2)}
+.process-item img{width:100%;height:auto;display:block}
+.process-item figcaption{
+  margin-top:10px;line-height:1.4;
+  font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim)
+}
 
 /* ── CONTACT ─────────────────────────────────────────────── */
 #page-contact{padding-top:0;background:var(--bg)}
@@ -477,7 +508,7 @@ a.nav-name{text-decoration:none}
 /* ─ Tablet (≤1024px) ─ */
 @media(max-width:1024px){
   :root{--page-padding:40px;--grid-gap:20px;--content-pad:24px}
-  .works-grid{grid-template-columns:repeat(2,1fr)!important;max-width:100%}
+  .works-grid{max-width:100%}
   .bio-wrap{max-width:100%}
 
   /* Lightbox: panel to bottom — avoids right-side overflow on tablets */
@@ -536,7 +567,7 @@ a.nav-name{text-decoration:none}
   /* Hard-coded pixel padding — bypasses CSS variables entirely so layout
      is guaranteed regardless of what settings.csv contains.               */
   .works-grid{
-    grid-template-columns:repeat(2,1fr)!important;max-width:100%;
+    max-width:100%;
     padding:64px 16px 72px!important
   }
   .bio-wrap{padding:64px 16px 60px!important;max-width:100%}
@@ -584,6 +615,10 @@ a.nav-name{text-decoration:none}
   .bio-fig--wide{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding-left:16px;padding-right:16px}
   .bio-fig{transform:none!important}
   .bio-details{gap:20px 32px}
+  /* Process strip: swipe instead of arrows, larger items */
+  .process{padding:0 16px 90px}
+  .process-arrows{display:none}
+  .process-item{width:86%}
   .contact-list li{flex-direction:column;gap:4px;padding:14px 0}
   .contact-value{font-size:16px}
 }
@@ -591,7 +626,7 @@ a.nav-name{text-decoration:none}
 /* ─ Small mobile (≤480px) ─ */
 @media(max-width:480px){
   :root{--body-size:15px;--page-padding:14px;--content-pad:14px;--nav-name-size:12px;--nav-link-size:10px}
-  .works-grid{grid-template-columns:1fr!important;padding:60px 14px 64px!important}
+  .works-grid{padding:60px 14px 64px!important}
   .bio-wrap{padding-left:14px!important;padding-right:14px!important}
   .contact-wrap{padding-left:14px!important;padding-right:14px!important}
   /* Keep the name on a single line so the nav stays tidy */
@@ -669,6 +704,8 @@ a.nav-name{text-decoration:none}
       <dl class="bio-details" id="bio-details"></dl>
     </div>
   </div>
+  <!-- Process / studio slideshow (populated from bio.csv process_* rows) -->
+  <div class="process" id="bio-process" style="display:none"></div>
 </section>
 
 <!-- CONTACT -->
@@ -977,14 +1014,28 @@ function lbRender(){
   gallery.scrollTop=0;
   lb.scrollTop=0;
 
-  // Collect every view of this piece: image (main) + image_2, image_3, …
-  const srcs=[];
-  if(w.image&&w.image.trim())srcs.push(w.image.trim());
+  // Collect every view of this piece, in order:
+  //   1. image (main, also the thumbnail)
+  //   2. image_2, image_3, … (numbered columns)
+  //   3. more_images — a single cell holding MANY paths at once, separated
+  //      by | ; or line breaks (the fast way to add a batch of photos)
+  // Backslashes are normalised to forward slashes, and duplicates removed.
+  const raw=[];
+  if(w.image)raw.push(w.image);
   Object.keys(w)
     .filter(k=>/^image_\d+$/.test(k))
     .sort((a,b)=>parseInt(a.slice(6),10)-parseInt(b.slice(6),10))
-    .forEach(k=>{if(w[k]&&w[k].trim())srcs.push(w[k].trim())});
-  if(!srcs.length)srcs.push(w.image||'');
+    .forEach(k=>raw.push(w[k]));
+  if(w.more_images)w.more_images.split(/[|;\n\r]+/).forEach(s=>raw.push(s));
+  const seen=new Set(),srcs=[];
+  raw.forEach(s=>{
+    s=(s||'').trim().replace(/\\/g,'/');
+    if(!s)return;
+    const key=s.toLowerCase();
+    if(seen.has(key))return;
+    seen.add(key);srcs.push(s);
+  });
+  if(!srcs.length)srcs.push((w.image||'').replace(/\\/g,'/'));
 
   _zoomImgs=[];
   const imgs=[];
@@ -1222,25 +1273,41 @@ function _stopSettle(){
   if(_zoom.animFrame){cancelAnimationFrame(_zoom.animFrame);_zoom.animFrame=null;}
   _zoom.vx=0;_zoom.vy=0;
 }
-// Release physics: momentum-glide inside the bounds (friction), spring-magnet
-// back when outside them. One unified loop handles both, per axis.
+// Release physics. Two regimes per axis:
+//   • In bounds  → momentum glide with friction.
+//   • Out of bounds (in the passepartout) → ease gently toward the NEAREST
+//     edge while bleeding off velocity, so it never slingshots across to the
+//     far side. This gives a soft magnetic snap, not a violent recoil.
 function _settle(){
   _stopSettle();
-  const stiff=0.10,springDamp=0.74,friction=0.92;
+  const friction=0.90,  // momentum decay while inside the bounds
+        RETURN=0.16,     // how briskly it eases back from the passepartout
+        VBLEED=0.5;      // kills inherited drag velocity while returning
   const tick=()=>{
     if(!_zoom.zoomed){_zoom.animFrame=null;return;}
     const b=_panBounds();
-    if(_zoom.tx<b.minX){_zoom.vx+=(b.minX-_zoom.tx)*stiff;_zoom.vx*=springDamp;}
-    else if(_zoom.tx>b.maxX){_zoom.vx+=(b.maxX-_zoom.tx)*stiff;_zoom.vx*=springDamp;}
-    else _zoom.vx*=friction;
-    if(_zoom.ty<b.minY){_zoom.vy+=(b.minY-_zoom.ty)*stiff;_zoom.vy*=springDamp;}
-    else if(_zoom.ty>b.maxY){_zoom.vy+=(b.maxY-_zoom.ty)*stiff;_zoom.vy*=springDamp;}
-    else _zoom.vy*=friction;
-    _zoom.tx+=_zoom.vx;_zoom.ty+=_zoom.vy;
+    // ── X axis ──
+    if(_zoom.tx<b.minX||_zoom.tx>b.maxX){
+      const target=_zoom.tx<b.minX?b.minX:b.maxX;
+      _zoom.tx+=(target-_zoom.tx)*RETURN;
+      _zoom.vx*=VBLEED;
+      if(Math.abs(target-_zoom.tx)<0.5){_zoom.tx=target;_zoom.vx=0;}
+    }else{
+      _zoom.tx+=_zoom.vx;_zoom.vx*=friction;
+    }
+    // ── Y axis ──
+    if(_zoom.ty<b.minY||_zoom.ty>b.maxY){
+      const target=_zoom.ty<b.minY?b.minY:b.maxY;
+      _zoom.ty+=(target-_zoom.ty)*RETURN;
+      _zoom.vy*=VBLEED;
+      if(Math.abs(target-_zoom.ty)<0.5){_zoom.ty=target;_zoom.vy=0;}
+    }else{
+      _zoom.ty+=_zoom.vy;_zoom.vy*=friction;
+    }
     applyZoomTransform();
     const inX=_zoom.tx>=b.minX-0.5&&_zoom.tx<=b.maxX+0.5;
     const inY=_zoom.ty>=b.minY-0.5&&_zoom.ty<=b.maxY+0.5;
-    if(inX&&inY&&Math.abs(_zoom.vx)<0.25&&Math.abs(_zoom.vy)<0.25){
+    if(inX&&inY&&Math.abs(_zoom.vx)<0.3&&Math.abs(_zoom.vy)<0.3){
       _zoom.tx=Math.max(b.minX,Math.min(b.maxX,_zoom.tx));
       _zoom.ty=Math.max(b.minY,Math.min(b.maxY,_zoom.ty));
       applyZoomTransform();
@@ -1520,6 +1587,59 @@ function renderBio(bio,s){
   for(let i=1;bio['detail_label_'+i];i++)
     det+=`<div><dt>${esc(bio['detail_label_'+i])}</dt><dd>${esc(bio['detail_value_'+i]||'')}</dd></div>`;
   document.getElementById('bio-details').innerHTML=det;
+
+  renderProcess(bio);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROCESS / STUDIO SLIDESHOW (below the bio)
+// Images come from bio.csv. Two ways to add them, mix freely:
+//   • process_1, process_2, …  (optional process_caption_N each)
+//   • process_images           (MANY paths in one cell, | or newline separated)
+// Reorder by simply rearranging the rows / the list. Swipe on mobile,
+// arrow buttons on desktop.
+// ═══════════════════════════════════════════════════════════
+function renderProcess(bio){
+  const wrap=document.getElementById('bio-process');
+  if(!wrap)return;
+  const items=[];
+  for(let i=1;bio['process_'+i];i++){
+    const src=(bio['process_'+i]||'').trim().replace(/\\/g,'/');
+    if(src)items.push({src,cap:(bio['process_caption_'+i]||'').trim()});
+  }
+  if(bio.process_images){
+    bio.process_images.split(/[|;\n\r]+/).forEach(s=>{
+      s=(s||'').trim().replace(/\\/g,'/');
+      if(s)items.push({src:s,cap:''});
+    });
+  }
+  if(!items.length){wrap.style.display='none';wrap.innerHTML='';return;}
+  wrap.style.display='';
+  const heading=(bio.process_heading||'Process').trim();
+  const figs=items.map((it,i)=>
+    `<figure class="process-item">`+
+      `<div class="process-item-img"><img src="${esc(it.src)}" `+
+      `alt="${esc(it.cap||heading+' '+(i+1))}" loading="lazy" `+
+      `onerror="var f=this.closest('.process-item');if(f)f.style.display='none'"></div>`+
+      (it.cap?`<figcaption>${esc(it.cap)}</figcaption>`:'')+
+    `</figure>`).join('');
+  wrap.innerHTML=
+    `<div class="process-head"><span class="process-title">${esc(heading)}</span>`+
+    `<div class="process-arrows">`+
+    `<button class="process-arrow" type="button" aria-label="Previous" data-dir="-1">&lt;</button>`+
+    `<button class="process-arrow" type="button" aria-label="Next" data-dir="1">&gt;</button>`+
+    `</div></div>`+
+    `<div class="process-strip" id="process-strip">${figs}</div>`;
+  const strip=wrap.querySelector('#process-strip');
+  wrap.querySelectorAll('.process-arrow').forEach(btn=>{
+    btn.onclick=()=>{
+      const dir=parseInt(btn.dataset.dir,10)||1;
+      const item=strip.querySelector('.process-item');
+      const gap=parseFloat(getComputedStyle(strip).columnGap||getComputedStyle(strip).gap)||20;
+      const step=item?item.getBoundingClientRect().width+gap:strip.clientWidth*0.8;
+      strip.scrollBy({left:dir*step,behavior:'smooth'});
+    };
+  });
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1638,8 +1758,18 @@ function applySettings(s){
     });
   }
 
-  const cols=parseInt(s.grid_columns)||3;
-  document.getElementById('works-grid').style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  /* Responsive column counts (desktop / tablet / phone) from settings.csv.
+     Injected as a stylesheet (appended last) so media queries drive the grid —
+     far more flexible than one fixed value, and no !important needed.        */
+  const colD=Math.max(1,parseInt(s.grid_columns)||3);
+  const colT=Math.max(1,parseInt(s.grid_columns_tablet)||Math.max(1,colD-1));
+  const colM=Math.max(1,parseInt(s.grid_columns_mobile)||2);
+  let gridCSS=document.getElementById('grid-settings');
+  if(!gridCSS){gridCSS=document.createElement('style');gridCSS.id='grid-settings';document.head.appendChild(gridCSS);}
+  gridCSS.textContent=
+    `.works-grid{grid-template-columns:repeat(${colD},1fr)}`+
+    `@media(max-width:1024px){.works-grid{grid-template-columns:repeat(${colT},1fr)}}`+
+    `@media(max-width:620px){.works-grid{grid-template-columns:repeat(${colM},1fr)}}`;
 }
 
 // ═══════════════════════════════════════════════════════════

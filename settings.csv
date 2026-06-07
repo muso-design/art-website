@@ -25,7 +25,7 @@
 "#",,
 "# ── FONT SIZES ────────────────────────────────────────────────────────────────",,
 "# Use px (20px)  em (1.2em)  or clamp for responsive: clamp(16px"," 2vw"," 22px)"
-"font_size_body","25px","Main reading text size (bio paragraphs  contact intro)"
+"font_size_body","19px","Main reading text size (bio paragraphs  contact intro)"
 "font_size_nav_name","25px","Size of your name in the top-left corner of the nav"
 "font_size_nav_links","20px","Size of the Works / Bio / Contact nav links"
 "font_size_grid_title","16px","Artwork title shown below each image in the works grid"
@@ -49,15 +49,22 @@
 "#",,
 "# ── SPACING ───────────────────────────────────────────────────────────────────",,
 "spacing_page_padding","60px","Left and right padding on all pages. Reduce for less white space."
-"spacing_grid_gap","48px","Gap between artwork cards in the works grid. Use 0 for no gap  16px for tight  48px for generous gallery spacing."
+"spacing_grid_gap","56px","Gap between gallery thumbnails. Flexible units OK e.g. clamp(28px 4vw 72px) (keep it in ONE cell). 16px tight  56px generous."
 "spacing_nav_padding","28px","Vertical padding inside the navigation bar (top and bottom). Larger = taller nav."
 "spacing_footer_padding","20px","Vertical padding inside the footer bar."
 "spacing_content_padding","48px","Minimum side padding for page content (works grid  bio  contact). Changing this does NOT affect the nav or footer — those use spacing_page_padding."
 "#",,
-"# ── WORKS GRID ────────────────────────────────────────────────────────────────",,
-"grid_columns",3,"Number of columns in the works grid. Use 2 or 3. (On mobile it automatically reduces.)"
-"grid_max_width","1900px","Maximum width of the works grid. Use a smaller value (e.g. 800px) to make it more centered and compact."
-"grid_image_ratio","1/1","Aspect ratio of work thumbnails. Use 4/5 (portrait)  1/1 (square)  3/4  or 16/9 (landscape)."
+"# ── WORKS GALLERY ─────────────────────────────────────────────────────────────",,
+"# The gallery is fully responsive. You control it with these knobs:",,
+"#   • columns at three screen sizes (desktop / tablet / phone)",,
+"#   • the overall max width (smaller = smaller thumbnails)",,
+"#   • the gap between thumbnails (accepts flexible units like clamp())",,
+"#   • the thumbnail shape (aspect ratio)",,
+"grid_columns",3,"Columns on DESKTOP (wide screens)."
+"grid_columns_tablet",2,"Columns on TABLET (screens up to 1024px wide)."
+"grid_columns_mobile",2,"Columns on PHONE (screens up to 620px wide). Use 1 for one big image per row."
+"grid_max_width","1500px","Max total width of the gallery. SMALLER = smaller thumbnails. Bigger = larger."
+"grid_image_ratio","1/1","Thumbnail shape. 1/1 (square)  4/5 (portrait)  3/4  16/9 (landscape)."
 "#",,
 "# ── LIGHTBOX ──────────────────────────────────────────────────────────────────",,
 "# Settings for the artwork detail view (the full-screen gallery that opens when you click a work).",,
@@ -70,7 +77,7 @@
 "lightbox_zoom_level","2.5","How much the image zooms when clicked. 2 = double size  3 = triple size. Applies once — click again to zoom out."
 "#",,
 "# ── PAGES ─────────────────────────────────────────────────────────────────────",,
-"bio_max_width","1200px","Maximum width of the bio text column. Use a smaller value for a narrower centered column."
+"bio_max_width","760px","Maximum width of the bio text column. Use a smaller value for a narrower centered column."
 "contact_max_width","760px","Maximum width of the contact page content."
 "#",,
 "# ── SLIDESHOW ─────────────────────────────────────────────────────────────────",,

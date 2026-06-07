@@ -1,4 +1,4 @@
-"id","title","series","year","material","dimensions","description","image","available","image_2","image_3","image_4"
+"id","title","series","year","material","dimensions","description","image","available","image_2","image_3","image_4","more_images"
 "# ════════════════════════════════════════════════════════════════════════════════",,,,,,,,,,,
 "# WORKS.CSV  —  One row per artwork. Each row adds one card to the Works page.",,,,,,,,,,,
 "# HOW TO EDIT:  Fill in columns for each piece. Order in this file = order on site.",,,,,,,,,,,
@@ -21,7 +21,11 @@
 "#   available   — Availability status shown in lightbox. E.g.  Available  Sold  NFS  On loan",,,,,,,,,,,
 "#   image_2     — Optional EXTRA views of the SAME piece (image_2, image_3, image_4).",,,,,,,,,,,
 "#   image_3       Each one shows as another scrollable image inside the lightbox.",,,,,,,,,,,
-"#   image_4       Leave blank if the piece has only one photo. Add more columns for more views.",,,,,,,,,,,
+"#   image_4       Leave blank if the piece has only one photo.",,,,,,,,,,,
+"#   more_images — FAST way to add many photos at once: paste several paths in",,,,,,,,,,,
+"#                 this ONE cell, separated by a vertical bar |  (or line breaks).",,,,,,,,,,,
+"#                 Example:  images/a.jpg | images/b.jpg | images/c.jpg",,,,,,,,,,,
+"#                 These are added after image / image_2…  Duplicates are ignored.",,,,,,,,,,,
 "#",,,,,,,,,,,
 1,"Too Much","Reflexions",2026,"Acrylyc gypsum","58 x 58 x 15 cm","""Too Much Will Never Be Enough"" ","images/roman_chystakhovskyi_too_much.webp","available","images\roman_chystakhovskyi_too_much_closeup_01.jpg","images\roman_chystakhovskyi_too_much_closeup_02.jpg",
 2,"Through your eyes","Reflexions",2026,"Acrylyc gypsum","57 x 45 x 15 cm","“Few, if anyone, will ever see the world Through your eyes” ","images/roman_chystakhovskyi_through_your_eyes_main.webp","available","images\roman_chystakhovskyi_through_your_eyes_closeup_01.jpg",,

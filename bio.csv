@@ -34,10 +34,9 @@
 "# Add as many paragraphs as you need: bio_1  bio_2  bio_3  …",,
 "# Each value becomes one paragraph of text on the Bio page.",,
 "# To remove a paragraph  delete its row or leave the value empty.",,
-"bio_1","Roman Chystakhovskyi is a figurative sculptor working at the threshold between physical and digital material. His practice explores the human body as a site of psychological tension — presence, vulnerability, and the weight of emotion made tangible in form.","First paragraph of the bio"
-"bio_2","Trained at the National Academy of Fine Arts and Architecture in Kyiv, Roman brings a classical foundation to a contemporary sensibility. His sculptures are hand-built in polymer clay and cast in resin, each piece emerging from an extended process of observation and psychological excavation.","Second paragraph"
-"bio_3","His series Variants of Love — acquired by Vincent Van Dyke Effects — marked a defining moment in his fine art practice: an investigation into the forms love takes when it overwhelms, consumes, or dissolves the self.","Third paragraph"
-"bio_4","Alongside his sculpture practice, Roman works as a senior 3D character and creature artist with credits at Blizzard, NetEase, and Romero Games. He lives and works in Leipzig, Germany.","Fourth paragraph"
+"bio_1","Roman Chystakhovskyi (b. 1997, Ukraine) is a sculptor based in Leipzig, Germany. Trained as a classical painter in Kyiv and forged through eight years as a senior digital sculptor for international studios, he now makes wall-mounted and freestanding sculptures of hands pressing into faces — capturing emotional states that have no clean name.","First paragraph of the bio"
+"bio_2","He cannot leave the moment when a feeling becomes physical: the hands that simultaneously comfort and crush, the face that cannot be read as one thing. Each work begins with a single line of music or poetry that unlocks something — he chases the image before it disappears, sculpts it digitally, then forces it into reality through 3D printing, hand-sculpting, silicone molding and gypsum casting. The friction between the weightless digital and the heavy physical is part of what the work is about.","Second paragraph"
+"bio_3","Nothing is resolved. That's the point.","Third paragraph"
 "#",,
 "# ── DETAILS SIDEBAR ───────────────────────────────────────────────────────────",,
 "# Shown as a label + value list on the right side of the bio.",,
@@ -52,3 +51,16 @@
 "detail_value_4","Vincent Van Dyke Effects — Variants of Love","Value for the fourth detail row"
 "detail_label_5","Materials","Label for the fifth detail row"
 "detail_value_5","Gypsum, Resin cast, bronze (forthcoming)","Value for the fifth detail row"
+"#",,
+"# ── PROCESS / STUDIO SLIDESHOW ────────────────────────────────────────────────",,
+"# A swipeable row of studio / process photos shown BELOW the bio.",,
+"# Heading text above the strip (e.g. Process  Studio  In the making):",,
+"process_heading","Studio","Small heading shown above the slideshow"
+"# FAST way — paste many photos in ONE cell, separated by a vertical bar |",,
+"# Reorder them by just rearranging the list. Swap by changing the paths.",,
+"process_images","images/roman_chystakhovskyi_studio.jpg | images/roman_chystakhovskyi_too_much_closeup_01.jpg | images/roman_chystakhovskyi_with_smile_closeup_01.jpg","Studio/process photos (| separated). Replace with your own."
+"# OR add them one per row with optional captions:",,
+"#   process_1, images/studio_a.jpg    +  process_caption_1, In the studio",,
+"#   process_2, images/studio_b.jpg    +  process_caption_2, Casting in gypsum",,
+"process_1",,"Optional single process image (with caption below)"
+"process_caption_1",,"Caption for process_1"

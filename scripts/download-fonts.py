@@ -19,7 +19,7 @@ FONTS_DIR = os.path.join(os.path.dirname(__file__), '..', 'fonts')
 # Google Fonts API URL for Cormorant Garamond weights/styles needed by this site
 GOOGLE_FONTS_URL = (
     'https://fonts.googleapis.com/css2'
-    '?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400'
+    '?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400'
     '&display=swap'
 )
 
@@ -29,6 +29,7 @@ NAME_MAP = {
     ('cormorant garamond', '300', 'normal'): 'CormorantGaramond-Light',
     ('cormorant garamond', '400', 'normal'): 'CormorantGaramond-Regular',
     ('cormorant garamond', '500', 'normal'): 'CormorantGaramond-Medium',
+    ('cormorant garamond', '600', 'normal'): 'CormorantGaramond-SemiBold',
     ('cormorant garamond', '300', 'italic'): 'CormorantGaramond-LightItalic',
     ('cormorant garamond', '400', 'italic'): 'CormorantGaramond-Italic',
 }
