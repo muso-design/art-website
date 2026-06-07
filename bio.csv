@@ -38,19 +38,25 @@
 "bio_2","He cannot leave the moment when a feeling becomes physical: the hands that simultaneously comfort and crush, the face that cannot be read as one thing. Each work begins with a single line of music or poetry that unlocks something — he chases the image before it disappears, sculpts it digitally, then forces it into reality through 3D printing, hand-sculpting, silicone molding and gypsum casting. The friction between the weightless digital and the heavy physical is part of what the work is about.","Second paragraph"
 "bio_3","Nothing is resolved. That's the point.","Third paragraph"
 "#",,
-"# ── DETAILS SIDEBAR ───────────────────────────────────────────────────────────",,
-"# Shown as a label + value list on the right side of the bio.",,
-"# Add more rows as needed: detail_label_5 / detail_value_5  etc.",,
-"detail_label_1","Born","Label for the first detail row"
-"detail_value_1","1997, Ukraine","Value for the first detail row"
-"detail_label_2","Education","Label for the second detail row"
-"detail_value_2","National Academy of Fine Arts and Architecture, Kyiv","Value for the second detail row"
-"detail_label_3","Based","Label for the third detail row"
-"detail_value_3","Leipzig, Germany","Value for the third detail row"
-"detail_label_4","Collections","Label for the fourth detail row"
-"detail_value_4","Vincent Van Dyke Effects — Variants of Love","Value for the fourth detail row"
-"detail_label_5","Materials","Label for the fifth detail row"
-"detail_value_5","Gypsum, Resin cast, bronze (forthcoming)","Value for the fifth detail row"
+"# ── FACTS (born / based / materials) ──────────────────────────────────────────
+""# A short row of facts shown under the studio slideshow.",,
+"# Add more rows as needed: detail_label_4 / detail_value_4  etc.",,
+"detail_label_1","Born","Label for the first fact"
+"detail_value_1","1997, Ukraine","Value for the first fact"
+"detail_label_2","Based","Label for the second fact"
+"detail_value_2","Leipzig, Germany","Value for the second fact"
+"detail_label_3","Materials","Label for the third fact"
+"detail_value_3","Gypsum, resin cast, bronze (forthcoming)","Value for the third fact"
+"#",,
+"# ── EXHIBITIONS & COLLECTIONS (collapsible dropdowns) ─────────────────────────",,
+"# Each group appears as a dropdown. To HIDE a group entirely, clear its heading.",,
+"# Add entries as exhibition_1, exhibition_2 … and collection_1, collection_2 …",,
+"exhibitions_heading","Exhibitions","Heading for the exhibitions dropdown (clear to hide)"
+"# exhibition_1","2026 — Gallery Name, City","(example — uncomment & edit when you have one)"
+"collections_heading","Collections","Heading for the collections dropdown (clear to hide)"
+"collection_1","Florence, Italy (Private collection)","A collection entry"
+"collection_2","Leipzig, Germany (Private collection)","A collection entry"
+"collection_3","Vincent Van Dyke Effects — LA, California, USA","A collection entry"
 "#",,
 "# ── PROCESS / STUDIO SLIDESHOW ────────────────────────────────────────────────",,
 "# A swipeable row of studio / process photos shown BELOW the bio.",,
@@ -58,7 +64,8 @@
 "process_heading","Studio","Small heading shown above the slideshow"
 "# FAST way — paste many photos in ONE cell, separated by a vertical bar |",,
 "# Reorder them by just rearranging the list. Swap by changing the paths.",,
-"process_images","images/roman_chystakhovskyi_studio.jpg | images/roman_chystakhovskyi_too_much_closeup_01.jpg | images/roman_chystakhovskyi_with_smile_closeup_01.jpg","Studio/process photos (| separated). Replace with your own."
+"process_images","images\bio_process\studio_shot.webp | images\bio_process\zbrush.webp | images\bio_process\smile_silicone_far.webp |
+Images\bio_process\smile_silicone.jpg","Studio/process photos (| separated). Replace with your own."
 "# OR add them one per row with optional captions:",,
 "#   process_1, images/studio_a.jpg    +  process_caption_1, In the studio",,
 "#   process_2, images/studio_b.jpg    +  process_caption_2, Casting in gypsum",,

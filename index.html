@@ -89,9 +89,12 @@
   --ss-gradient-height:120px;--ss-gradient-opacity:0.5;
 }
 
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--text);font-family:var(--font);
-  font-size:var(--body-size);line-height:var(--body-lh);overflow-x:hidden;min-height:100vh}
+  font-size:var(--body-size);line-height:var(--body-lh);overflow-x:hidden;min-height:100vh;
+  /* Smoother text rendering (notably on macOS/retina) + kerning & ligatures */
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;font-kerning:normal}
 
 /* ── NAV ─────────────────────────────────────────────────── */
 nav{
@@ -376,35 +379,59 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 }
 .bio-details dd{font-size:18px;color:var(--mid);margin:8px 0 0;line-height:1.5;font-weight:400}
 
-/* ── PROCESS / STUDIO SLIDESHOW (below the bio) ─────────────────
-   Horizontal scroll-snap filmstrip: arrows on desktop, native swipe
-   on mobile. Images come from bio.csv (process_* rows).            */
-.process{max-width:1080px;margin:0 auto;padding:0 var(--content-pad) 130px}
-.process-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:26px}
+/* ── STUDIO SLIDESHOW (one horizontal image at a time + dots) ──────
+   Sits between the bio text and the facts. Arrows on desktop, swipe
+   + dots on mobile. Images come from bio.csv (process_* rows).      */
+.process{max-width:1080px;margin:0 auto;padding:0 var(--content-pad) 96px}
+.process-head{margin-bottom:22px}
 .process-title{
   font-size:var(--label-size);letter-spacing:0.3em;text-transform:uppercase;
   color:var(--dim);font-weight:500
 }
-.process-arrows{display:flex;gap:6px}
-.process-arrow{
-  background:none;border:none;color:var(--text);font-family:var(--font);
-  font-size:34px;font-weight:300;line-height:1;letter-spacing:-0.04em;
-  cursor:pointer;opacity:0.28;padding:0 8px;transition:opacity 0.2s
+.studio-stage{
+  position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;background:var(--bg2)
 }
-.process-arrow:hover{opacity:0.85}
-.process-strip{
-  display:flex;gap:20px;overflow-x:auto;
-  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
-  scrollbar-width:none;padding-bottom:6px
+.studio-slide{position:absolute;inset:0;opacity:0;transition:opacity 0.55s ease;pointer-events:none}
+.studio-slide.active{opacity:1;pointer-events:auto}
+.studio-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.studio-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:2;
+  background:none;border:none;color:#fff;font-family:var(--font);
+  font-size:46px;font-weight:300;line-height:1;letter-spacing:-0.04em;
+  cursor:pointer;opacity:0.6;padding:10px 18px;transition:opacity 0.2s;
+  text-shadow:0 1px 8px rgba(0,0,0,0.4)
 }
-.process-strip::-webkit-scrollbar{display:none}
-.process-item{flex:0 0 auto;width:min(70%,440px);scroll-snap-align:center;margin:0;line-height:0}
-.process-item-img{overflow:hidden;background:var(--bg2)}
-.process-item img{width:100%;height:auto;display:block}
-.process-item figcaption{
-  margin-top:10px;line-height:1.4;
+.studio-arrow:hover{opacity:1}
+.studio-prev{left:0}.studio-next{right:0}
+.studio-dots{display:flex;justify-content:center;gap:10px;margin-top:18px}
+.studio-dot{
+  width:7px;height:7px;border-radius:50%;border:1px solid var(--dim);
+  background:transparent;cursor:pointer;padding:0;transition:background 0.3s,border-color 0.3s
+}
+.studio-dot.on{background:var(--text);border-color:var(--text)}
+.studio-caption{
+  margin-top:14px;text-align:center;min-height:1em;
   font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim)
 }
+
+/* ── BIO META (facts + collapsible credits), under the slideshow ── */
+.bio-meta-wrap{
+  max-width:calc(var(--bio-max-width) + var(--content-pad) * 2);
+  margin:0 auto;padding:0 var(--content-pad) 120px
+}
+.bio-credits{margin-top:44px;border-top:1px solid var(--border)}
+.bio-credit{border-bottom:1px solid var(--border)}
+.bio-credit summary{
+  list-style:none;cursor:pointer;padding:20px 0;
+  display:flex;justify-content:space-between;align-items:center;gap:20px;
+  font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim);font-weight:500
+}
+.bio-credit summary::-webkit-details-marker{display:none}
+.bio-credit summary::after{content:'+';font-size:17px;line-height:1;color:var(--dim)}
+.bio-credit[open] summary::after{content:'\2013'}
+.bio-credit-list{list-style:none;margin:0;padding:0 0 20px}
+.bio-credit-list li{font-size:17px;color:var(--mid);line-height:1.6;padding:3px 0}
+.bio-credit-empty{font-size:15px;color:var(--dim);padding:0 0 20px}
 
 /* ── CONTACT ─────────────────────────────────────────────── */
 #page-contact{padding-top:0;background:var(--bg)}
@@ -568,10 +595,10 @@ a.nav-name{text-decoration:none}
      is guaranteed regardless of what settings.csv contains.               */
   .works-grid{
     max-width:100%;
-    padding:64px 16px 72px!important
+    padding:92px 16px 72px!important
   }
-  .bio-wrap{padding:64px 16px 60px!important;max-width:100%}
-  .contact-wrap{padding:64px 16px 60px!important}
+  .bio-wrap{padding:96px 16px 40px!important;max-width:100%}
+  .contact-wrap{padding:92px 16px 60px!important}
   /* Slim single-line footer on mobile (no wrapping) */
   .site-footer{padding:7px 16px!important;font-size:9px;letter-spacing:0.04em;white-space:nowrap;line-height:1}
   .footer-legal{gap:12px}
@@ -615,10 +642,11 @@ a.nav-name{text-decoration:none}
   .bio-fig--wide{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding-left:16px;padding-right:16px}
   .bio-fig{transform:none!important}
   .bio-details{gap:20px 32px}
-  /* Process strip: swipe instead of arrows, larger items */
-  .process{padding:0 16px 90px}
-  .process-arrows{display:none}
-  .process-item{width:86%}
+  /* Studio slideshow: swipe + dots, arrows hidden, taller crop */
+  .process{padding:0 16px 64px}
+  .studio-arrow{display:none}
+  .studio-stage{aspect-ratio:4/3}
+  .bio-meta-wrap{padding:0 16px 40px}
   .contact-list li{flex-direction:column;gap:4px;padding:14px 0}
   .contact-value{font-size:16px}
 }
@@ -626,7 +654,7 @@ a.nav-name{text-decoration:none}
 /* ─ Small mobile (≤480px) ─ */
 @media(max-width:480px){
   :root{--body-size:15px;--page-padding:14px;--content-pad:14px;--nav-name-size:12px;--nav-link-size:10px}
-  .works-grid{padding:60px 14px 64px!important}
+  .works-grid{padding:92px 14px 64px!important}
   .bio-wrap{padding-left:14px!important;padding-right:14px!important}
   .contact-wrap{padding-left:14px!important;padding-right:14px!important}
   /* Keep the name on a single line so the nav stays tidy */
@@ -699,13 +727,17 @@ a.nav-name{text-decoration:none}
   <h1 class="visually-hidden" id="h1-bio">Biography</h1>
   <div class="bio-wrap">
     <div class="bio-text" id="bio-text"></div>
+  </div>
+  <!-- Studio slideshow (single image + dots) — sits ABOVE the facts -->
+  <div class="process" id="bio-process" style="display:none"></div>
+  <div class="bio-meta-wrap">
     <div class="bio-meta">
       <img id="bio-photo" class="bio-photo-full" style="display:none" alt="Portrait of Roman Chystakhovskyi">
       <dl class="bio-details" id="bio-details"></dl>
+      <!-- Collapsible Exhibitions / Collections -->
+      <div class="bio-credits" id="bio-credits"></div>
     </div>
   </div>
-  <!-- Process / studio slideshow (populated from bio.csv process_* rows) -->
-  <div class="process" id="bio-process" style="display:none"></div>
 </section>
 
 <!-- CONTACT -->
@@ -830,10 +862,12 @@ function navigate(page,skipPush){
   window.scrollTo(0,0);
   const ft=document.getElementById('site-footer');
   if(ft)ft.style.display=page==='home'?'none':'flex';
-  /* Reveal chrome on every page change (reset the auto-hide state) */
-  _lastScrollY=0;_scrollAccum=0;_chromeHidden=false;
+  /* Reset the nav auto-hide on every page change; footer visibility is
+     decided by bottom-proximity once the new page has laid out. */
+  _lastScrollY=0;_scrollAccum=0;_navHidden=false;
   document.getElementById('main-nav').classList.remove('nav-hidden');
-  if(ft)ft.classList.remove('footer-hidden');
+  if(ft)ft.classList.add('footer-hidden');
+  requestAnimationFrame(()=>{if(typeof _updateFooter==='function')_updateFooter();});
 
   /* ── Hash routing (BRIEF §Architecture) ─────────────────── */
   if(!skipPush){
@@ -1582,11 +1616,36 @@ function renderBio(bio,s){
   const oldPhoto=document.getElementById('bio-photo');
   if(oldPhoto)oldPhoto.style.display='none';
 
-  // ── Details list ────────────────────────────────────────────────
+  // ── Facts (born / based / materials) ────────────────────────────
   let det='';
   for(let i=1;bio['detail_label_'+i];i++)
     det+=`<div><dt>${esc(bio['detail_label_'+i])}</dt><dd>${esc(bio['detail_value_'+i]||'')}</dd></div>`;
   document.getElementById('bio-details').innerHTML=det;
+
+  // ── Collapsible credits: Exhibitions / Collections ──────────────
+  // A dropdown is shown for each group whose *_heading is set in bio.csv
+  // (clear the heading to hide it). Items: exhibition_N / collection_N.
+  function creditGroup(heading,items){
+    if(!heading)return'';
+    const body=items.length
+      ? `<ul class="bio-credit-list">${items.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`
+      : `<div class="bio-credit-empty">None at this time.</div>`;
+    return `<details class="bio-credit"${items.length?' open':''}><summary>${esc(heading)}</summary>${body}</details>`;
+  }
+  function collect(prefix){
+    const re=new RegExp('^'+prefix+'\\d+$');
+    return Object.keys(bio).filter(k=>re.test(k))
+      .sort((a,b)=>parseInt(a.slice(prefix.length),10)-parseInt(b.slice(prefix.length),10))
+      .map(k=>(bio[k]||'').trim()).filter(Boolean);
+  }
+  const credits=document.getElementById('bio-credits');
+  if(credits){
+    const html=
+      creditGroup((bio.exhibitions_heading||'').trim(),collect('exhibition_'))+
+      creditGroup((bio.collections_heading||'').trim(),collect('collection_'));
+    credits.innerHTML=html;
+    credits.style.display=html?'':'none';
+  }
 
   renderProcess(bio);
 }
@@ -1615,31 +1674,53 @@ function renderProcess(bio){
   }
   if(!items.length){wrap.style.display='none';wrap.innerHTML='';return;}
   wrap.style.display='';
-  const heading=(bio.process_heading||'Process').trim();
-  const figs=items.map((it,i)=>
-    `<figure class="process-item">`+
-      `<div class="process-item-img"><img src="${esc(it.src)}" `+
-      `alt="${esc(it.cap||heading+' '+(i+1))}" loading="lazy" `+
-      `onerror="var f=this.closest('.process-item');if(f)f.style.display='none'"></div>`+
-      (it.cap?`<figcaption>${esc(it.cap)}</figcaption>`:'')+
-    `</figure>`).join('');
+  const heading=(bio.process_heading||'Studio').trim();
+  const multi=items.length>1;
+  const slides=items.map((it,i)=>
+    `<div class="studio-slide${i===0?' active':''}" data-idx="${i}">`+
+    `<img src="${esc(it.src)}" alt="${esc(it.cap||heading+' '+(i+1))}" `+
+    `loading="${i===0?'eager':'lazy'}" `+
+    `onerror="var s=this.closest('.studio-slide');if(s)s.style.visibility='hidden'"></div>`).join('');
+  const arrows=multi
+    ? `<button class="studio-arrow studio-prev" type="button" aria-label="Previous">&lt;</button>`+
+      `<button class="studio-arrow studio-next" type="button" aria-label="Next">&gt;</button>`
+    : '';
+  const dots=multi
+    ? `<div class="studio-dots">`+items.map((it,i)=>
+        `<button class="studio-dot${i===0?' on':''}" type="button" data-idx="${i}" aria-label="Photo ${i+1}"></button>`).join('')+`</div>`
+    : '';
   wrap.innerHTML=
-    `<div class="process-head"><span class="process-title">${esc(heading)}</span>`+
-    `<div class="process-arrows">`+
-    `<button class="process-arrow" type="button" aria-label="Previous" data-dir="-1">&lt;</button>`+
-    `<button class="process-arrow" type="button" aria-label="Next" data-dir="1">&gt;</button>`+
-    `</div></div>`+
-    `<div class="process-strip" id="process-strip">${figs}</div>`;
-  const strip=wrap.querySelector('#process-strip');
-  wrap.querySelectorAll('.process-arrow').forEach(btn=>{
-    btn.onclick=()=>{
-      const dir=parseInt(btn.dataset.dir,10)||1;
-      const item=strip.querySelector('.process-item');
-      const gap=parseFloat(getComputedStyle(strip).columnGap||getComputedStyle(strip).gap)||20;
-      const step=item?item.getBoundingClientRect().width+gap:strip.clientWidth*0.8;
-      strip.scrollBy({left:dir*step,behavior:'smooth'});
-    };
-  });
+    `<div class="process-head"><span class="process-title">${esc(heading)}</span></div>`+
+    `<div class="studio-stage" id="studio-stage">${slides}${arrows}</div>`+
+    dots+
+    `<div class="studio-caption" id="studio-caption"></div>`;
+
+  let idx=0;const n=items.length;
+  const stage=wrap.querySelector('#studio-stage');
+  const slideEls=[...wrap.querySelectorAll('.studio-slide')];
+  const dotEls=[...wrap.querySelectorAll('.studio-dot')];
+  const capEl=wrap.querySelector('#studio-caption');
+  function show(i){
+    idx=(i+n)%n;
+    slideEls.forEach((s,j)=>s.classList.toggle('active',j===idx));
+    dotEls.forEach((d,j)=>d.classList.toggle('on',j===idx));
+    if(capEl)capEl.textContent=items[idx].cap||'';
+  }
+  dotEls.forEach(d=>d.onclick=()=>show(parseInt(d.dataset.idx,10)));
+  const prev=wrap.querySelector('.studio-prev'),next=wrap.querySelector('.studio-next');
+  if(prev)prev.onclick=()=>show(idx-1);
+  if(next)next.onclick=()=>show(idx+1);
+  // Swipe (mobile)
+  if(multi){
+    let sx=0,sdrag=false;
+    stage.addEventListener('touchstart',e=>{if(e.touches.length===1){sdrag=true;sx=e.touches[0].clientX;}},{passive:true});
+    stage.addEventListener('touchend',e=>{
+      if(!sdrag)return;sdrag=false;
+      const dx=e.changedTouches[0].clientX-sx;
+      if(Math.abs(dx)>40)show(idx+(dx<0?1:-1));
+    });
+  }
+  show(0);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1819,33 +1900,43 @@ window.addEventListener('popstate',()=>handleHash(location.hash));
 // the moment you scroll up. Frees screen space (esp. on mobile).
 // ═══════════════════════════════════════════════════════════
 let _lastScrollY=0,_scrollTick=false;
-let _chromeHidden=false,_scrollAccum=0;
-const HIDE_AFTER=64;   // must scroll DOWN this many px (cumulative) to hide
-const SHOW_AFTER=44;   // must scroll UP this many px (cumulative) to show
-function _setChrome(hidden){
-  if(hidden===_chromeHidden)return;
-  _chromeHidden=hidden;
-  const nav=document.getElementById('main-nav');
+let _navHidden=false,_scrollAccum=0;
+const HIDE_AFTER=64;   // must scroll DOWN this many px (cumulative) to hide nav
+const SHOW_AFTER=44;   // must scroll UP this many px (cumulative) to show nav
+function _setNav(hidden){
+  if(hidden===_navHidden)return;
+  _navHidden=hidden;
+  document.getElementById('main-nav').classList.toggle('nav-hidden',hidden);
+}
+// The footer carries the (legally required but deliberately low-profile)
+// Impressum / Datenschutz links. It stays tucked into the bottom edge and
+// only slides up when you actually reach the END of a page.
+function _updateFooter(){
   const ft=document.getElementById('site-footer');
-  nav.classList.toggle('nav-hidden',hidden);
-  if(ft)ft.classList.toggle('footer-hidden',hidden);
+  if(!ft)return;
+  if(currentPage==='home'){ft.classList.add('footer-hidden');return;}
+  const y=window.scrollY||document.documentElement.scrollTop||0;
+  const docH=document.documentElement.scrollHeight;
+  const atBottom=(y+window.innerHeight)>=(docH-26);
+  ft.classList.toggle('footer-hidden',!atBottom);
 }
 function _updateChrome(){
   _scrollTick=false;
-  // Never auto-hide while the lightbox is open or on the home slideshow
   if(document.getElementById('lightbox').classList.contains('open'))return;
-  if(currentPage==='home')return;
+  if(currentPage==='home'){_updateFooter();return;}
   const y=Math.max(0,window.scrollY||document.documentElement.scrollTop||0);
   const dy=y-_lastScrollY;
   _lastScrollY=y;
-  // Always reveal near the very top
-  if(y<=80){_scrollAccum=0;_setChrome(false);return;}
-  // Reset the accumulator whenever direction flips, so a brief jitter
-  // can't cross the threshold — only a deliberate, sustained scroll does.
-  if((dy>0)!==(_scrollAccum>0))_scrollAccum=0;
-  _scrollAccum+=dy;
-  if(_scrollAccum>HIDE_AFTER)_setChrome(true);
-  else if(_scrollAccum<-SHOW_AFTER)_setChrome(false);
+  if(y<=80){_scrollAccum=0;_setNav(false);}
+  else{
+    // Reset the accumulator on a direction flip so jitter can't cross the
+    // threshold — only a deliberate, sustained scroll hides/shows the nav.
+    if((dy>0)!==(_scrollAccum>0))_scrollAccum=0;
+    _scrollAccum+=dy;
+    if(_scrollAccum>HIDE_AFTER)_setNav(true);
+    else if(_scrollAccum<-SHOW_AFTER)_setNav(false);
+  }
+  _updateFooter();
 }
 window.addEventListener('scroll',()=>{
   if(!_scrollTick){requestAnimationFrame(_updateChrome);_scrollTick=true;}
