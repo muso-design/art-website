@@ -85,6 +85,7 @@
   --lb-gallery-gap:2.5em;
   --lb-dots-offset:64px;--lb-panel-offset:56px;--lb-panel-width:240px;
   --bio-max-width:680px;--contact-max-width:760px;
+  --studio-max-width:1000px;--studio-ratio:16/10;
   --content-pad:32px;
   --ss-gradient-height:120px;--ss-gradient-opacity:0.5;
 }
@@ -179,8 +180,14 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 .work-card{background:transparent;cursor:pointer;position:relative;overflow:hidden}
 .work-img-wrap{overflow:hidden;aspect-ratio:var(--grid-img-ratio);background:var(--bg2);position:relative}
 .work-img{width:100%;height:100%;object-fit:cover;transition:transform 0.7s ease;display:block}
-/* hover: subtle zoom */
-.work-card:hover .work-img{transform:scale(1.04)}
+/* Hover-swap detail shot — cross-fades in over the main image */
+.work-img-hover{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  opacity:0;z-index:1;transition:opacity 0.45s ease,transform 0.7s ease
+}
+.work-card.has-hover:hover .work-img-hover{opacity:1}
+/* hover: subtle zoom (applies to whichever image is showing) */
+.work-card:hover .work-img,.work-card:hover .work-img-hover{transform:scale(1.04)}
 /* Below-image text — flush with the left edge of the square */
 .work-info{padding:12px 0 40px}
 .work-title{
@@ -382,17 +389,27 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 /* ── STUDIO SLIDESHOW (one horizontal image at a time + dots) ──────
    Sits between the bio text and the facts. Arrows on desktop, swipe
    + dots on mobile. Images come from bio.csv (process_* rows).      */
-.process{max-width:1080px;margin:0 auto;padding:0 var(--content-pad) 96px}
+.process{
+  max-width:calc(var(--studio-max-width) + var(--content-pad) * 2);
+  margin:0 auto;padding:0 var(--content-pad) 96px
+}
 .process-head{margin-bottom:22px}
 .process-title{
   font-size:var(--label-size);letter-spacing:0.3em;text-transform:uppercase;
   color:var(--dim);font-weight:500
 }
 .studio-stage{
-  position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;background:var(--bg2)
+  position:relative;width:100%;aspect-ratio:var(--studio-ratio,16/10);
+  overflow:hidden;background:var(--bg2)
 }
-.studio-slide{position:absolute;inset:0;opacity:0;transition:opacity 0.55s ease;pointer-events:none}
-.studio-slide.active{opacity:1;pointer-events:auto}
+/* Native horizontal scroll-snap = real finger-following swipe on mobile */
+.studio-track{
+  display:flex;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;overscroll-behavior-x:contain
+}
+.studio-track::-webkit-scrollbar{display:none}
+.studio-slide{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always}
 .studio-slide img{width:100%;height:100%;object-fit:cover;display:block}
 .studio-arrow{
   position:absolute;top:50%;transform:translateY(-50%);z-index:2;
@@ -455,6 +472,31 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 .contact-value{font-size:18px;color:var(--text);font-weight:400}
 .contact-value a{color:var(--text);text-decoration:none;border-bottom:1px solid transparent;transition:border-color 0.2s}
 .contact-value a:hover{border-bottom-color:var(--text)}
+
+/* ── NEWSLETTER (optional signup on the contact page) ──────────── */
+.newsletter{margin-top:72px;padding-top:48px;border-top:1px solid var(--border)}
+.newsletter-heading{
+  font-size:var(--label-size);letter-spacing:0.3em;text-transform:uppercase;
+  font-weight:500;color:var(--dim);margin-bottom:20px
+}
+.newsletter-note{font-size:15px;color:var(--mid);line-height:1.6;margin-bottom:24px;max-width:52ch}
+.newsletter-form{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.newsletter-form input[type=email]{
+  flex:1 1 280px;min-width:0;background:transparent;border:none;
+  border-bottom:1px solid var(--border);
+  font-family:var(--font);font-size:18px;color:var(--text);
+  padding:10px 2px;outline:none;transition:border-color 0.2s
+}
+.newsletter-form input[type=email]:focus{border-bottom-color:var(--text)}
+.newsletter-form input[type=email]::placeholder{color:var(--dim)}
+.newsletter-form button{
+  background:none;border:1px solid var(--text);color:var(--text);
+  font-family:var(--font);font-size:13px;letter-spacing:0.18em;text-transform:uppercase;
+  padding:12px 28px;cursor:pointer;transition:background 0.2s,color 0.2s;white-space:nowrap
+}
+.newsletter-form button:hover{background:var(--text);color:var(--bg)}
+.newsletter-consent{font-size:12px;color:var(--dim);line-height:1.5;margin-top:16px}
+.newsletter-consent a{color:var(--mid)}
 
 /* ── FOOTER ──────────────────────────────────────────────── */
 .site-footer{
@@ -747,6 +789,8 @@ a.nav-name{text-decoration:none}
     <div class="contact-header" aria-hidden="true">Contact</div>
     <p class="contact-intro" id="contact-intro"></p>
     <ul class="contact-list" id="contact-list"></ul>
+    <!-- Newsletter signup (shown only when newsletter_action is set in settings.csv) -->
+    <div class="newsletter" id="newsletter" style="display:none"></div>
   </div>
 </section>
 
@@ -952,6 +996,7 @@ function slidePrev(){ssGo((ssIdx-1+ssSlides.length)%ssSlides.length)}
 // WORKS + LIGHTBOX
 // ═══════════════════════════════════════════════════════════
 let works=[],lbIdx=0,_zoomImgs=[],_zoomImgIdx=0;
+let _hoverSwap=true; // gallery thumbnail hover-swap (set from settings.csv)
 
 function renderWorks(data){
   works=data.filter(w=>w.title||w.image);
@@ -961,10 +1006,14 @@ function renderWorks(data){
     const c=document.createElement('div');
     c.className='work-card';
     c.onclick=()=>openLb(i);
+    const mainImg=(w.image||'').replace(/\\/g,'/');
+    const hover=_hoverSwap?(w.hover_image||'').trim().replace(/\\/g,'/'):'';
+    if(hover)c.classList.add('has-hover');
     c.innerHTML=`
       <div class="work-img-wrap">
-        <img class="work-img" src="${esc(w.image)}" alt="${esc(w.title)}" loading="lazy"
+        <img class="work-img" src="${esc(mainImg)}" alt="${esc(w.title)}" loading="lazy"
              onerror="this.classList.add('error')" width="800" height="1000">
+        ${hover?`<img class="work-img-hover" src="${esc(hover)}" alt="" aria-hidden="true" loading="lazy">`:''}
       </div>
       <div class="work-info">
         <div class="work-title">${esc(w.title)}</div>
@@ -1677,7 +1726,7 @@ function renderProcess(bio){
   const heading=(bio.process_heading||'Studio').trim();
   const multi=items.length>1;
   const slides=items.map((it,i)=>
-    `<div class="studio-slide${i===0?' active':''}" data-idx="${i}">`+
+    `<div class="studio-slide" data-idx="${i}">`+
     `<img src="${esc(it.src)}" alt="${esc(it.cap||heading+' '+(i+1))}" `+
     `loading="${i===0?'eager':'lazy'}" `+
     `onerror="var s=this.closest('.studio-slide');if(s)s.style.visibility='hidden'"></div>`).join('');
@@ -1691,36 +1740,33 @@ function renderProcess(bio){
     : '';
   wrap.innerHTML=
     `<div class="process-head"><span class="process-title">${esc(heading)}</span></div>`+
-    `<div class="studio-stage" id="studio-stage">${slides}${arrows}</div>`+
+    `<div class="studio-stage"><div class="studio-track" id="studio-track">${slides}</div>${arrows}</div>`+
     dots+
     `<div class="studio-caption" id="studio-caption"></div>`;
 
-  let idx=0;const n=items.length;
-  const stage=wrap.querySelector('#studio-stage');
-  const slideEls=[...wrap.querySelectorAll('.studio-slide')];
+  const n=items.length;
+  const track=wrap.querySelector('#studio-track');
   const dotEls=[...wrap.querySelectorAll('.studio-dot')];
   const capEl=wrap.querySelector('#studio-caption');
-  function show(i){
-    idx=(i+n)%n;
-    slideEls.forEach((s,j)=>s.classList.toggle('active',j===idx));
-    dotEls.forEach((d,j)=>d.classList.toggle('on',j===idx));
-    if(capEl)capEl.textContent=items[idx].cap||'';
+  function current(){return track.clientWidth?Math.round(track.scrollLeft/track.clientWidth):0;}
+  function update(){
+    const i=Math.max(0,Math.min(n-1,current()));
+    dotEls.forEach((d,j)=>d.classList.toggle('on',j===i));
+    if(capEl)capEl.textContent=(items[i]&&items[i].cap)||'';
   }
-  dotEls.forEach(d=>d.onclick=()=>show(parseInt(d.dataset.idx,10)));
+  function goTo(i){
+    i=Math.max(0,Math.min(n-1,i));
+    track.scrollTo({left:i*track.clientWidth,behavior:'smooth'});
+  }
+  let raf=false;
+  track.addEventListener('scroll',()=>{
+    if(!raf){raf=true;requestAnimationFrame(()=>{raf=false;update();});}
+  },{passive:true});
+  dotEls.forEach((d,i)=>d.onclick=()=>goTo(i));
   const prev=wrap.querySelector('.studio-prev'),next=wrap.querySelector('.studio-next');
-  if(prev)prev.onclick=()=>show(idx-1);
-  if(next)next.onclick=()=>show(idx+1);
-  // Swipe (mobile)
-  if(multi){
-    let sx=0,sdrag=false;
-    stage.addEventListener('touchstart',e=>{if(e.touches.length===1){sdrag=true;sx=e.touches[0].clientX;}},{passive:true});
-    stage.addEventListener('touchend',e=>{
-      if(!sdrag)return;sdrag=false;
-      const dx=e.changedTouches[0].clientX-sx;
-      if(Math.abs(dx)>40)show(idx+(dx<0?1:-1));
-    });
-  }
-  show(0);
+  if(prev)prev.onclick=()=>goTo(current()-1);
+  if(next)next.onclick=()=>goTo(current()+1);
+  update();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1735,6 +1781,32 @@ function renderContact(c,s){
       <span class="contact-label">${esc(label)}</span>
       <span class="contact-value">${link?`<a href="${esc(link)}">${esc(val)}</a>`:esc(val)}</span>
     </li>`;
+  }
+
+  // ── Newsletter (only renders once you paste your provider's form URL) ──
+  // Posts straight to your email service (Buttondown / Mailchimp / EmailOctopus
+  // …) — no backend here. Use a provider with DOUBLE OPT-IN for GDPR.
+  const nl=document.getElementById('newsletter');
+  if(nl){
+    const action=(s&&s.newsletter_action||'').trim();
+    if(!action){nl.style.display='none';nl.innerHTML='';}
+    else{
+      nl.style.display='';
+      const heading=esc((s.newsletter_heading||'Newsletter').trim());
+      const note=(s.newsletter_note||'').trim();
+      const btn=esc((s.newsletter_button||'Subscribe').trim());
+      const field=esc((s.newsletter_email_field||'email').trim());
+      const consent=(s.newsletter_consent||
+        'By subscribing you agree your email is processed by our newsletter provider. See the privacy policy.').trim();
+      nl.innerHTML=
+        `<div class="newsletter-heading">${heading}</div>`+
+        (note?`<p class="newsletter-note">${esc(note)}</p>`:'')+
+        `<form class="newsletter-form" action="${esc(action)}" method="post" target="_blank" rel="noopener">`+
+        `<input type="email" name="${field}" required autocomplete="email" placeholder="your@email.com" aria-label="Email address">`+
+        `<button type="submit">${btn}</button>`+
+        `</form>`+
+        `<p class="newsletter-consent">${esc(consent)} <a href="datenschutz.html">Datenschutz</a></p>`;
+    }
   }
 }
 
@@ -1774,6 +1846,11 @@ function applySettings(s){
   v('--lb-panel-offset','lightbox_panel_offset');
   v('--lb-panel-width','lightbox_panel_width');
   v('--bio-max-width','bio_max_width');
+  v('--studio-max-width','studio_max_width');
+  v('--studio-ratio','studio_ratio');
+
+  /* Gallery thumbnail hover-swap toggle (default on) */
+  _hoverSwap=!['no','off','false','0'].includes(String(s.gallery_hover_swap||'').toLowerCase().trim());
   v('--contact-max-width','contact_max_width');
   v('--content-pad','spacing_content_padding');
   v('--ss-gradient-height','slideshow_gradient_height');
@@ -1909,17 +1986,47 @@ function _setNav(hidden){
   document.getElementById('main-nav').classList.toggle('nav-hidden',hidden);
 }
 // The footer carries the (legally required but deliberately low-profile)
-// Impressum / Datenschutz links. It stays tucked into the bottom edge and
-// only slides up when you actually reach the END of a page.
-function _updateFooter(){
-  const ft=document.getElementById('site-footer');
-  if(!ft)return;
-  if(currentPage==='home'){ft.classList.add('footer-hidden');return;}
+// Impressum / Datenschutz links. It stays tucked away and only slides up when
+// you OVERSCROLL past the end of a page — i.e. you reach the bottom and keep
+// pushing a little further. On a non-scrollable page it likewise needs that
+// extra push, so it never just appears on its own.
+let _overscroll=0,_footerShown=false;
+const FOOTER_REVEAL=80; // extra px to push past the end before it reveals
+function _atPageBottom(){
   const y=window.scrollY||document.documentElement.scrollTop||0;
-  const docH=document.documentElement.scrollHeight;
-  const atBottom=(y+window.innerHeight)>=(docH-26);
-  ft.classList.toggle('footer-hidden',!atBottom);
+  return (y+window.innerHeight)>=(document.documentElement.scrollHeight-2);
 }
+function _showFooter(on){
+  if(on===_footerShown)return;
+  _footerShown=on;
+  const ft=document.getElementById('site-footer');
+  if(ft)ft.classList.toggle('footer-hidden',!on);
+}
+function _footerReset(){_overscroll=0;_showFooter(false);}
+function _updateFooter(){
+  // Tuck the footer away again the moment we move off the very bottom.
+  if(currentPage==='home'||!_atPageBottom())_footerReset();
+}
+function _footerOverscroll(amount){
+  if(currentPage==='home')return;
+  if(document.getElementById('lightbox').classList.contains('open'))return;
+  if(amount>0&&_atPageBottom()){
+    _overscroll=Math.min(FOOTER_REVEAL+60,_overscroll+amount);
+    if(_overscroll>=FOOTER_REVEAL)_showFooter(true);
+  }else if(amount<0){
+    _footerReset();
+  }
+}
+window.addEventListener('wheel',e=>_footerOverscroll(e.deltaY),{passive:true});
+let _ftTouchY=null;
+window.addEventListener('touchstart',e=>{_ftTouchY=e.touches.length===1?e.touches[0].clientY:null;},{passive:true});
+window.addEventListener('touchmove',e=>{
+  if(_ftTouchY===null||e.touches.length!==1)return;
+  const y=e.touches[0].clientY,dy=_ftTouchY-y;  // dy>0 = pushing up toward the end
+  _ftTouchY=y;
+  _footerOverscroll(dy>0?dy:-1);
+},{passive:true});
+window.addEventListener('touchend',()=>{_ftTouchY=null;},{passive:true});
 function _updateChrome(){
   _scrollTick=false;
   if(document.getElementById('lightbox').classList.contains('open'))return;

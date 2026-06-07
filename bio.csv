@@ -22,7 +22,7 @@
 "#   image_N_rotation   →  tilt in degrees"," e.g. -2  or  1.5  (blank/0 = straight)",
 "#   image_N_width      →  size for center/left/right"," e.g. 460px or 60%  (blank = default)",
 "#   image_N_caption    →  small caption shown under the image  (blank = none)",,
-"image_1","images/roman_chystakhovskyi_studio.jpg","Path to the image file"
+"image_1","images\roman_chystakhovskyi_studio.jpg","Path to the image file"
 "image_1_placement","left","How this image sits in the text (see options above)"
 "image_1_after",1,"Place it after the first paragraph"
 "image_1_ratio","3/2","Crop ratio (this studio photo is landscape 3:2)"

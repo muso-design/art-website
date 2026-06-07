@@ -65,6 +65,7 @@
 "grid_columns_mobile",2,"Columns on PHONE (screens up to 620px wide). Use 1 for one big image per row."
 "grid_max_width","1500px","Max total width of the gallery. SMALLER = smaller thumbnails. Bigger = larger."
 "grid_image_ratio","1/1","Thumbnail shape. 1/1 (square)  4/5 (portrait)  3/4  16/9 (landscape)."
+"gallery_hover_swap","yes","Hover a thumbnail to cross-fade to its hover_image (set per work in works.csv). yes = swap  no = just the zoom."
 "#",,
 "# ── LIGHTBOX ──────────────────────────────────────────────────────────────────",,
 "# Settings for the artwork detail view (the full-screen gallery that opens when you click a work).",,
@@ -76,9 +77,28 @@
 "lightbox_panel_width","240px","Width of the info panel (title  series  details)."
 "lightbox_zoom_level","2.5","How much the image zooms when clicked. 2 = double size  3 = triple size. Applies once — click again to zoom out."
 "#",,
-"# ── PAGES ─────────────────────────────────────────────────────────────────────",,
-"bio_max_width","760px","Maximum width of the bio text column. Use a smaller value for a narrower centered column."
+"# ── BIO PAGE LAYOUT ───────────────────────────────────────────────────────────",,
+"# bio_max_width and studio_max_width are kept equal by default so the text and",,
+"# the studio slideshow line up. All values are responsive (they shrink to fit",,
+"# smaller screens). The studio image's own position/size is set in bio.csv.",,
+"bio_max_width","1000px","Width of the bio text + portrait column. (Match studio_max_width to align them.)"
+"studio_max_width","1000px","Width of the studio slideshow."
+"studio_ratio","16/10","Shape of the studio slideshow frame. e.g. 16/10  3/2  4/3  1/1  21/9."
 "contact_max_width","760px","Maximum width of the contact page content."
+"#",,
+"# ── NEWSLETTER (optional) ─────────────────────────────────────────────────────",,
+"# A signup box appears on the Contact page ONLY when newsletter_action is filled.",,
+"# Sign up with a newsletter provider that offers DOUBLE OPT-IN (required for GDPR):",,
+"#   Buttondown, EmailOctopus, MailerLite, Mailchimp, or German ones like Rapidmail.",,
+"# In the provider's ""embedded form"" / ""form action"" settings, copy the form's POST",,
+"# URL into newsletter_action, and the email field's name into newsletter_email_field",,
+"# (Buttondown: email   Mailchimp: EMAIL   EmailOctopus: usually email_address).",,
+"newsletter_action",,"Paste your provider's form POST URL here to switch the signup ON. Empty = hidden."
+"newsletter_email_field","email","The name of the email field your provider expects (see note above)."
+"newsletter_heading","Newsletter","Small heading above the signup."
+"newsletter_note","Occasional notes on new work, exhibitions, and studio happenings. No spam, unsubscribe anytime.","One line shown above the email field."
+"newsletter_button","Subscribe","Text on the submit button."
+"newsletter_consent","By subscribing you agree your email is handled by my newsletter provider for this purpose only.","Small consent line (a Datenschutz link is added automatically)."
 "#",,
 "# ── SLIDESHOW ─────────────────────────────────────────────────────────────────",,
 "# Add images by filling in slideshow_1  slideshow_2  slideshow_3  …",,

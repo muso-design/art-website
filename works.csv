@@ -1,47 +1,50 @@
-"id","title","series","year","material","dimensions","description","image","available","image_2","image_3","image_4","more_images"
-"# ════════════════════════════════════════════════════════════════════════════════",,,,,,,,,,,,
-"# WORKS.CSV  —  One row per artwork. Each row adds one card to the Works page.",,,,,,,,,,,,
-"# HOW TO EDIT:  Fill in columns for each piece. Order in this file = order on site.",,,,,,,,,,,,
-"# IMAGES:       Put image files in the images/ folder. Path example: images/mywork.webp",,,,,,,,,,,,
-"#               Recommended size: 2000px on the longest side  JPEG or WebP at 80% quality.",,,,,,,,,,,,
-"# COMMENTS:     Any row whose first cell starts with # is ignored by the site.",,,,,,,,,,,,
-"# LONG TEXT:    Wrap any cell containing commas or line breaks in double quotes  ""like this"".",,,,,,,,,,,,
-"#               To include a literal quote inside a cell  write it as two quotes: """"like this""""",,,,,,,,,,,,
-"# ════════════════════════════════════════════════════════════════════════════════",,,,,,,,,,,,
-"#",,,,,,,,,,,,
-"# Column guide:",,,,,,,,,,,,
-"#   id          — A unique reference code for yourself (not shown on site). E.g.  001  vl-03",,,,,,,,,,,,
-"#   title       — Artwork title shown on the card and in the lightbox",,,,,,,,,,,,
-"#   series      — Series name shown under the title. Must match exactly if grouping.",,,,,,,,,,,,
-"#   year        — Year created. Shown in the lightbox.",,,,,,,,,,,,
-"#   material    — Materials used. Shown in the lightbox. E.g.  Polymer clay  resin cast",,,,,,,,,,,,
-"#   dimensions  — Size of the work. E.g.  40 × 30 × 28 cm",,,,,,,,,,,,
-"#   description — Optional longer text shown at the bottom of the lightbox. Can be many sentences.",,,,,,,,,,,,
-"#   image       — Path to the MAIN image (also used as the thumbnail). E.g.  images/too_much.webp",,,,,,,,,,,,
-"#   available   — Availability status shown in lightbox. E.g.  Available  Sold  NFS  On loan",,,,,,,,,,,,
-"#   image_2     — Optional EXTRA views of the SAME piece (image_2, image_3, image_4).",,,,,,,,,,,,
-"#   image_3       Each one shows as another scrollable image inside the lightbox.",,,,,,,,,,,,
-"#   image_4       Leave blank if the piece has only one photo.",,,,,,,,,,,,
-"#   more_images — FAST way to add many photos at once: paste several paths in",,,,,,,,,,,,
-"#                 this ONE cell, separated by a vertical bar |  (or line breaks).",,,,,,,,,,,,
-"#                 Example:  images/a.jpg | images/b.jpg | images/c.jpg",,,,,,,,,,,,
-"#                 These are added after image / image_2…  Duplicates are ignored.",,,,,,,,,,,,
-"#",,,,,,,,,,,,
-1,"Too Much","Reflexions",2026,"Acrylyc gypsum","58 x 58 x 15 cm","""Too Much Will Never Be Enough"" ","images/roman_chystakhovskyi_too_much.webp","available","images\roman_chystakhovskyi_too_much_closeup_01.jpg","images\roman_chystakhovskyi_too_much_closeup_02.jpg",,"images\too_much\roman_chystakhovskyi_too_much-16.jpg
-images\too_much\roman_chystakhovskyi_too_much-2_edit.jpg
-images\too_much\roman_chystakhovskyi_too_much-4_edit.jpg
-images\too_much\roman_chystakhovskyi_too_much-5.jpg
-images\too_much\roman_chystakhovskyi_too_much-6_edit.jpg
-images\too_much\roman_chystakhovskyi_too_much-7.jpg
-images\too_much\roman_chystakhovskyi_too_much-11.jpg
-images\too_much\roman_chystakhovskyi_too_much-13_edit.jpg
-images\too_much\roman_chystakhovskyi_too_much-15.jpg"
-2,"Through your eyes","Reflexions",2026,"Acrylyc gypsum","57 x 45 x 15 cm","“Few, if anyone, will ever see the world Through your eyes” ","images/roman_chystakhovskyi_through_your_eyes_main.webp","available","images\roman_chystakhovskyi_through_your_eyes_closeup_01.jpg",,,"images\though_your_eyes\thr_ur_eyes-11.jpg | images\though_your_eyes\thr_ur_eyes-2.jpg | images\though_your_eyes\thr_ur_eyes-3.jpg
-images\though_your_eyes\thr_ur_eyes-4.jpg
-images\though_your_eyes\thr_ur_eyes-5.jpg
-images\though_your_eyes\thr_ur_eyes-6.jpg
-images\though_your_eyes\thr_ur_eyes-7.jpg
-images\though_your_eyes\thr_ur_eyes-8.jpg
-images\though_your_eyes\thr_ur_eyes-9.jpg
-images\though_your_eyes\thr_ur_eyes-10.jpg"
-3,"With A Smile","Reflexions",2026,"Acrylyc gypsum","58 x 30 x 15 cm","“It's all started with a smile, I know, but it won't come back” ","images\roman_chystakhovskyi_with_smile_main.jpg","available","images\roman_chystakhovskyi_with_smile_closeup_01.jpg","images\roman_chystakhovskyi_with_smile_side_01.jpg",,
+"id","title","series","year","material","dimensions","description","image","available","more_images","hover_image"
+"# ════════════════════════════════════════════════════════════════════════════════",,,,,,,,,,
+"# WORKS.CSV  —  One row per artwork. Each row adds one card to the Works page.",,,,,,,,,,
+"# HOW TO EDIT:  Fill in columns for each piece. Order in this file = order on site.",,,,,,,,,,
+"# IMAGES:       Put image files in the images/ folder. Path example: images/mywork.webp",,,,,,,,,,
+"#               Recommended size: 2000px on the longest side  JPEG or WebP at 80% quality.",,,,,,,,,,
+"# COMMENTS:     Any row whose first cell starts with # is ignored by the site.",,,,,,,,,,
+"# LONG TEXT:    Wrap any cell containing commas or line breaks in double quotes  ""like this"".",,,,,,,,,,
+"#               To include a literal quote inside a cell  write it as two quotes: """"like this""""",,,,,,,,,,
+"# ════════════════════════════════════════════════════════════════════════════════",,,,,,,,,,
+"#",,,,,,,,,,
+"# Column guide:",,,,,,,,,,
+"#   id          — A unique reference code for yourself (not shown on site). E.g.  001  vl-03",,,,,,,,,,
+"#   title       — Artwork title shown on the card and in the lightbox",,,,,,,,,,
+"#   series      — Series name shown under the title. Must match exactly if grouping.",,,,,,,,,,
+"#   year        — Year created. Shown in the lightbox.",,,,,,,,,,
+"#   material    — Materials used. Shown in the lightbox. E.g.  Polymer clay  resin cast",,,,,,,,,,
+"#   dimensions  — Size of the work. E.g.  40 × 30 × 28 cm",,,,,,,,,,
+"#   description — Optional longer text shown at the bottom of the lightbox. Can be many sentences.",,,,,,,,,,
+"#   image       — Path to the MAIN image (also used as the thumbnail). E.g.  images/too_much.webp",,,,,,,,,,
+"#   available   — Availability status shown in lightbox. E.g.  Available  Sold  NFS  On loan",,,,,,,,,,
+"#   image_2     — Optional EXTRA views of the SAME piece (image_2, image_3, image_4).",,,,,,,,,,
+"#   image_3       Each one shows as another scrollable image inside the lightbox.",,,,,,,,,,
+"#   image_4       Leave blank if the piece has only one photo.",,,,,,,,,,
+"#   more_images — FAST way to add many photos at once: paste several paths in",,,,,,,,,,
+"#                 this ONE cell, separated by a vertical bar |  (or line breaks).",,,,,,,,,,
+"#                 Example:  images/a.jpg | images/b.jpg | images/c.jpg",,,,,,,,,,
+"#                 These are added after image / image_2…  Duplicates are ignored.",,,,,,,,,,
+"#   hover_image — A detail shot shown when the cursor hovers the thumbnail in the",,,,,,,,,,
+"#                 gallery (it cross-fades in). Leave blank for no swap on that piece.",,,,,,,,,,
+"#                 Turn the whole effect on/off with gallery_hover_swap in settings.csv.",,,,,,,,,,
+"#                 To swap which photo is the resting vs hover image, swap image <-> hover_image.",,,,,,,,,,
+"#",,,,,,,,,,
+1,"Too Much","Reflexions",2026,"Acrylyc gypsum","58 x 58 x 15 cm","""Too Much Will Never Be Enough"" ","images/too_much/roman_chystakhovskyi_too_much.webp","available","images\too_much\roman_chystakhovskyi_too_much.webp | images\too_much\roman_chystakhovskyi_too_much-5.webp
+images\too_much\roman_chystakhovskyi_too_much-6_edit.webp
+images\too_much\roman_chystakhovskyi_too_much-7.webp
+images\too_much\roman_chystakhovskyi_too_much-11.webp
+images\too_much\roman_chystakhovskyi_too_much-13_edit.webp
+images\too_much\roman_chystakhovskyi_too_much-15.webp
+images\too_much\roman_chystakhovskyi_too_much-16.webp
+images\too_much\roman_chystakhovskyi_too_much_closeup_01.webp
+images\too_much\roman_chystakhovskyi_too_much_closeup_02.webp
+images\too_much\roman_chystakhovskyi_too_much-2_edit.webp
+images\too_much\roman_chystakhovskyi_too_much-4_edit.webp","images\too_much\roman_chystakhovskyi_too_much_closeup_01.webp"
+2,"Through your eyes","Reflexions",2026,"Acrylyc gypsum","57 x 45 x 15 cm","“Few, if anyone, will ever see the world Through your eyes” ","images\though_your_eyes\roman_chystakhovskyi_through_your_eyes_main.jpg","available","images\though_your_eyes\roman_chystakhovskyi_through_your_eyes_closeup_03.jpg
+images\though_your_eyes\roman_chystakhovskyi_through_your_eyes_closeup_01.jpg
+images\though_your_eyes\roman_chystakhovskyi_through_your_eyes_closeup_02.jpg
+images\though_your_eyes\roman_chystakhovskyi_through_your_eyes_main.jpg","images\though_your_eyes\roman_chystakhovskyi_through_your_eyes_closeup_01.jpg"
+3,"With A Smile","Reflexions",2026,"Acrylyc gypsum","58 x 30 x 15 cm","“It's all started with a smile, I know, but it won't come back” ","images\with_a_smile\roman_chystakhovskyi_with_smile_main.jpg","available","images\with_a_smile\roman_chystakhovskyi_with_smile_main.jpg | images\with_a_smile\roman_chystakhovskyi_with_smile_closeup_02.jpg
+images\with_a_smile\roman_chystakhovskyi_with_smile_closeup_01.jpg","images\with_a_smile\roman_chystakhovskyi_with_smile_closeup_01.jpg"
