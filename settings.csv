@@ -50,7 +50,7 @@
 "# ── SPACING ───────────────────────────────────────────────────────────────────",,
 "spacing_page_padding","60px","Left and right padding on all pages. Reduce for less white space."
 "spacing_grid_gap","56px","Gap between gallery thumbnails. Flexible units OK e.g. clamp(28px 4vw 72px) (keep it in ONE cell). 16px tight  56px generous."
-"spacing_nav_padding","24px","Vertical padding inside the navigation bar (top and bottom). Larger = taller nav."
+"spacing_nav_padding","20px","Vertical padding inside the navigation bar (top and bottom). Larger = taller nav."
 "spacing_footer_padding","20px","Vertical padding inside the footer bar."
 "spacing_content_padding","48px","Minimum side padding for page content (works grid  bio  contact). Changing this does NOT affect the nav or footer — those use spacing_page_padding."
 "#",,
