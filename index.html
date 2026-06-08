@@ -172,29 +172,24 @@ nav.light .nav-burger{color:#ffffff}
 /* ── HOME / SLIDESHOW ────────────────────────────────────── */
 #page-home{padding-top:0}
 .slideshow{position:relative;width:100%;height:100vh;overflow:hidden;background:#111}
-.slideshow.ss-grab{cursor:grab}
-.slideshow.ss-grab:active{cursor:grabbing}
-.slide{
-  position:absolute;inset:0;opacity:0;
-  transition:opacity var(--slide-transition) ease
+/* Home images: a horizontal scroll-snap track (animated slide transitions).
+   Desktop: overflow hidden = no manual scroll, JS auto-advances.
+   Mobile: overflow auto = native swipe; vertical gestures fall through to the
+   page (touch-action:pan-x), so scrolling vs swiping never fight.            */
+.ss-track{
+  display:flex;width:100%;height:100%;
+  overflow-x:hidden;overflow-y:hidden;
+  scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x
 }
-.slide.active{opacity:1}
-.slide img{width:100%;height:100%;object-fit:cover;display:block}
+.ss-track::-webkit-scrollbar{display:none}
+.ss-slide{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;position:relative}
+.ss-slide img{width:100%;height:100%;object-fit:cover;display:block}
 .slide-caption{
   position:absolute;bottom:48px;left:var(--page-padding);
   color:rgba(255,255,255,0.6);font-size:12px;letter-spacing:0.1em;
-  text-transform:uppercase
+  text-transform:uppercase;z-index:5
 }
 .ss-arrows{display:none}
-.ss-dots{
-  position:absolute;bottom:52px;right:var(--page-padding);
-  display:none;gap:12px;z-index:5
-}
-.ss-dot{
-  width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.3);
-  border:none;cursor:pointer;transition:background 0.25s;padding:0
-}
-.ss-dot.active{background:#ffffff}
 
 /* Top gradient for nav legibility */
 .slideshow::after{
@@ -670,6 +665,10 @@ a.nav-name{text-decoration:none}
   }
 
   /* NAV: name + hamburger only; the links become a full-screen slide-in menu */
+  /* Drop backdrop-filter AND will-change on mobile — either one makes nav the
+     containing block for the fixed menu, shrinking it to the bar. (Nav is
+     opaque here anyway, and the auto-hide transform still works without the hint.) */
+  nav{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;will-change:auto!important}
   nav.dark{
     background:var(--bg)!important;
     border-bottom:1px solid var(--border)!important
@@ -724,8 +723,8 @@ a.nav-name{text-decoration:none}
   .footer-legal{gap:12px}
   .footer-legal a{font-size:9px;letter-spacing:0.04em;line-height:1}
   .slide-caption{left:20px!important;bottom:52px}
-  .ss-dots{right:20px!important;bottom:16px}
-  .ss-dot{width:6px;height:6px;padding:6px;box-sizing:content-box}
+  /* Mobile: allow finger-swipe of the home images */
+  .ss-track{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 
   /* Lightbox — whole container scrolls; panel flows below gallery */
   .lightbox{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
@@ -935,6 +934,32 @@ function initTheme(){
 }
 
 // ═══════════════════════════════════════════════════════════
+// MOBILE NAV MENU (hamburger)
+// ═══════════════════════════════════════════════════════════
+function setNavOpen(open){
+  const nav=document.getElementById('main-nav');
+  const burger=document.getElementById('nav-burger');
+  if(!nav)return;
+  nav.classList.toggle('nav-open',open);
+  if(burger){
+    burger.setAttribute('aria-expanded',open?'true':'false');
+    burger.setAttribute('aria-label',open?'Close menu':'Open menu');
+  }
+  document.body.style.overflow=open?'hidden':'';
+}
+function initNavMenu(){
+  const nav=document.getElementById('main-nav');
+  const burger=document.getElementById('nav-burger');
+  if(!burger)return;
+  burger.onclick=()=>setNavOpen(!nav.classList.contains('nav-open'));
+  // Close after choosing a page
+  nav.querySelectorAll('.nav-links a[href^="#/"], #nav-name').forEach(a=>
+    a.addEventListener('click',()=>setNavOpen(false)));
+  // Escape closes it
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&nav.classList.contains('nav-open'))setNavOpen(false);});
+}
+
+// ═══════════════════════════════════════════════════════════
 // CSV PARSER — handles quoted fields and multiline cell text
 // Standard rules: fields wrapped in "…" may contain commas
 // and line breaks; "" inside quotes means a literal quote.
@@ -1072,65 +1097,74 @@ function navigate(page,skipPush){
 // SLIDESHOW
 // ═══════════════════════════════════════════════════════════
 let ssIdx=0,ssSlides=[],ssTimer=null,ssInterval=5000;
+let _ssTrack=null,_ssW=0,_ssReal=0,_ssN=0,_ssLoop=false;
 
 function buildSlideshow(s){
   const wrap=document.getElementById('slideshow');
-  const dots=document.getElementById('ss-dots');
   ssInterval=parseInt(s.slideshow_interval||'5000')||5000;
   ssSlides=[];
   for(let n=1;s['slideshow_'+n];n++)
     ssSlides.push({img:s['slideshow_'+n],cap:s['slideshow_caption_'+n]||''});
   if(!ssSlides.length)return;
-  const arrows=wrap.querySelector('.ss-arrows');
-  ssSlides.forEach((sl,i)=>{
-    const div=document.createElement('div');
-    div.className='slide'+(i===0?' active':'');
-    const im=document.createElement('img');im.src=sl.img;im.alt=sl.cap;im.draggable=false;
-    div.appendChild(im);
-    if(sl.cap){const c=document.createElement('div');c.className='slide-caption';c.textContent=sl.cap;div.appendChild(c)}
-    wrap.insertBefore(div,arrows);
-    const dot=document.createElement('button');
-    dot.className='ss-dot'+(i===0?' active':'');
-    dot.onclick=()=>{ssGo(i);ssRestart();};
-    dots.appendChild(dot);
+  const n=ssSlides.length;_ssN=n;_ssLoop=n>1;const loop=_ssLoop;
+
+  // Build the track. When looping, clone last→front and first→back so a
+  // swipe/auto-advance past the end continues seamlessly into the start.
+  const seq=[];
+  if(loop)seq.push(ssSlides[n-1]);
+  ssSlides.forEach(d=>seq.push(d));
+  if(loop)seq.push(ssSlides[0]);
+  const track=document.createElement('div');
+  track.className='ss-track';track.id='ss-track';
+  seq.forEach((d,i)=>{
+    const sl=document.createElement('div');sl.className='ss-slide';
+    const im=document.createElement('img');im.src=d.img;im.alt=d.cap||'';im.draggable=false;im.loading=i<=1?'eager':'lazy';
+    sl.appendChild(im);
+    if(d.cap){const c=document.createElement('div');c.className='slide-caption';c.textContent=d.cap;sl.appendChild(c);}
+    track.appendChild(sl);
   });
+  wrap.querySelectorAll('.slide,.ss-arrows,.ss-dots,.ss-track').forEach(el=>el.remove());
+  wrap.insertBefore(track,wrap.firstChild);
+  _ssTrack=track;
+
+  const rawIndex=()=>_ssW?Math.round(track.scrollLeft/_ssW):0;
+  const realFromRaw=raw=>loop?(((raw-1)%n)+n)%n:Math.max(0,Math.min(n-1,raw));
+  function settle(){
+    if(!loop||!_ssW)return;
+    const raw=rawIndex();
+    if(raw<=0)track.scrollLeft=n*_ssW;
+    else if(raw>=n+1)track.scrollLeft=_ssW;
+    _ssReal=realFromRaw(rawIndex());ssIdx=_ssReal;
+  }
+  let raf=false;
+  track.addEventListener('scroll',()=>{
+    if(!raf){raf=true;requestAnimationFrame(()=>{raf=false;_ssReal=realFromRaw(rawIndex());ssIdx=_ssReal;});}
+    clearTimeout(track._st);track._st=setTimeout(settle,120);
+  },{passive:true});
+  if('onscrollend' in window)track.addEventListener('scrollend',settle);
+  // Pause autoplay while the visitor is swiping, resume shortly after
+  track.addEventListener('touchstart',()=>{if(ssTimer)clearInterval(ssTimer);ssTimer=null;},{passive:true});
+  track.addEventListener('touchend',()=>{clearTimeout(track._au);track._au=setTimeout(ssRestart,1400);},{passive:true});
+
+  function layout(){const nw=track.clientWidth;if(!nw||nw===_ssW)return;_ssW=nw;track.scrollLeft=(loop?_ssReal+1:_ssReal)*_ssW;}
+  if(window.ResizeObserver)new ResizeObserver(layout).observe(track);
+  else window.addEventListener('resize',layout);
+  requestAnimationFrame(layout);
   ssRestart();
-  initHomeSwipe(wrap);
 }
 
+function ssGoTrack(dir){
+  if(!_ssTrack||!_ssW)return;
+  const raw=Math.round(_ssTrack.scrollLeft/_ssW);
+  _ssTrack.scrollTo({left:(raw+dir)*_ssW,behavior:'smooth'});
+}
 function ssRestart(){
   if(ssTimer)clearInterval(ssTimer);
-  if(ssInterval>0&&ssSlides.length>1)ssTimer=setInterval(slideNext,ssInterval);
+  if(ssInterval>0&&_ssLoop)ssTimer=setInterval(()=>ssGoTrack(1),ssInterval);
 }
-function ssGo(i){
-  document.querySelectorAll('.slide').forEach((s,j)=>s.classList.toggle('active',j===i));
-  document.querySelectorAll('.ss-dot').forEach((d,j)=>d.classList.toggle('active',j===i));
-  ssIdx=i;
-}
-function slideNext(){ssGo((ssIdx+1)%ssSlides.length)}
-function slidePrev(){ssGo((ssIdx-1+ssSlides.length)%ssSlides.length)}
-
-// Home slideshow is interactive from the start: swipe (touch) or click-drag
-// (mouse) to move between images. Manual moves reset the autoplay timer.
-function initHomeSwipe(wrap){
-  if(!wrap||ssSlides.length<2)return;
-  wrap.classList.add('ss-grab');
-  const advance=dx=>{if(dx<0)slideNext();else slidePrev();ssRestart();};
-  let sx=0,sy=0,td=false;
-  wrap.addEventListener('touchstart',e=>{if(e.touches.length===1){td=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;}},{passive:true});
-  wrap.addEventListener('touchend',e=>{
-    if(!td)return;td=false;
-    const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
-    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy))advance(dx);
-  });
-  let mx=0,md=false;
-  wrap.addEventListener('mousedown',e=>{if(e.button===0){md=true;mx=e.clientX;e.preventDefault();}});
-  window.addEventListener('mouseup',e=>{
-    if(!md)return;md=false;
-    const dx=e.clientX-mx;
-    if(Math.abs(dx)>55)advance(dx);
-  });
-}
+// Kept for the keyboard handler (arrow keys on the home page)
+function slideNext(){ssGoTrack(1);ssRestart();}
+function slidePrev(){ssGoTrack(-1);ssRestart();}
 
 // ═══════════════════════════════════════════════════════════
 // WORKS + LIGHTBOX
@@ -1959,6 +1993,16 @@ function renderContact(c,s){
     </li>`;
   }
 
+  // Mobile-menu Instagram icon — reuse the Instagram link from contact.csv
+  const navIg=document.getElementById('nav-instagram');
+  if(navIg){
+    let igUrl='';
+    for(let i=1;c['item_link_'+i];i++){if(/instagram\.com/i.test(c['item_link_'+i])){igUrl=c['item_link_'+i];break;}}
+    const li=navIg.closest('.nav-ig-item');
+    if(igUrl){navIg.href=igUrl;if(li)li.style.removeProperty('display');}
+    else if(li)li.style.display='none';
+  }
+
   // ── Newsletter ──────────────────────────────────────────────────
   // Submits over fetch() to whatever URL is in newsletter_action:
   //   • now (testing): the bundled dev server (serve.bat) accepts POST and
@@ -2387,6 +2431,7 @@ async function init(){
     const s=csvKV(st),w=csvObjs(wt),b=csvKV(bt),c=csvKV(ct);
     applySettings(s);
     initTheme();
+    initNavMenu();
     buildSlideshow(s);
     renderWorks(w);
     renderBio(b,s);
