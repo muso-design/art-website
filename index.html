@@ -87,7 +87,7 @@
   --bio-max-width:680px;--contact-max-width:760px;
   --studio-max-width:1000px;--studio-ratio:16/10;
   --content-pad:32px;
-  --ss-gradient-height:120px;--ss-gradient-opacity:0.5;
+  --ss-gradient-height:200px;--ss-gradient-opacity:0.55;--ss-gradient-intensity:0.4;
   --zoom-bg:rgba(255,255,255,0.97);
 }
 
@@ -110,7 +110,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;justify-content:space-between;align-items:center;
-  padding:var(--nav-v-pad) var(--page-padding);
+  /* Horizontal inset lines the name + links up with the gallery's content
+     edges at every width (uses the grid's own max-width + content padding). */
+  padding:var(--nav-v-pad) max(var(--content-pad), calc((100% - var(--grid-max-width) + var(--content-pad) * 2) / 2));
   transition:transform 0.4s cubic-bezier(0.4,0,0.2,1),background 0.3s,border-color 0.3s;
   will-change:transform;
 }
@@ -195,10 +197,16 @@ nav.light .nav-burger{color:#ffffff}
 .ss-arrows{display:none}
 
 /* Top gradient for nav legibility */
+/* Top scrim behind the nav — a vignette with 3 knobs (see settings.csv):
+   opacity = how dark at the very top, intensity = how far it holds that
+   darkness before fading, height = how far down it reaches.                */
 .slideshow::after{
   content:'';position:absolute;top:0;left:0;right:0;
   height:var(--ss-gradient-height);
-  background:linear-gradient(to bottom,rgba(0,0,0,var(--ss-gradient-opacity)),transparent);
+  background:linear-gradient(to bottom,
+    rgba(0,0,0,var(--ss-gradient-opacity)) 0%,
+    rgba(0,0,0,var(--ss-gradient-opacity)) calc(var(--ss-gradient-intensity,0.35) * 100%),
+    transparent 100%);
   z-index:4;pointer-events:none
 }
 
@@ -521,15 +529,22 @@ nav.light .nav-burger{color:#ffffff}
   font-size:calc(var(--body-size) * 1.2);
   line-height:1.6;color:var(--text);margin-bottom:64px;font-weight:300
 }
-/* Inquiry note — shown when arriving via a work's "Inquire" button */
+/* Inquiry box — shown when arriving via a work's "Inquire" button.
+   It IS the email button: tapping it opens the mail app, subject pre-filled. */
 .contact-inquiry{
-  display:inline-block;margin-bottom:36px;
+  display:inline-flex;align-items:center;gap:16px;flex-wrap:wrap;
+  margin-bottom:36px;text-decoration:none;cursor:pointer;
   font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:var(--mid);
-  padding:11px 18px;border:1px solid var(--border);border-radius:2px;
-  background:var(--bg2)
+  padding:14px 20px;border:1px solid var(--text);border-radius:2px;
+  background:var(--bg2);transition:background 0.2s,color 0.2s
 }
-.contact-inquiry strong{color:var(--text);font-weight:500}
-.contact-inquiry[hidden]{display:none} /* author display:inline-block would otherwise beat [hidden] */
+.contact-inquiry strong{color:var(--text);font-weight:600}
+.contact-inquiry .contact-inquiry-cta{
+  color:var(--text);font-weight:600;letter-spacing:0.14em;white-space:nowrap
+}
+.contact-inquiry:hover{background:var(--text);color:var(--bg)}
+.contact-inquiry:hover strong,.contact-inquiry:hover .contact-inquiry-cta{color:var(--bg)}
+.contact-inquiry[hidden]{display:none} /* author display would otherwise beat [hidden] */
 .contact-list{list-style:none}
 .contact-list li{
   display:flex;justify-content:space-between;align-items:baseline;
@@ -680,8 +695,6 @@ a.nav-name{text-decoration:none}
     --body-size:17px;--nav-name-size:14px;--nav-link-size:11px;
     --nav-v-pad:12px;--footer-v-pad:12px;
     --grid-title-size:18px;--grid-series-size:11px;
-    /* Subtle dark gradient behind the transparent nav on the home slideshow */
-    --ss-gradient-opacity:0.4;--ss-gradient-height:160px;
     --lb-title-size:18px;--lb-img-width:88vw;--lb-dots-offset:20px
   }
 
@@ -903,7 +916,7 @@ a.nav-name{text-decoration:none}
   <h1 class="visually-hidden" id="h1-contact">Contact</h1>
   <div class="contact-wrap">
     <div class="contact-header" aria-hidden="true">Contact</div>
-    <p class="contact-inquiry" id="contact-inquiry" hidden></p>
+    <a class="contact-inquiry" id="contact-inquiry" hidden></a>
     <p class="contact-intro" id="contact-intro"></p>
     <ul class="contact-list" id="contact-list"></ul>
     <!-- Newsletter signup (shown only when newsletter_action is set in settings.csv) -->
@@ -2189,6 +2202,7 @@ function applySettings(s){
   v('--content-pad','spacing_content_padding');
   v('--ss-gradient-height','slideshow_gradient_height');
   v('--ss-gradient-opacity','slideshow_gradient_opacity');
+  v('--ss-gradient-intensity','slideshow_gradient_intensity');
   v('--slide-transition','slideshow_fade_duration');
   /* KEY FIX: inject as a <style> block (not inline style on :root).
      Inline styles beat every media-query rule — that's why the old code
@@ -2299,16 +2313,25 @@ function _param(query,key){
   return '';
 }
 function applyInquiry(title){
-  const line=document.getElementById('contact-inquiry');
+  const box=document.getElementById('contact-inquiry');
   const mail=document.querySelector('#contact-list a[href^="mailto:"]');
   title=(title||'').trim();
-  if(line){
-    if(title){line.hidden=false;line.innerHTML='Inquiry about: <strong>'+esc(title)+'</strong>';}
-    else{line.hidden=true;line.innerHTML='';}
-  }
-  if(mail){
-    const base=mail.getAttribute('href').split('?')[0];
-    mail.setAttribute('href',title?base+'?subject='+encodeURIComponent('Inquiry about: '+title):base);
+  // Base mailto address comes from the Email contact item
+  const base=mail?mail.getAttribute('href').split('?')[0]:'';
+  const mailto=title&&base
+    ? base+'?subject='+encodeURIComponent('Inquiry about: '+title)
+    : '';
+  // Also pre-fill the subject on the Email list item
+  if(mail)mail.setAttribute('href',mailto||base);
+  // The box IS the button: tapping it opens the mail app, subject pre-filled
+  if(box){
+    if(title){
+      box.hidden=false;
+      box.innerHTML='Inquiry about: <strong>'+esc(title)+'</strong><span class="contact-inquiry-cta">Write email &#8594;</span>';
+      if(mailto)box.setAttribute('href',mailto); else box.removeAttribute('href');
+    }else{
+      box.hidden=true;box.innerHTML='';box.removeAttribute('href');
+    }
   }
 }
 

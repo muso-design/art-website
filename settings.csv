@@ -108,8 +108,11 @@
 "# To add a caption  fill in the matching slideshow_caption_N row.",,
 "# To remove a slide  delete its row entirely or leave the value blank.",,
 "# Image paths are relative to the site folder  e.g.  images/myfile.webp",,
-"slideshow_gradient_opacity","0.5","Darkness of the gradient shadow at the top of the slideshow (makes nav text legible). 0 = none  0.5 = half-dark  1 = solid black."
-"slideshow_gradient_height","120px","Height of the gradient shadow at the top of the slideshow."
+"# Top vignette behind the nav (keeps the white nav text readable over the photo).",,
+"# Think of it like a vignette in a photo editor — three knobs:",,
+"slideshow_gradient_opacity","0.55","DARKNESS at the very top. 0 = none  0.5 = half-dark  1 = solid black."
+"slideshow_gradient_intensity","0.4","INTENSITY — how far down it holds full darkness before fading. 0 = fade right away  0.4 = hold 40% then fade  1 = hard edge."
+"slideshow_gradient_height","200px","SIZE — how far down the vignette reaches (e.g. 120px small  200px medium  320px tall)."
 "slideshow_interval",5000,"Time between automatic slide changes in milliseconds. 5000 = 5 seconds. Set to 0 to disable auto-advance."
 "slideshow_fade_duration","700ms","Duration of the crossfade transition between slides. Use ms (milliseconds)."
 "slideshow_1","images/too_much/roman_chystakhovskyi_too_much.webp","First slideshow image — path relative to the site folder"
