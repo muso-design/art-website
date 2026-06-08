@@ -1766,15 +1766,15 @@ function initZoomInteraction(){
         _zoom.vx=dx;_zoom.vy=dy;
         panDrag(dx,dy);
       }else{
-        // Lock the gesture to one axis so down-to-close and left/right-to-change
-        // never fight. Dismiss only on a clearly DOWNWARD, vertical-dominant drag.
+        // Lock the gesture to one axis so close (up OR down) and left/right
+        // image-change never fight. Dismiss on a clearly VERTICAL drag.
         if(!_zoom.axis&&(Math.abs(totX)>12||Math.abs(totY)>12)){
-          _zoom.axis=(totY>0&&Math.abs(totY)>Math.abs(totX)*1.4)?'dismiss':'swipe';
+          _zoom.axis=(Math.abs(totY)>Math.abs(totX)*1.4)?'dismiss':'swipe';
         }
         if(_zoom.axis==='dismiss'){
-          _zoom.tx=0;_zoom.ty=Math.max(0,totY);
+          _zoom.tx=0;_zoom.ty=totY;            // follow the finger up or down
           applyZoomTransform();
-          overlay.style.opacity=String(Math.max(0.25,1-_zoom.ty/650));
+          overlay.style.opacity=String(Math.max(0.25,1-Math.abs(_zoom.ty)/650));
         }else{
           _zoom.tx=totX;
           if(!_zoom.swipeReady&&Math.abs(_zoom.tx)>15)_setupSwipe(_zoom.tx);
@@ -1799,11 +1799,11 @@ function initZoomInteraction(){
       if(_zoom.didDrag&&!_zoom.zoomed){
         if(_zoom.axis==='dismiss'){
           const img=document.getElementById('lb-zoom-img');
-          if(_zoom.ty>120){
-            // Released far enough — slide the image off and close the zoom view
+          if(Math.abs(_zoom.ty)>120){
+            // Released far enough — slide the image off (in the swipe direction) and close
             img.style.transition='transform 0.28s ease';
             overlay.style.transition='opacity 0.28s ease';
-            _zoom.ty=window.innerHeight;applyZoomTransform();
+            _zoom.ty=(_zoom.ty<0?-1:1)*window.innerHeight;applyZoomTransform();
             overlay.style.opacity='0';
             setTimeout(()=>{
               img.style.transition='';_zoom.ty=0;applyZoomTransform();
