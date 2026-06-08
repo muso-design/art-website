@@ -90,6 +90,13 @@
   --ss-gradient-height:120px;--ss-gradient-opacity:0.5;
 }
 
+/* ── DARK THEME (viewer toggle) — overrides the colour variables only.
+   Higher specificity than :root, so it wins over the injected settings. ── */
+html[data-theme="dark"]{
+  --bg:#161514;--bg2:#211f1d;--bg3:#2b2926;
+  --text:#ecebe8;--mid:#a7a29b;--dim:#736d66;
+  --border:rgba(255,255,255,0.13);
+}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--text);font-family:var(--font);
   font-size:var(--body-size);line-height:var(--body-lh);overflow-x:hidden;min-height:100vh;
@@ -120,7 +127,7 @@ nav.light{background:transparent;border-bottom:1px solid transparent}
 }
 nav.dark .nav-name{color:var(--text)}
 nav.light .nav-name{color:#ffffff}
-.nav-links{display:flex;gap:48px;list-style:none}
+.nav-links{display:flex;gap:48px;list-style:none;align-items:center}
 .nav-links a{
   font-size:var(--nav-link-size);letter-spacing:0.24em;text-transform:uppercase;
   text-decoration:none;font-weight:500;cursor:pointer;transition:opacity 0.2s
@@ -129,6 +136,16 @@ nav.dark .nav-links a{color:var(--text);opacity:0.35}
 nav.dark .nav-links a:hover,nav.dark .nav-links a.active{opacity:1}
 nav.light .nav-links a{color:#ffffff;opacity:0.6}
 nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
+/* Light / dark theme toggle button */
+.theme-toggle{
+  background:none;border:none;cursor:pointer;padding:0;line-height:1;
+  font-size:17px;font-family:var(--font);opacity:0.55;transition:opacity 0.2s;
+  display:flex;align-items:center
+}
+.theme-toggle:hover{opacity:1}
+nav.dark .theme-toggle{color:var(--text)}
+nav.light .theme-toggle{color:#ffffff}
+.theme-toggle.hidden{display:none}
 
 /* ── PAGES ───────────────────────────────────────────────── */
 .page{display:none;min-height:100vh}
@@ -137,6 +154,8 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
 /* ── HOME / SLIDESHOW ────────────────────────────────────── */
 #page-home{padding-top:0}
 .slideshow{position:relative;width:100%;height:100vh;overflow:hidden;background:#111}
+.slideshow.ss-grab{cursor:grab}
+.slideshow.ss-grab:active{cursor:grabbing}
 .slide{
   position:absolute;inset:0;opacity:0;
   transition:opacity var(--slide-transition) ease
@@ -278,6 +297,14 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
   margin-top:20px;font-size:18px;line-height:1.65;
   color:var(--dim);border-top:1px solid var(--border);padding-top:18px
 }
+/* Inquire button — low-friction jump to Contact, pre-filled with the title */
+.lb-inquire{
+  align-self:flex-start;margin-top:26px;
+  background:none;border:1px solid var(--text);color:var(--text);
+  font-family:var(--font);font-size:13px;letter-spacing:0.18em;text-transform:uppercase;
+  padding:11px 26px;cursor:pointer;transition:background 0.2s,color 0.2s
+}
+.lb-inquire:hover{background:var(--text);color:var(--bg)}
 
 /* Zoom overlay */
 .lb-zoom{
@@ -462,6 +489,14 @@ nav.light .nav-links a:hover,nav.light .nav-links a.active{opacity:1}
   font-size:calc(var(--body-size) * 1.2);
   line-height:1.6;color:var(--text);margin-bottom:64px;font-weight:300
 }
+/* Inquiry note — shown when arriving via a work's "Inquire" button */
+.contact-inquiry{
+  display:inline-block;margin-bottom:36px;
+  font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:var(--mid);
+  padding:11px 18px;border:1px solid var(--border);border-radius:2px;
+  background:var(--bg2)
+}
+.contact-inquiry strong{color:var(--text);font-weight:500}
 .contact-list{list-style:none}
 .contact-list li{
   display:flex;justify-content:space-between;align-items:baseline;
@@ -610,6 +645,8 @@ a.nav-name{text-decoration:none}
     --body-size:17px;--nav-name-size:14px;--nav-link-size:11px;
     --nav-v-pad:12px;--footer-v-pad:12px;
     --grid-title-size:18px;--grid-series-size:11px;
+    /* Subtle dark gradient behind the transparent nav on the home slideshow */
+    --ss-gradient-opacity:0.4;--ss-gradient-height:160px;
     --lb-title-size:18px;--lb-img-width:88vw;--lb-dots-offset:20px
   }
 
@@ -745,6 +782,7 @@ a.nav-name{text-decoration:none}
     <li><a id="nl-works"   href="#/works">Works</a></li>
     <li><a id="nl-bio"     href="#/bio">Bio</a></li>
     <li><a id="nl-contact" href="#/contact">Contact</a></li>
+    <li><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" title="Toggle light / dark">&#9789;</button></li>
   </ul>
 </nav>
 
@@ -792,6 +830,7 @@ a.nav-name{text-decoration:none}
   <h1 class="visually-hidden" id="h1-contact">Contact</h1>
   <div class="contact-wrap">
     <div class="contact-header" aria-hidden="true">Contact</div>
+    <p class="contact-inquiry" id="contact-inquiry" hidden></p>
     <p class="contact-intro" id="contact-intro"></p>
     <ul class="contact-list" id="contact-list"></ul>
     <!-- Newsletter signup (shown only when newsletter_action is set in settings.csv) -->
@@ -813,6 +852,7 @@ a.nav-name{text-decoration:none}
     <dl class="lb-meta"  id="lb-meta"></dl>
     <div class="lb-compact" id="lb-compact"></div>
     <p class="lb-description" id="lb-desc"></p>
+    <button class="lb-inquire" id="lb-inquire" type="button" onclick="inquireWork()">Inquire</button>
   </div>
   <div class="lb-zoom" id="lb-zoom">
     <button class="lb-zoom-close" onclick="closeZoom()">&#215;</button>
@@ -826,6 +866,31 @@ a.nav-name{text-decoration:none}
 </div>
 
 <script>
+// Apply the saved theme as early as possible so there's no flash of the
+// wrong colours before the page renders.
+(function(){try{if(localStorage.getItem('theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();
+
+// ═══════════════════════════════════════════════════════════
+// LIGHT / DARK THEME
+// ═══════════════════════════════════════════════════════════
+function setTheme(theme){
+  document.documentElement.setAttribute('data-theme',theme);
+  try{localStorage.setItem('theme',theme);}catch(e){}
+  const btn=document.getElementById('theme-toggle');
+  if(btn){
+    btn.innerHTML=theme==='dark'?'&#9728;':'&#9789;'; // ☀ / ☽
+    btn.setAttribute('aria-label',theme==='dark'?'Switch to light theme':'Switch to dark theme');
+  }
+  const m=document.getElementById('meta-theme-color');
+  if(m){const bg=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();if(bg)m.content=bg;}
+}
+function initTheme(){
+  const saved=localStorage.getItem&&localStorage.getItem('theme');
+  setTheme(saved==='dark'?'dark':'light');
+  const btn=document.getElementById('theme-toggle');
+  if(btn)btn.onclick=()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+}
+
 // ═══════════════════════════════════════════════════════════
 // CSV PARSER — handles quoted fields and multiline cell text
 // Standard rules: fields wrapped in "…" may contain commas
@@ -963,12 +1028,12 @@ function navigate(page,skipPush){
 // ═══════════════════════════════════════════════════════════
 // SLIDESHOW
 // ═══════════════════════════════════════════════════════════
-let ssIdx=0,ssSlides=[],ssTimer=null;
+let ssIdx=0,ssSlides=[],ssTimer=null,ssInterval=5000;
 
 function buildSlideshow(s){
   const wrap=document.getElementById('slideshow');
   const dots=document.getElementById('ss-dots');
-  const interval=parseInt(s.slideshow_interval||'5000')||5000;
+  ssInterval=parseInt(s.slideshow_interval||'5000')||5000;
   ssSlides=[];
   for(let n=1;s['slideshow_'+n];n++)
     ssSlides.push({img:s['slideshow_'+n],cap:s['slideshow_caption_'+n]||''});
@@ -977,18 +1042,23 @@ function buildSlideshow(s){
   ssSlides.forEach((sl,i)=>{
     const div=document.createElement('div');
     div.className='slide'+(i===0?' active':'');
-    const im=document.createElement('img');im.src=sl.img;im.alt=sl.cap;
+    const im=document.createElement('img');im.src=sl.img;im.alt=sl.cap;im.draggable=false;
     div.appendChild(im);
     if(sl.cap){const c=document.createElement('div');c.className='slide-caption';c.textContent=sl.cap;div.appendChild(c)}
     wrap.insertBefore(div,arrows);
     const dot=document.createElement('button');
     dot.className='ss-dot'+(i===0?' active':'');
-    dot.onclick=()=>ssGo(i);
+    dot.onclick=()=>{ssGo(i);ssRestart();};
     dots.appendChild(dot);
   });
-  if(interval>0&&ssSlides.length>1)ssTimer=setInterval(slideNext,interval);
+  ssRestart();
+  initHomeSwipe(wrap);
 }
 
+function ssRestart(){
+  if(ssTimer)clearInterval(ssTimer);
+  if(ssInterval>0&&ssSlides.length>1)ssTimer=setInterval(slideNext,ssInterval);
+}
 function ssGo(i){
   document.querySelectorAll('.slide').forEach((s,j)=>s.classList.toggle('active',j===i));
   document.querySelectorAll('.ss-dot').forEach((d,j)=>d.classList.toggle('active',j===i));
@@ -996,6 +1066,28 @@ function ssGo(i){
 }
 function slideNext(){ssGo((ssIdx+1)%ssSlides.length)}
 function slidePrev(){ssGo((ssIdx-1+ssSlides.length)%ssSlides.length)}
+
+// Home slideshow is interactive from the start: swipe (touch) or click-drag
+// (mouse) to move between images. Manual moves reset the autoplay timer.
+function initHomeSwipe(wrap){
+  if(!wrap||ssSlides.length<2)return;
+  wrap.classList.add('ss-grab');
+  const advance=dx=>{if(dx<0)slideNext();else slidePrev();ssRestart();};
+  let sx=0,sy=0,td=false;
+  wrap.addEventListener('touchstart',e=>{if(e.touches.length===1){td=true;sx=e.touches[0].clientX;sy=e.touches[0].clientY;}},{passive:true});
+  wrap.addEventListener('touchend',e=>{
+    if(!td)return;td=false;
+    const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy))advance(dx);
+  });
+  let mx=0,md=false;
+  wrap.addEventListener('mousedown',e=>{if(e.button===0){md=true;mx=e.clientX;e.preventDefault();}});
+  window.addEventListener('mouseup',e=>{
+    if(!md)return;md=false;
+    const dx=e.clientX-mx;
+    if(Math.abs(dx)>55)advance(dx);
+  });
+}
 
 // ═══════════════════════════════════════════════════════════
 // WORKS + LIGHTBOX
@@ -1680,8 +1772,12 @@ function renderBio(bio,s){
   // A dropdown is shown for each group whose *_heading is set in bio.csv
   // (clear the heading to hide it). Items: exhibition_N / collection_N /
   // education_N. To add another group, copy the pattern below.
-  function creditGroup(heading,items){
+  // A group renders when its heading is set AND it has items — OR when its
+  // showWhenEmpty toggle is on (used for Exhibitions, which may be empty but
+  // can be switched on at any time via exhibitions_show in bio.csv).
+  function creditGroup(heading,items,showWhenEmpty){
     if(!heading)return'';
+    if(!items.length&&!showWhenEmpty)return'';
     const body=items.length
       ? `<ul class="bio-credit-list">${items.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`
       : `<div class="bio-credit-empty">None at this time.</div>`;
@@ -1693,12 +1789,13 @@ function renderBio(bio,s){
       .sort((a,b)=>parseInt(a.slice(prefix.length),10)-parseInt(b.slice(prefix.length),10))
       .map(k=>(bio[k]||'').trim()).filter(Boolean);
   }
+  const isOn=v=>['yes','on','true','1'].includes(String(v||'').toLowerCase().trim());
   const credits=document.getElementById('bio-credits');
   if(credits){
     const html=
-      creditGroup((bio.exhibitions_heading||'').trim(),collect('exhibition_'))+
-      creditGroup((bio.collections_heading||'').trim(),collect('collection_'))+
-      creditGroup((bio.education_heading||'').trim(),collect('education_'));
+      creditGroup((bio.exhibitions_heading||'').trim(),collect('exhibition_'),isOn(bio.exhibitions_show))+
+      creditGroup((bio.collections_heading||'').trim(),collect('collection_'),false)+
+      creditGroup((bio.education_heading||'').trim(),collect('education_'),false);
     credits.innerHTML=html;
     credits.style.display=html?'':'none';
   }
@@ -1918,6 +2015,11 @@ function applySettings(s){
   const hoverMobile=['yes','on','true','1'].includes(String(s.gallery_hover_swap_mobile||'').toLowerCase().trim());
   const wg=document.getElementById('works-grid');
   if(wg)wg.classList.toggle('mobile-hover-on',hoverMobile);
+
+  /* Light/dark theme switcher button (default shown) */
+  const themeOn=!['no','off','false','0'].includes(String(s.theme_switcher||'').toLowerCase().trim());
+  const tBtn=document.getElementById('theme-toggle');
+  if(tBtn)tBtn.classList.toggle('hidden',!themeOn);
   v('--contact-max-width','contact_max_width');
   v('--content-pad','spacing_content_padding');
   v('--ss-gradient-height','slideshow_gradient_height');
@@ -2017,11 +2119,46 @@ function footerHTML(s){
 // ═══════════════════════════════════════════════════════════
 // HASH ROUTING (BRIEF §Architecture)
 // ═══════════════════════════════════════════════════════════
+// ── Inquire: jump from a work in the lightbox to Contact, pre-filled ──
+function inquireWork(){
+  const w=works[lbIdx];
+  if(!w)return;
+  location.hash='#/contact?about='+encodeURIComponent(w.title||'');
+}
+function _param(query,key){
+  for(const part of (query||'').split('&')){
+    const i=part.indexOf('=');
+    const k=decodeURIComponent((i<0?part:part.slice(0,i)).replace(/\+/g,' '));
+    if(k===key)return decodeURIComponent((i<0?'':part.slice(i+1)).replace(/\+/g,' '));
+  }
+  return '';
+}
+function applyInquiry(title){
+  const line=document.getElementById('contact-inquiry');
+  const mail=document.querySelector('#contact-list a[href^="mailto:"]');
+  title=(title||'').trim();
+  if(line){
+    if(title){line.hidden=false;line.innerHTML='Inquiry about: <strong>'+esc(title)+'</strong>';}
+    else{line.hidden=true;line.innerHTML='';}
+  }
+  if(mail){
+    const base=mail.getAttribute('href').split('?')[0];
+    mail.setAttribute('href',title?base+'?subject='+encodeURIComponent('Inquiry about: '+title):base);
+  }
+}
+
 function handleHash(hash){
+  let query='';
+  const qi=hash.indexOf('?');
+  if(qi>=0){query=hash.slice(qi+1);hash=hash.slice(0,qi);}
   if(!hash||hash==='#/'||hash==='#'){navigate('home',true);return;}
   const PAGES=['works','bio','contact'];
   for(const p of PAGES){
-    if(hash==='#/'+p){navigate(p,true);return;}
+    if(hash==='#/'+p){
+      navigate(p,true);
+      if(p==='contact')applyInquiry(_param(query,'about'));
+      return;
+    }
     if(hash.startsWith('#/'+p+'/')){
       navigate(p,true);
       const slug=hash.slice(('#/'+p+'/').length);
@@ -2206,6 +2343,7 @@ async function init(){
     ]);
     const s=csvKV(st),w=csvObjs(wt),b=csvKV(bt),c=csvKV(ct);
     applySettings(s);
+    initTheme();
     buildSlideshow(s);
     renderWorks(w);
     renderBio(b,s);

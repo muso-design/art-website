@@ -59,7 +59,8 @@
 "# Each group appears as a dropdown. To HIDE a group entirely, clear its heading.",,
 "# Add entries as exhibition_1, exhibition_2 … and collection_1, collection_2 …",,
 "exhibitions_heading","Exhibitions","Heading for the exhibitions dropdown (clear to hide)"
-"# exhibition_1","2026 — Gallery Name, City","(example — uncomment & edit when you have one)"
+"exhibitions_show","no","Show the Exhibitions dropdown even when empty? no = hidden until you have one. Flip to yes anytime."
+"# exhibition_1","2026 — Gallery Name, City","(uncomment & edit; adding any exhibition_N also shows the dropdown)"
 "collections_heading","Collections","Heading for the collections dropdown (clear to hide)"
 "collection_1","Florence, Italy (Private collection)","A collection entry"
 "collection_2","Leipzig, Germany (Private collection)","A collection entry"

@@ -50,7 +50,7 @@
 "# ── SPACING ───────────────────────────────────────────────────────────────────",,
 "spacing_page_padding","60px","Left and right padding on all pages. Reduce for less white space."
 "spacing_grid_gap","56px","Gap between gallery thumbnails. Flexible units OK e.g. clamp(28px 4vw 72px) (keep it in ONE cell). 16px tight  56px generous."
-"spacing_nav_padding","28px","Vertical padding inside the navigation bar (top and bottom). Larger = taller nav."
+"spacing_nav_padding","24px","Vertical padding inside the navigation bar (top and bottom). Larger = taller nav."
 "spacing_footer_padding","20px","Vertical padding inside the footer bar."
 "spacing_content_padding","48px","Minimum side padding for page content (works grid  bio  contact). Changing this does NOT affect the nav or footer — those use spacing_page_padding."
 "#",,
@@ -67,11 +67,12 @@
 "grid_image_ratio","1/1","Thumbnail shape. 1/1 (square)  4/5 (portrait)  3/4  16/9 (landscape)."
 "gallery_hover_swap","yes","Hover a thumbnail to cross-fade to its hover_image (set per work in works.csv). yes = swap  no = just the zoom."
 "gallery_hover_swap_mobile","no","Also do the hover-swap on phones/tablets (tap-and-hold). Usually no — touch screens have no real hover."
+"theme_switcher","yes","Show the light/dark theme toggle in the nav so visitors can switch. no = hide it (site stays light)."
 "#",,
 "# ── LIGHTBOX ──────────────────────────────────────────────────────────────────",,
 "# Settings for the artwork detail view (the full-screen gallery that opens when you click a work).",,
-"lightbox_image_width","45vw","Width of gallery images as a percentage of the viewport. 45vw = 45% of screen width."
-"lightbox_image_max_width","640px","Hard maximum width of gallery images in pixels. Prevents images from becoming too wide on very large screens."
+"lightbox_image_width","52vw","Width of gallery images as a percentage of the viewport. 52vw = 52% of screen width."
+"lightbox_image_max_width","736px","Hard maximum width of gallery images in pixels. Prevents images from becoming too wide on very large screens."
 "lightbox_gallery_gap","1.5em","Vertical space between images when scrolling through multiple views of a work."
 "lightbox_dots_offset","130px","Distance between the navigation dots and the left edge of the images."
 "lightbox_panel_offset","115px","Distance between the info panel and the right edge of the images."
