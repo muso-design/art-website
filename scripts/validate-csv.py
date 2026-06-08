@@ -110,8 +110,8 @@ def validate_settings():
     if 'googleapis.com' in font_url or 'fonts.google' in font_url:
         warn(
             'settings.csv font_url points to Google Fonts — GDPR violation!\n'
-            '         Run: python scripts/download-fonts.py\n'
-            '         Then clear font_url in settings.csv'
+            '         Self-host instead: python scripts/get-font.py "Font Name"\n'
+            '         Then clear font_url and set font_family in settings.csv'
         )
 
     # Warn about placeholder email

@@ -21,7 +21,7 @@
 "#   system-ui  -apple-system  sans-serif    (clean modern look)",,
 "#   Georgia  serif                          (classic serif)",,
 "font_url",,"Leave EMPTY — Cormorant Garamond is self-hosted from /fonts/ (GDPR). Do not paste a Google Fonts URL here."
-"font_family","""Cormorant Garamond"", serif","CSS font-family value. Use quotes around names with spaces. Must match the font loaded by font_url."
+"font_family","""Josefin Sans"", sans-serif","CSS font-family value. To swap: run  python scripts/get-font.py ""Font Name""  then put that name here."
 "#",,
 "# ── FONT SIZES ────────────────────────────────────────────────────────────────",,
 "# Use px (20px)  em (1.2em)  or clamp for responsive: clamp(16px"," 2vw"," 22px)"
