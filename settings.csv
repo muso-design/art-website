@@ -68,6 +68,7 @@
 "gallery_hover_swap","yes","Hover a thumbnail to cross-fade to its hover_image (set per work in works.csv). yes = swap  no = just the zoom."
 "gallery_hover_swap_mobile","no","Also do the hover-swap on phones/tablets (tap-and-hold). Usually no — touch screens have no real hover."
 "theme_switcher","yes","Show the light/dark theme toggle in the nav so visitors can switch. no = hide it (site stays light)."
+"mobile_menu_align","center","Position of the mobile hamburger + menu items: left, center, or right."
 "#",,
 "# ── LIGHTBOX ──────────────────────────────────────────────────────────────────",,
 "# Settings for the artwork detail view (the full-screen gallery that opens when you click a work).",,
