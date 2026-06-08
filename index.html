@@ -239,8 +239,12 @@ nav.light .nav-burger{color:#ffffff}
 /* ── LIGHTBOX ────────────────────────────────────────────── */
 .lightbox{
   display:none;position:fixed;inset:0;
-  background:var(--bg);z-index:200
+  background:var(--bg);z-index:200;
+  /* Allow vertical scroll + taps, but NO native pinch-zoom in the gallery —
+     zooming an artwork is done by tapping into the dedicated zoom view. */
+  touch-action:pan-y
 }
+.lb-gallery,.lb-gallery-img{touch-action:pan-y}
 .lightbox.open{display:block}
 
 /* Gallery — full-screen scrollable, images centered */
@@ -1393,7 +1397,7 @@ let _lbZoomLevel=2.5;
 const _zoom={zoomed:false,scale:0,tx:0,ty:0,dragging:false,startX:0,startY:0,lx:0,ly:0,didDrag:false,
   swipeReady:false,swipeDir:0,swipeOffset:0,swipeNextIdx:-1,
   pinch:false,pinchDist:0,pinchStartScale:1,
-  vx:0,vy:0,animFrame:null,rawTx:0,rawTy:0};
+  vx:0,vy:0,animFrame:null,rawTx:0,rawTy:0,axis:null};
 
 function applyZoomTransform(){
   const s=_zoom.zoomed?(_zoom.scale||_lbZoomLevel):1;
@@ -1410,8 +1414,11 @@ function openZoom(idx){
   _zoomImgIdx=idx;
   _zoom.zoomed=false;_zoom.scale=0;_zoom.tx=0;_zoom.ty=0;
   _zoom.swipeReady=false;_zoom.swipeDir=0;_zoom.swipeOffset=0;_zoom.swipeNextIdx=-1;
-  _zoom.pinch=false;_zoom.pinchDist=0;
+  _zoom.pinch=false;_zoom.pinchDist=0;_zoom.axis=null;
+  const overlayEl=document.getElementById('lb-zoom');
+  overlayEl.style.opacity='';overlayEl.style.transition='';
   const img=document.getElementById('lb-zoom-img');
+  img.style.transition='';
   const img2=document.getElementById('lb-zoom-img2');
   const d=_zoomImgs[_zoomImgIdx]||{src:'',alt:''};
   img.src=d.src;img.alt=d.alt;img.style.transition='';
@@ -1426,7 +1433,9 @@ function openZoom(idx){
 
 function closeZoom(){
   cleanupZoomInteraction();
-  document.getElementById('lb-zoom').classList.remove('open');
+  const ov=document.getElementById('lb-zoom');
+  ov.classList.remove('open');
+  ov.style.opacity='';ov.style.transition='';
   document.getElementById('main-nav').style.display='';
 }
 
@@ -1720,7 +1729,7 @@ function initZoomInteraction(){
     }
     if(e.touches.length===1&&!_zoom.pinch){
       _stopSettle();
-      _zoom.dragging=true;_zoom.didDrag=false;
+      _zoom.dragging=true;_zoom.didDrag=false;_zoom.axis=null;
       _zoom.startX=_zoom.lx=e.touches[0].clientX;_zoom.startY=_zoom.ly=e.touches[0].clientY;
       _zoom.vx=0;_zoom.vy=0;
       _zoom.rawTx=_zoom.tx;_zoom.rawTy=_zoom.ty;
@@ -1751,14 +1760,26 @@ function initZoomInteraction(){
     if(e.touches.length===1&&_zoom.dragging&&!_zoom.pinch){
       const tx=e.touches[0].clientX,ty=e.touches[0].clientY;
       const dx=tx-_zoom.lx,dy=ty-_zoom.ly;
-      if(Math.abs(tx-_zoom.startX)>5||Math.abs(ty-_zoom.startY)>5)_zoom.didDrag=true;
+      const totX=tx-_zoom.startX,totY=ty-_zoom.startY;
+      if(Math.abs(totX)>5||Math.abs(totY)>5)_zoom.didDrag=true;
       if(_zoom.zoomed){
         _zoom.vx=dx;_zoom.vy=dy;
         panDrag(dx,dy);
       }else{
-        _zoom.tx=tx-_zoom.startX;
-        if(!_zoom.swipeReady&&Math.abs(_zoom.tx)>15)_setupSwipe(_zoom.tx);
-        applyZoomTransform();
+        // Lock the gesture to one axis so down-to-close and left/right-to-change
+        // never fight. Dismiss only on a clearly DOWNWARD, vertical-dominant drag.
+        if(!_zoom.axis&&(Math.abs(totX)>12||Math.abs(totY)>12)){
+          _zoom.axis=(totY>0&&Math.abs(totY)>Math.abs(totX)*1.4)?'dismiss':'swipe';
+        }
+        if(_zoom.axis==='dismiss'){
+          _zoom.tx=0;_zoom.ty=Math.max(0,totY);
+          applyZoomTransform();
+          overlay.style.opacity=String(Math.max(0.25,1-_zoom.ty/650));
+        }else{
+          _zoom.tx=totX;
+          if(!_zoom.swipeReady&&Math.abs(_zoom.tx)>15)_setupSwipe(_zoom.tx);
+          applyZoomTransform();
+        }
       }
       _zoom.lx=tx;_zoom.ly=ty;
     }
@@ -1776,6 +1797,27 @@ function initZoomInteraction(){
       _zoom.dragging=false;
       const t=e.changedTouches[0],dx=t.clientX-_zoom.startX;
       if(_zoom.didDrag&&!_zoom.zoomed){
+        if(_zoom.axis==='dismiss'){
+          const img=document.getElementById('lb-zoom-img');
+          if(_zoom.ty>120){
+            // Released far enough — slide the image off and close the zoom view
+            img.style.transition='transform 0.28s ease';
+            overlay.style.transition='opacity 0.28s ease';
+            _zoom.ty=window.innerHeight;applyZoomTransform();
+            overlay.style.opacity='0';
+            setTimeout(()=>{
+              img.style.transition='';_zoom.ty=0;applyZoomTransform();
+              closeZoom();
+            },280);
+          }else{
+            // Not far enough — spring back to the full picture
+            img.style.transition='transform 0.25s ease';
+            overlay.style.transition='opacity 0.25s ease';
+            _zoom.ty=0;applyZoomTransform();overlay.style.opacity='';
+            setTimeout(()=>{img.style.transition='';overlay.style.transition='';},250);
+          }
+          return;
+        }
         Math.abs(dx)>60&&_zoom.swipeReady?_commitSwipe():snapBack();
         return;
       }
