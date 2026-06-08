@@ -62,7 +62,7 @@
 "#   • the thumbnail shape (aspect ratio)",,
 "grid_columns",3,"Columns on DESKTOP (wide screens)."
 "grid_columns_tablet",2,"Columns on TABLET (screens up to 1024px wide)."
-"grid_columns_mobile",2,"Columns on PHONE (screens up to 620px wide). Use 1 for one big image per row."
+"grid_columns_mobile",1,"Columns on PHONE (screens up to 620px wide). Use 1 for one big image per row."
 "grid_max_width","1500px","Max total width of the gallery. SMALLER = smaller thumbnails. Bigger = larger."
 "grid_image_ratio","1/1","Thumbnail shape. 1/1 (square)  4/5 (portrait)  3/4  16/9 (landscape)."
 "gallery_hover_swap","yes","Hover a thumbnail to cross-fade to its hover_image (set per work in works.csv). yes = swap  no = just the zoom."
