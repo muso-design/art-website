@@ -1,0 +1,432 @@
+{
+"images/bio_process/smile_silicone.jpg": {
+"h": 1271,
+"jpg": [
+480,
+800
+],
+"w": 953,
+"webp": [
+480,
+800
+]
+},
+"images/bio_process/smile_silicone_far.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 4608,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/bio_process/studio_shot.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 4608,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/bio_process/zbrush.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 4608,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/roman_chystakhovskyi_studio.jpg": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 4608,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/though_your_eyes/roman_chystakhovskyi_through_your_eyes_closeup_01.jpg": {
+"h": 2623,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 2623,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/though_your_eyes/roman_chystakhovskyi_through_your_eyes_closeup_02.jpg": {
+"h": 2903,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 2903,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/though_your_eyes/roman_chystakhovskyi_through_your_eyes_closeup_03.jpg": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 4608,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/though_your_eyes/roman_chystakhovskyi_through_your_eyes_main.jpg": {
+"h": 2931,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 2931,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much-11.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much-13_edit.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much-15.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much-16.webp": {
+"h": 2949,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 2949,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much-2_edit.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much-4_edit.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much-5.webp": {
+"h": 3025,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3025,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much-6_edit.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much-7.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much.webp": {
+"h": 2988,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 2988,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much_closeup_01.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/too_much/roman_chystakhovskyi_too_much_closeup_02.webp": {
+"h": 3072,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/whirl/roman_chystakhovskyi_WHIRL-2.jpg": {
+"h": 3622,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 2898,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/whirl/roman_chystakhovskyi_WHIRL-3.jpg": {
+"h": 3536,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 2829,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/whirl/roman_chystakhovskyi_WHIRL-4.jpg": {
+"h": 3840,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/whirl/roman_chystakhovskyi_WHIRL-5.jpg": {
+"h": 3840,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/whirl/roman_chystakhovskyi_WHIRL-6.jpg": {
+"h": 3840,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/whirl/roman_chystakhovskyi_WHIRL-7.jpg": {
+"h": 3840,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/whirl/roman_chystakhovskyi_WHIRL.jpg": {
+"h": 3621,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 2897,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/with_a_smile/roman_chystakhovskyi_with_smile_closeup_01.jpg": {
+"h": 1882,
+"jpg": [
+480,
+800
+],
+"w": 1882,
+"webp": [
+480,
+800
+]
+},
+"images/with_a_smile/roman_chystakhovskyi_with_smile_closeup_02.jpg": {
+"h": 4608,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 3072,
+"webp": [
+480,
+800,
+2000
+]
+},
+"images/with_a_smile/roman_chystakhovskyi_with_smile_main.jpg": {
+"h": 2876,
+"jpg": [
+480,
+800,
+2000
+],
+"w": 2876,
+"webp": [
+480,
+800,
+2000
+]
+}
+}
