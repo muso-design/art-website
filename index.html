@@ -222,6 +222,9 @@ nav.light .nav-burger{color:#ffffff}
 /* Images stand directly on the page, no card chrome */
 .work-card{background:transparent;cursor:pointer;position:relative;overflow:hidden}
 .work-img-wrap{overflow:hidden;aspect-ratio:var(--grid-img-ratio);background:var(--bg2);position:relative}
+/* <picture> is a transparent wrapper — the inner <img> keeps all the existing
+   .work-img / .lb-gallery-img / etc. styling and positioning unchanged. */
+picture{display:contents}
 .work-img{width:100%;height:100%;object-fit:cover;transition:transform 0.7s ease;display:block}
 /* Hover-swap detail shot — cross-fades in over the main image */
 .work-img-hover{
@@ -1067,6 +1070,16 @@ async function loadCSV(name){
   if(!r.ok)throw new Error('Cannot load '+name+' (HTTP '+r.status+')');
   return r.text();
 }
+// Load the responsive-image manifest. NEVER throws — a missing/!ok/invalid
+// manifest just means "no variants yet", and every renderer falls back to the
+// plain original. So this can sit in init's Promise.all without breaking load.
+async function loadVariants(){
+  try{
+    const r=await fetch('images/variants.json?_='+Date.now());
+    if(!r.ok)return{};
+    return await r.json();
+  }catch(e){return{};}
+}
 
 // ═══════════════════════════════════════════════════════════
 // NAVIGATION
@@ -1162,8 +1175,8 @@ function buildSlideshow(s){
   track.className='ss-track';track.id='ss-track';
   seq.forEach((d,i)=>{
     const sl=document.createElement('div');sl.className='ss-slide';
-    const im=document.createElement('img');im.src=normPath(d.img);im.alt=d.cap||'';im.draggable=false;im.loading=i<=1?'eager':'lazy';
-    sl.appendChild(im);
+    sl.innerHTML=pictureHTML(normPath(d.img),{alt:d.cap||'',sizes:SIZES.slideshow,
+      loading:i<=1?'eager':'lazy',extra:'draggable="false"'});
     if(d.cap){const c=document.createElement('div');c.className='slide-caption';c.textContent=d.cap;sl.appendChild(c);}
     track.appendChild(sl);
   });
@@ -1215,6 +1228,11 @@ function slidePrev(){ssGoTrack(-1);ssRestart();}
 // ═══════════════════════════════════════════════════════════
 let works=[],lbIdx=0,_zoomImgs=[],_zoomImgIdx=0;
 let _hoverSwap=true; // gallery thumbnail hover-swap (set from settings.csv)
+// Responsive images (Phase 3). VARIANTS = images/variants.json manifest written
+// by scripts/optimize-images.py; SIZES/GRID_WH are derived from settings.csv in
+// applySettings() and read by the renderers. All have safe empty defaults so the
+// site works fine before the optimize script has ever run.
+let VARIANTS={},SIZES={},GRID_WH={w:1000,h:1000};
 
 function renderWorks(data){
   works=data.filter(w=>w.title||w.image);
@@ -1227,11 +1245,16 @@ function renderWorks(data){
     const mainImg=normPath(w.image);
     const hover=_hoverSwap?normPath(w.hover_image):'';
     if(hover)c.classList.add('has-hover');
+    // <picture> with srcset; width/height from grid_image_ratio (not hardcoded)
+    // so CLS stays zero. Degrades to a plain <img> when an image has no variants.
+    const mainPic=pictureHTML(mainImg,{cls:'work-img',alt:w.title,sizes:SIZES.grid,
+      loading:'lazy',w:GRID_WH.w,h:GRID_WH.h,extra:'onerror="this.classList.add(\'error\')"'});
+    const hoverPic=hover?pictureHTML(hover,{cls:'work-img-hover',alt:'',sizes:SIZES.grid,
+      loading:'lazy',extra:'aria-hidden="true"'}):'';
     c.innerHTML=`
       <div class="work-img-wrap">
-        <img class="work-img" src="${esc(mainImg)}" alt="${esc(w.title)}" loading="lazy"
-             onerror="this.classList.add('error')" width="800" height="1000">
-        ${hover?`<img class="work-img-hover" src="${esc(hover)}" alt="" aria-hidden="true" loading="lazy">`:''}
+        ${mainPic}
+        ${hoverPic}
       </div>
       <div class="work-info">
         <div class="work-title">${esc(w.title)}</div>
@@ -1342,17 +1365,12 @@ function lbRender(){
   const imgs=[];
   srcs.forEach((src,i)=>{
     const fig=document.createElement('figure');
-    const img=document.createElement('img');
-    img.src=src;
     const altText=w.title+(i>0?' — view '+(i+1):'');
-    img.alt=altText;
-    _zoomImgs.push({src:src,alt:altText});
-    img.className='lb-gallery-img';
-    img.dataset.idx=String(i);
-    img.loading=i===0?'eager':'lazy';
-    img.onerror=function(){this.classList.add('error')};
+    _zoomImgs.push({src:src,alt:altText});   // zoom view uses the full-res original
+    fig.innerHTML=pictureHTML(src,{cls:'lb-gallery-img',alt:altText,sizes:SIZES.lightbox,
+      loading:i===0?'eager':'lazy',extra:`data-idx="${i}" onerror="this.classList.add('error')"`});
+    const img=fig.querySelector('img');
     const imgIdx=i;img.onclick=()=>openZoom(imgIdx);
-    fig.appendChild(img);
     gallery.appendChild(fig);
     imgs.push(img);
   });
@@ -1903,11 +1921,14 @@ function renderBio(bio,s){
     if(im.width)style.push('--fig-w:'+im.width);
     const imgStyle=im.ratio?` style="aspect-ratio:${esc(im.ratio)}"`:'';
     const cap=im.caption?`<figcaption>${esc(im.caption)}</figcaption>`:'';
+    const figAlt=im.caption||(s&&s.site_name)||'Roman Chystakhovskyi';
+    const figSizes=(im.width&&/^\d+px$/.test(String(im.width).trim()))
+      ? `(max-width:620px) 90vw, ${String(im.width).trim()}` : SIZES.bioFull;
+    const figExtra=`onerror="var f=this.closest('.bio-fig');if(f)f.style.display='none'"`+imgStyle;
+    const pic=pictureHTML(im.src,{alt:figAlt,sizes:figSizes,loading:'lazy',extra:figExtra});
     return `<figure class="bio-fig bio-fig--${im.placement}"`+
       `${style.length?` style="${esc(style.join(';'))}"`:''}>`+
-      `<div class="bio-fig-inner"><img src="${esc(normPath(im.src))}" `+
-      `alt="${esc(im.caption||(s&&s.site_name)||'Roman Chystakhovskyi')}" loading="lazy" `+
-      `onerror="var f=this.closest('.bio-fig');if(f)f.style.display='none'"${imgStyle}></div>`+
+      `<div class="bio-fig-inner">${pic}</div>`+
       cap+`</figure>`;
   }
 
@@ -1998,8 +2019,9 @@ function renderProcess(bio){
 
   const slidesHTML=seq.map((it,i)=>
     `<div class="studio-slide">`+
-    `<img src="${esc(it.src)}" alt="${esc(it.cap||heading)}" loading="${i<=1?'eager':'lazy'}" `+
-    `onerror="var s=this.closest('.studio-slide');if(s)s.style.visibility='hidden'"></div>`).join('');
+    pictureHTML(it.src,{alt:it.cap||heading,sizes:SIZES.studio,loading:i<=1?'eager':'lazy',
+      extra:`onerror="var s=this.closest('.studio-slide');if(s)s.style.visibility='hidden'"`})+
+    `</div>`).join('');
   const arrows=loop
     ? `<button class="studio-arrow studio-prev" type="button" aria-label="Previous">&lt;</button>`+
       `<button class="studio-arrow studio-next" type="button" aria-label="Next">&gt;</button>`
@@ -2245,10 +2267,28 @@ function applySettings(s){
   const themeMeta=document.getElementById('meta-theme-color');
   if(themeMeta&&s.color_background)themeMeta.content=s.color_background;
 
-  /* Preload first slideshow image (BRIEF §Performance) */
+  /* Preload first slideshow image (BRIEF §Performance). When variants exist,
+     preload the best format we generate (AVIF if present, else WebP) via
+     imagesrcset/imagesizes so the browser fetches a right-sized hero; browsers
+     that can't decode that type simply skip the preload. With no variants,
+     fall back to preloading the plain original (previous behaviour). */
   if(s.slideshow_1){
     const preload=document.getElementById('hero-preload');
-    if(preload)preload.href=normPath(s.slideshow_1);
+    if(preload){
+      const src=normPath(s.slideshow_1);
+      const v=VARIANTS[src];
+      const fmt=(v&&v.avif&&v.avif.length)?'avif':((v&&v.webp&&v.webp.length)?'webp':'');
+      if(fmt){
+        const ws=v[fmt];
+        preload.setAttribute('type','image/'+fmt);
+        preload.setAttribute('imagesrcset',ws.map(w=>variantPath(src,w,fmt)+' '+w+'w').join(', '));
+        preload.setAttribute('imagesizes','100vw');
+        preload.href=variantPath(src,ws[ws.length-1],fmt);
+      }else{
+        preload.removeAttribute('imagesrcset');preload.removeAttribute('type');
+        preload.href=src;
+      }
+    }
   }
 
   /* JSON-LD Person schema */
@@ -2276,6 +2316,29 @@ function applySettings(s){
     `.works-grid{grid-template-columns:repeat(${colD},1fr)}`+
     `@media(max-width:1024px){.works-grid{grid-template-columns:repeat(${colT},1fr)}}`+
     `@media(max-width:620px){.works-grid{grid-template-columns:repeat(${colM},1fr)}}`;
+
+  /* Responsive <picture> sizes + grid card width/height — derived from the
+     same column / lightbox / bio knobs above, then read by the renderers so no
+     srcset or sizes value is ever hand-written (Phase 3). */
+  const vwPer=cols=>Math.max(1,Math.round(100/cols))+'vw';
+  SIZES.grid=`(max-width:620px) ${vwPer(colM)}, (max-width:1024px) ${vwPer(colT)}, ${vwPer(colD)}`;
+  SIZES.slideshow='100vw';
+  SIZES.lightbox=(function(){
+    const wv=String(s.lightbox_image_width||'').trim();          // e.g. "52vw"
+    const mx=parseInt(s.lightbox_image_max_width,10)||0;          // e.g. 736
+    const m=wv.match(/^([\d.]+)vw$/);
+    if(m&&mx){const bp=Math.round(mx/(parseFloat(m[1])/100));return `(min-width:${bp}px) ${mx}px, ${wv}`;}
+    return wv||'52vw';
+  })();
+  const bioMax=parseInt(s.bio_max_width,10)||1000;
+  SIZES.bioFull=`(max-width:620px) 100vw, ${Math.min(bioMax,900)}px`;
+  const studioMax=parseInt(s.studio_max_width,10)||1000;
+  SIZES.studio=`(max-width:1024px) 100vw, ${studioMax}px`;
+  GRID_WH=(function(){
+    const r=String(s.grid_image_ratio||'1/1').split('/');
+    const rw=parseFloat(r[0])||1,rh=parseFloat(r[1])||1,base=1000;
+    return rw>=rh?{w:base,h:Math.round(base*rh/rw)}:{w:Math.round(base*rw/rh),h:base};
+  })();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2290,6 +2353,37 @@ function esc(s){
 // to forward slashes. Run every path from a CSV through this before it reaches
 // an img src / href, so a path pasted on Windows can never break the site.
 function normPath(s){return String(s||'').trim().replace(/\\/g,'/');}
+// images/x/name.webp + (800,'webp') -> images/x/name_w800.webp  (matches
+// the suffix convention written by scripts/optimize-images.py).
+function variantPath(src,w,fmt){const d=src.lastIndexOf('.');return(d>=0?src.slice(0,d):src)+'_w'+w+'.'+fmt;}
+// Build a <picture> with AVIF/WebP <source>s from the variants manifest, with
+// the original as the final <img> fallback. If the image has no manifest entry
+// (e.g. a new file the optimize script hasn't processed yet), this degrades to
+// a plain <img src=original> — so an image is NEVER broken. srcset is built
+// only from variants the manifest says exist, so it can never point at a 404.
+// opts: {cls, alt, sizes, w, h, loading, extra}  (extra = raw trusted attrs)
+function pictureHTML(path,opts){
+  opts=opts||{};
+  const src=normPath(path);
+  const v=VARIANTS[src];
+  const cls=opts.cls?` class="${esc(opts.cls)}"`:'';
+  const wh=(opts.w&&opts.h)?` width="${opts.w}" height="${opts.h}"`:'';
+  const ld=opts.loading?` loading="${opts.loading}"`:'';
+  const sz=opts.sizes?` sizes="${esc(opts.sizes)}"`:'';
+  const extra=opts.extra?(' '+opts.extra):'';
+  const set=fmt=>{
+    const ws=v&&v[fmt];
+    return(ws&&ws.length)?ws.map(w=>esc(variantPath(src,w,fmt))+' '+w+'w').join(', '):'';
+  };
+  const img=ss=>`<img${cls} src="${esc(src)}"${ss?(' srcset="'+ss+'"'+sz):''} alt="${esc(opts.alt||'')}"${wh}${ld}${extra}>`;
+  if(v){
+    let sources='';
+    const a=set('avif');if(a)sources+=`<source type="image/avif" srcset="${a}"${sz}>`;
+    const wb=set('webp');if(wb)sources+=`<source type="image/webp" srcset="${wb}"${sz}>`;
+    return`<picture>${sources}${img(set('jpg'))}</picture>`;
+  }
+  return img('');
+}
 function footerHTML(s){
   const name=s.site_name||'',year=s.site_year||new Date().getFullYear(),loc=s.site_location||'';
   return`<span>&#169; ${esc(String(year))} ${esc(name)}</span>`+
@@ -2529,10 +2623,11 @@ document.addEventListener('keydown',e=>{
 async function init(){
   const ld=document.getElementById('loading');
   try{
-    const [st,wt,bt,ct]=await Promise.all([
+    const [st,wt,bt,ct,vj]=await Promise.all([
       loadCSV('settings.csv'),loadCSV('works.csv'),
-      loadCSV('bio.csv'),loadCSV('contact.csv')
+      loadCSV('bio.csv'),loadCSV('contact.csv'),loadVariants()
     ]);
+    VARIANTS=vj||{};
     const s=csvKV(st),w=csvObjs(wt),b=csvKV(bt),c=csvKV(ct);
     applySettings(s);
     initTheme();

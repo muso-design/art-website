@@ -8,6 +8,12 @@ echo Validating content...
 python scripts\validate-csv.py
 if errorlevel 1 goto :err_validate
 
+:: ── Step 1b: generate responsive image variants (BRIEF §Performance) ───
+echo.
+echo Optimizing images...
+python scripts\optimize-images.py
+if errorlevel 1 goto :err_optimize
+
 :: ── Step 2: check git identity ─────────────────────────────────────────
 git config user.email >nul 2>&1
 if errorlevel 1 goto :err_identity
@@ -40,6 +46,13 @@ exit /b 0
 :err_validate
 echo.
 echo Deploy aborted — fix the CSV errors above first.
+pause
+exit /b 1
+
+:err_optimize
+echo.
+echo Deploy aborted — image optimization failed (see the message above).
+echo If Pillow is missing, install it with:  pip install Pillow
 pause
 exit /b 1
 

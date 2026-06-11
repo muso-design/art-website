@@ -155,6 +155,30 @@ Excel and Google Sheets handle this automatically when you type directly into a 
 
 ---
 
+## Responsive images (automatic — nothing to do)
+
+Your photos are large (great for quality), but a phone doesn't need the full-size
+file to show a small thumbnail. So every time you run `deploy.bat`, the site
+automatically makes smaller versions of each image (480, 800 and 2000px wide) and
+serves the right size for each visitor's screen. A phone ends up loading a ~20 KB
+thumbnail instead of a 1.4 MB original — the gallery opens almost instantly.
+
+**What you do: nothing.** Keep working exactly as before — drop a file in
+`images/`, write its path in the CSV. The rest is handled for you.
+
+A few things worth knowing:
+- The smaller versions are saved next to your originals with names like
+  `mywork_w800.webp`. **Don't delete them and don't list them in any CSV** —
+  they're managed automatically. (A list of them lives in `images/variants.json`,
+  which is also generated for you.)
+- If you add a new image and preview it *before* deploying, it still shows
+  correctly — just at full size until `deploy.bat` builds the smaller versions.
+- Want the very smallest files (AVIF format)? Once, in a terminal, run
+  `pip install pillow-avif-plugin` — then every future deploy adds AVIF on top
+  automatically. Until then the site uses WebP + JPEG, which is already a big win.
+
+---
+
 ## Deploying to GitHub (making the site live)
 
 1. Double-click `deploy.bat`

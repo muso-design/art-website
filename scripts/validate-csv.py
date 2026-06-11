@@ -120,6 +120,50 @@ def check_dimensions(label, dim):
     if any(ch.isdigit() for ch in dim) and not _UNIT_RE.search(dim):
         warn(f'{label}: dimensions {dim!r} has no unit — add cm, mm, in, …')
 
+# ── Shared path collector (also used by scripts/optimize-images.py) ────
+def collect_image_paths(base=BASE):
+    """Return a sorted, de-duplicated list of every repo-relative image path
+    referenced by the CSVs (originals only — never generated variants).
+    Shared with optimize-images.py so both tools see the exact same set."""
+    paths = []
+    def add(value, multi=False):
+        if not value:
+            return
+        for p in (PATH_SPLIT.split(value) if multi else [value]):
+            p = p.strip().replace('\\', '/')
+            if p:
+                paths.append(p)
+
+    wpath = os.path.join(base, 'works.csv')
+    if os.path.exists(wpath):
+        for w in load_objects(wpath):
+            add(w.get('image', ''))
+            add(w.get('hover_image', ''))
+            add(w.get('more_images', ''), multi=True)
+
+    spath = os.path.join(base, 'settings.csv')
+    if os.path.exists(spath):
+        for key, val in load_kv(spath).items():
+            if re.fullmatch(r'slideshow_\d+', key):
+                add(val)
+
+    bpath = os.path.join(base, 'bio.csv')
+    if os.path.exists(bpath):
+        b = load_kv(bpath)
+        add(b.get('photo', ''))
+        for key, val in b.items():
+            if re.fullmatch(r'image_\d+', key):
+                add(val)
+        add(b.get('process_images', ''), multi=True)
+
+    seen, out = set(), []
+    for p in sorted(paths):
+        if p.lower() in seen:
+            continue
+        seen.add(p.lower())
+        out.append(p)
+    return out
+
 # ── Validate works.csv ─────────────────────────────────────────────────
 def validate_works():
     path = os.path.join(BASE, 'works.csv')
