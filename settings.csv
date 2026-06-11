@@ -96,7 +96,8 @@
 "# In the provider's ""embedded form"" / ""form action"" settings, copy the form's POST",,
 "# URL into newsletter_action, and the email field's name into newsletter_email_field",,
 "# (Buttondown: email   Mailchimp: EMAIL   EmailOctopus: usually email_address).",,
-"newsletter_action","/subscribe","Where the form sends to. /subscribe = the local test server (serve.bat → subscribers.txt). Later: your real endpoint URL. Empty = hidden."
+"# LOCAL TEST ONLY — to try the signup with serve.bat, put  /subscribe  back as the value below (the dev server saves entries to subscribers.txt). It MUST be empty on the live site.",,
+"newsletter_action","","Where the signup form POSTs. LEAVE EMPTY for the live site — the whole signup box auto-hides when this is empty. ""/subscribe"" works ONLY with the local test server (serve.bat); on GitHub Pages there is no server, so it returns 404. For real signups, paste your newsletter provider's form-action URL (double opt-in — see notes above)."
 "newsletter_email_field","email","The name of the email field your provider expects (see note above)."
 "newsletter_heading","Newsletter","Small heading above the signup."
 "newsletter_note","Occasional notes on new work, exhibitions, and studio happenings. No spam, unsubscribe anytime.","One line shown above the email field."

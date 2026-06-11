@@ -3,3 +3,10 @@
 
 # Local newsletter test captures (emails — never commit)
 subscribers.txt
+
+# Python bytecode cache from the helper scripts
+__pycache__/
+*.pyc
+
+# LibreOffice / OpenOffice lock files (appear while a CSV is open in the editor)
+.~lock.*#

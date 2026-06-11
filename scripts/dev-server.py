@@ -24,6 +24,8 @@ import urllib.parse
 
 PORT = 8080
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+# subscribers.txt is gitignored (holds real emails) and re-created on demand:
+# the do_POST handler opens it in append mode, so it appears on the first signup.
 SUBSCRIBERS = os.path.join(ROOT, 'subscribers.txt')
 EMAIL_RE = re.compile(r'[^@\s]+@[^@\s]+\.[^@\s]+')
 
