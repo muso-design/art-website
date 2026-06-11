@@ -22,7 +22,7 @@
 "#   image_N_rotation   →  tilt in degrees"," e.g. -2  or  1.5  (blank/0 = straight)",
 "#   image_N_width      →  size for center/left/right"," e.g. 460px or 60%  (blank = default)",
 "#   image_N_caption    →  small caption shown under the image  (blank = none)",,
-"image_1","images\roman_chystakhovskyi_studio.jpg","Path to the image file"
+"image_1","images/roman_chystakhovskyi_studio.jpg","Path to the image file"
 "image_1_placement","left","How this image sits in the text (see options above)"
 "image_1_after",1,"Place it after the first paragraph"
 "image_1_ratio","3/2","Crop ratio (this studio photo is landscape 3:2)"
@@ -72,8 +72,8 @@
 "process_heading","Studio","Small heading shown above the slideshow"
 "# FAST way — paste many photos in ONE cell, separated by a vertical bar |",,
 "# Reorder them by just rearranging the list. Swap by changing the paths.",,
-"process_images","images\bio_process\studio_shot.webp | images\bio_process\zbrush.webp | images\bio_process\smile_silicone_far.webp |
-Images\bio_process\smile_silicone.jpg","Studio/process photos (| separated). Replace with your own."
+"process_images","images/bio_process/studio_shot.webp | images/bio_process/zbrush.webp | images/bio_process/smile_silicone_far.webp |
+images/bio_process/smile_silicone.jpg","Studio/process photos (| separated). Replace with your own."
 "# OR add them one per row with optional captions:",,
 "#   process_1, images/studio_a.jpg    +  process_caption_1, In the studio",,
 "#   process_2, images/studio_b.jpg    +  process_caption_2, Casting in gypsum",,

@@ -3,10 +3,13 @@
 validate-csv.py — Pre-deploy CSV validator.
 
 Checks:
-  - works.csv: required fields (id, title, image), image files exist
-  - settings.csv: required keys present
-  - bio.csv: at least one bio paragraph
+  - works.csv: required fields (id, title, image); image / hover_image /
+    more_images files exist; dimensions carry a unit
+  - settings.csv: required keys present; slideshow_N images exist
+  - bio.csv: at least one bio paragraph; image_N / process_images files exist
   - contact.csv: at least one contact item
+  - Every path field: forward slashes only (no backslashes), and the file is
+    present on disk with the exact same case (GitHub Pages is case-sensitive)
 
 Exits with code 1 and prints errors if validation fails.
 Called by deploy.bat before pushing to GitHub.
@@ -19,6 +22,7 @@ import os
 import sys
 import csv
 import io
+import re
 
 BASE = os.path.join(os.path.dirname(__file__), '..')
 
@@ -62,6 +66,60 @@ def load_objects(filepath):
             rows.append({k: (v or '').strip() for k, v in row.items()})
     return rows
 
+# ── Path helpers ───────────────────────────────────────────────────────
+PATH_SPLIT = re.compile(r'[|;\n\r]+')
+
+def resolve_cased(rel):
+    """Resolve a repo-relative path one segment at a time, checking exact case.
+    Returns ('ok', None) | ('missing', None) | ('case', actual_path_on_disk).
+    GitHub Pages is case-sensitive, so a wrong-case path 404s in production even
+    though it resolves fine on a Windows/macOS filesystem."""
+    cur = BASE
+    for seg in [p for p in rel.split('/') if p not in ('', '.')]:
+        try:
+            entries = os.listdir(cur)
+        except (FileNotFoundError, NotADirectoryError):
+            return ('missing', None)
+        if seg in entries:
+            cur = os.path.join(cur, seg)
+        else:
+            lower = {e.lower(): e for e in entries}
+            if seg.lower() in lower:
+                actual = os.path.relpath(os.path.join(cur, lower[seg.lower()]), BASE)
+                return ('case', actual.replace(os.sep, '/'))
+            return ('missing', None)
+    return ('ok', None)
+
+def check_path_field(label, field, value, multi=False):
+    """Validate an image-path field: no backslashes, and the file exists on disk
+    with the exact same case. multi=True for cells holding several paths
+    separated by | ; or line breaks (e.g. more_images, process_images)."""
+    if not value:
+        return
+    if '\\' in value:
+        error(f'{label}: backslash in {field} path — use forward slashes "/": {value.strip()!r}')
+    parts = PATH_SPLIT.split(value) if multi else [value]
+    for p in parts:
+        p = p.strip().replace('\\', '/')
+        if not p:
+            continue
+        status, actual = resolve_cased(p)
+        if status == 'missing':
+            error(f'{label}: {field} file not found on disk: {p}')
+        elif status == 'case':
+            error(f'{label}: {field} case mismatch (GitHub Pages is case-sensitive): '
+                  f'{p}  ->  on disk it is {actual}')
+
+# ── Suspicious-text checks ─────────────────────────────────────────────
+_UNIT_RE = re.compile(r'(cm|mm|millimet|centimet|\bm\b|\bin\b|inch|ft|feet|["”″])', re.I)
+
+def check_dimensions(label, dim):
+    """Warn if a dimensions value has numbers but no unit (e.g. '25 × 15 × 7')."""
+    if not dim:
+        return
+    if any(ch.isdigit() for ch in dim) and not _UNIT_RE.search(dim):
+        warn(f'{label}: dimensions {dim!r} has no unit — add cm, mm, in, …')
+
 # ── Validate works.csv ─────────────────────────────────────────────────
 def validate_works():
     path = os.path.join(BASE, 'works.csv')
@@ -80,14 +138,10 @@ def validate_works():
         for field in required_fields:
             if not w.get(field):
                 error(f'{label}: missing required field "{field}"')
-        img = w.get('image', '')
-        if img:
-            img_path = os.path.join(BASE, img)
-            if not os.path.exists(img_path):
-                error(f'{label}: image file not found: {img}')
-        else:
-            # Already caught above — but warn without double-reporting
-            pass
+        check_path_field(label, 'image', w.get('image', ''))
+        check_path_field(label, 'hover_image', w.get('hover_image', ''))
+        check_path_field(label, 'more_images', w.get('more_images', ''), multi=True)
+        check_dimensions(label, w.get('dimensions', ''))
 
 # ── Validate settings.csv ──────────────────────────────────────────────
 REQUIRED_SETTINGS = [
@@ -104,6 +158,11 @@ def validate_settings():
     for key in REQUIRED_SETTINGS:
         if not s.get(key):
             error(f'settings.csv: required key "{key}" is missing or empty')
+
+    # Slideshow image paths (slideshow_1, slideshow_2, … — captions are skipped)
+    for key, val in s.items():
+        if re.fullmatch(r'slideshow_\d+', key):
+            check_path_field('settings.csv', key, val)
 
     # Warn about Google Fonts (GDPR violation)
     font_url = s.get('font_url', '')
@@ -127,11 +186,11 @@ def validate_bio():
     b = load_kv(path)
     if not b.get('bio_1'):
         warn('bio.csv: no bio_1 paragraph found')
-    photo = b.get('photo', '')
-    if photo:
-        photo_path = os.path.join(BASE, photo)
-        if not os.path.exists(photo_path):
-            error(f'bio.csv: portrait photo not found: {photo}')
+    check_path_field('bio.csv', 'photo', b.get('photo', ''))
+    for key, val in b.items():
+        if re.fullmatch(r'image_\d+', key):
+            check_path_field('bio.csv', key, val)
+    check_path_field('bio.csv', 'process_images', b.get('process_images', ''), multi=True)
 
 # ── Validate contact.csv ───────────────────────────────────────────────
 def validate_contact():
@@ -150,6 +209,12 @@ def validate_contact():
 
 # ── Run all validators ─────────────────────────────────────────────────
 def main():
+    # Make stdout robust to non-ASCII (× in dimensions, accented filenames) so
+    # the validator never crashes on a legacy Windows code page during deploy.
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
     print('Validating CSV files...')
     validate_works()
     validate_settings()

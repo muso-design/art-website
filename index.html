@@ -1162,7 +1162,7 @@ function buildSlideshow(s){
   track.className='ss-track';track.id='ss-track';
   seq.forEach((d,i)=>{
     const sl=document.createElement('div');sl.className='ss-slide';
-    const im=document.createElement('img');im.src=d.img;im.alt=d.cap||'';im.draggable=false;im.loading=i<=1?'eager':'lazy';
+    const im=document.createElement('img');im.src=normPath(d.img);im.alt=d.cap||'';im.draggable=false;im.loading=i<=1?'eager':'lazy';
     sl.appendChild(im);
     if(d.cap){const c=document.createElement('div');c.className='slide-caption';c.textContent=d.cap;sl.appendChild(c);}
     track.appendChild(sl);
@@ -1224,8 +1224,8 @@ function renderWorks(data){
     const c=document.createElement('div');
     c.className='work-card';
     c.onclick=()=>openLb(i);
-    const mainImg=(w.image||'').replace(/\\/g,'/');
-    const hover=_hoverSwap?(w.hover_image||'').trim().replace(/\\/g,'/'):'';
+    const mainImg=normPath(w.image);
+    const hover=_hoverSwap?normPath(w.hover_image):'';
     if(hover)c.classList.add('has-hover');
     c.innerHTML=`
       <div class="work-img-wrap">
@@ -1273,7 +1273,7 @@ function openLb(i){
         '@type':'Person',
         name:document.getElementById('nav-name').textContent||'Roman Chystakhovskyi'
       },
-      image:w.image?SITE_URL+'/'+w.image:undefined,
+      image:w.image?SITE_URL+'/'+normPath(w.image):undefined,
       url:SITE_URL+'/#/works/'+slug
     };
     // Clean up undefined values
@@ -1330,13 +1330,13 @@ function lbRender(){
   if(w.more_images)w.more_images.split(/[|;\n\r]+/).forEach(s=>raw.push(s));
   const seen=new Set(),srcs=[];
   raw.forEach(s=>{
-    s=(s||'').trim().replace(/\\/g,'/');
+    s=normPath(s);
     if(!s)return;
     const key=s.toLowerCase();
     if(seen.has(key))return;
     seen.add(key);srcs.push(s);
   });
-  if(!srcs.length)srcs.push((w.image||'').replace(/\\/g,'/'));
+  if(!srcs.length)srcs.push(normPath(w.image));
 
   _zoomImgs=[];
   const imgs=[];
@@ -1905,7 +1905,7 @@ function renderBio(bio,s){
     const cap=im.caption?`<figcaption>${esc(im.caption)}</figcaption>`:'';
     return `<figure class="bio-fig bio-fig--${im.placement}"`+
       `${style.length?` style="${esc(style.join(';'))}"`:''}>`+
-      `<div class="bio-fig-inner"><img src="${esc(im.src)}" `+
+      `<div class="bio-fig-inner"><img src="${esc(normPath(im.src))}" `+
       `alt="${esc(im.caption||(s&&s.site_name)||'Roman Chystakhovskyi')}" loading="lazy" `+
       `onerror="var f=this.closest('.bio-fig');if(f)f.style.display='none'"${imgStyle}></div>`+
       cap+`</figure>`;
@@ -1973,7 +1973,7 @@ function renderBio(bio,s){
 function renderProcess(bio){
   const wrap=document.getElementById('bio-process');
   if(!wrap)return;
-  const norm=s=>(s||'').trim().replace(/\\/g,'/').replace(/^images\//i,'images/');
+  const norm=s=>normPath(s).replace(/^images\//i,'images/');
   const items=[];
   for(let i=1;bio['process_'+i];i++){
     const src=norm(bio['process_'+i]);
@@ -2248,7 +2248,7 @@ function applySettings(s){
   /* Preload first slideshow image (BRIEF §Performance) */
   if(s.slideshow_1){
     const preload=document.getElementById('hero-preload');
-    if(preload)preload.href=s.slideshow_1;
+    if(preload)preload.href=normPath(s.slideshow_1);
   }
 
   /* JSON-LD Person schema */
@@ -2286,6 +2286,10 @@ function esc(s){
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+// Normalize a CSV-supplied image path: trim, and convert Windows backslashes
+// to forward slashes. Run every path from a CSV through this before it reaches
+// an img src / href, so a path pasted on Windows can never break the site.
+function normPath(s){return String(s||'').trim().replace(/\\/g,'/');}
 function footerHTML(s){
   const name=s.site_name||'',year=s.site_year||new Date().getFullYear(),loc=s.site_location||'';
   return`<span>&#169; ${esc(String(year))} ${esc(name)}</span>`+
