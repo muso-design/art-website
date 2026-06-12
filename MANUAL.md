@@ -118,6 +118,20 @@ On mobile the grid automatically reduces to fewer columns regardless.
 
 ---
 
+## Motion & animation
+
+Open `settings.csv`, `# MOTION` section. Three on/off knobs (`yes` / `no`):
+
+- `motion_reveal` (default `yes`) — artworks and lightbox images fade and gently lift in as they scroll into view.
+- `motion_route_fade` (default `yes`) — pages cross-fade when you switch between Works / Bio / Contact.
+- `motion_kenburns` (default `no`) — a slow drifting zoom on the home slideshow photos. Set to `yes` to try it.
+
+Two finishing touches are always on (no setting needed): nav links draw an underline on hover and on the current page, and the artwork viewer fades open and closed.
+
+**Accessibility:** every animation above turns itself off automatically for visitors who have "reduce motion" enabled in their device settings — nothing for you to do.
+
+---
+
 ## Updating bio text
 
 Open `bio.csv`. Find the `bio_1`, `bio_2`, etc. rows. Edit the values.

@@ -70,6 +70,13 @@
 "theme_switcher","yes","Show the light/dark theme toggle in the nav so visitors can switch. no = hide it (site stays light)."
 "mobile_menu_align","center","Position of the mobile hamburger + menu items: left, center, or right."
 "#",,
+"# ── MOTION ────────────────────────────────────────────────────────────────────",,
+"# Subtle animation. ALL of these turn themselves off automatically for visitors",,
+"# who have ""reduce motion"" enabled in their device's accessibility settings.",,
+"motion_reveal","yes","Fade + gently lift artworks and lightbox images in as they scroll into view. no = appear instantly."
+"motion_route_fade","yes","Soft fade/drift between pages (Works / Bio / Contact) when you navigate. no = instant switch."
+"motion_kenburns","no","Slow drifting ""Ken Burns"" zoom on the home slideshow photos. no = still images. Set yes to try it."
+"#",,
 "# ── LIGHTBOX ──────────────────────────────────────────────────────────────────",,
 "# Settings for the artwork detail view (the full-screen gallery that opens when you click a work).",,
 "lightbox_image_width","52vw","Width of gallery images as a percentage of the viewport. 52vw = 52% of screen width."

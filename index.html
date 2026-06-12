@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Mark that JS is running, as early as possible, so motion's hidden states
+     (scroll-reveal) only apply when JS can reveal them — no-JS visitors, per
+     the <noscript> philosophy, see all content with no hidden elements. -->
+<script>document.documentElement.classList.add('js')</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -133,10 +137,19 @@ nav.dark .nav-name{color:var(--text)}
 nav.light .nav-name{color:#ffffff}
 .nav-links{display:flex;gap:48px;list-style:none;align-items:center}
 .nav-links a{
+  position:relative;
   font-family:var(--font-ui);
   font-size:calc(var(--nav-link-size) + 1px);letter-spacing:0.16em;text-transform:uppercase;
   text-decoration:none;font-weight:600;cursor:pointer;transition:opacity 0.2s
 }
+/* Micro-interaction: a left-to-right underline draw on hover, kept on the
+   active route (works alongside the existing opacity active-state). */
+.nav-links a::after{
+  content:'';position:absolute;left:0;right:0;bottom:-3px;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:left;
+  transition:transform 0.3s cubic-bezier(0.22,1,0.36,1)
+}
+.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
 nav.dark .nav-links a{color:var(--text);opacity:0.5}
 nav.dark .nav-links a:hover,nav.dark .nav-links a.active{opacity:1}
 nav.light .nav-links a{color:#ffffff;opacity:0.6}
@@ -249,14 +262,19 @@ picture{display:contents}
 
 /* ── LIGHTBOX ────────────────────────────────────────────── */
 .lightbox{
-  display:none;position:fixed;inset:0;
+  position:fixed;inset:0;
   background:var(--bg);z-index:200;
   /* Allow vertical scroll + taps, but NO native pinch-zoom in the gallery —
      zooming an artwork is done by tapping into the dedicated zoom view. */
-  touch-action:pan-y
+  touch-action:pan-y;
+  /* Fade in/out instead of snapping (micro-interaction). visibility (not
+     display:none) keeps it out of flow + non-interactive while letting opacity
+     animate; the 0.25s visibility delay holds it visible through the fade-out. */
+  opacity:0;visibility:hidden;
+  transition:opacity 0.25s ease,visibility 0s linear 0.25s
 }
 .lb-gallery,.lb-gallery-img{touch-action:pan-y}
-.lightbox.open{display:block}
+.lightbox.open{opacity:1;visibility:visible;transition:opacity 0.25s ease}
 
 /* Gallery — full-screen scrollable, images centered */
 .lb-gallery{
@@ -630,6 +648,42 @@ a.nav-name{text-decoration:none}
 :focus:not(:focus-visible){outline:none}
 
 /* ── REDUCED MOTION (BRIEF §Accessibility) ──────────────────── */
+/* ── MOTION (Phase 4) ─────────────────────────────────────────
+   Global feel: reveals 600–800ms, hover/transition 250–400ms,
+   easing cubic-bezier(0.22,1,0.36,1), translate ≤24px, scale ≤1.04.
+   Each feature is gated by a settings.csv knob (applySettings adds the
+   html.motion-* classes) and fully disabled under prefers-reduced-motion. */
+
+/* 4.1 Scroll-reveal — hidden state applies only when JS ran (html.js) AND the
+   renderer tagged the element .reveal (gated by the motion_reveal knob). */
+html.js .reveal{
+  opacity:0;transform:translateY(18px);
+  transition:opacity 0.7s cubic-bezier(0.22,1,0.36,1),
+             transform 0.7s cubic-bezier(0.22,1,0.36,1)
+}
+html.js .reveal.is-revealed{opacity:1;transform:none}
+
+/* 4.2 Route transition — incoming page fades + drifts in (motion_route_fade).
+   A pure-CSS keyframe means navigate()'s timing is untouched, so it cannot
+   interfere with lightbox open/close, footer overscroll, or scroll restoration.
+   The outgoing fade is a position-preserving ghost handled in navigate(). */
+html.js.motion-route .page.active{
+  animation:routeIn 0.35s cubic-bezier(0.22,1,0.36,1) both
+}
+@keyframes routeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+html.js.motion-route .page.route-ghost{display:block!important;will-change:opacity}
+
+/* 4.3 Ken Burns drift on the slideshow (motion_kenburns, default off).
+   Pure CSS, alternating zoom direction per slide; overflow:hidden clips the
+   scaled image so it never fights the scroll-snap track or the swipe handler. */
+html.motion-kenburns .ss-slide{overflow:hidden}
+html.motion-kenburns .ss-slide img{
+  animation:kenBurns 9s ease-out infinite alternate;will-change:transform
+}
+html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
+@keyframes kenBurns{from{transform:scale(1)}to{transform:scale(1.035)}}
+@keyframes kenBurnsAlt{from{transform:scale(1.035)}to{transform:scale(1)}}
+
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{
     animation-duration:0.01ms!important;
@@ -640,6 +694,11 @@ a.nav-name{text-decoration:none}
   .slide{transition:none!important}
   .lb-gallery-img{transition:none!important}
   .work-img{transition:none!important}
+  /* Phase 4 — disable ALL new motion (Ken Burns entirely) for reduced-motion. */
+  .reveal{opacity:1!important;transform:none!important}
+  .page.active{animation:none!important}
+  html.motion-kenburns .ss-slide img{animation:none!important}
+  .lightbox{transition:none!important}
 }
 
 /* ── BROKEN IMAGE FALLBACK (BRIEF §Resilience) ──────────────── */
@@ -736,6 +795,9 @@ a.nav-name{text-decoration:none}
     touch-action:manipulation;-webkit-tap-highlight-color:transparent
   }
   .nav-links a.active{opacity:0.42!important}
+  /* No underline-draw in the full-screen mobile menu (links are large + the
+     active item is dimmed, not underlined). */
+  .nav-links a::after{display:none}
   /* Bottom of the menu: Instagram, then the theme toggle at the very bottom */
   .nav-ig-item{display:block!important;order:1;margin-top:auto;margin-bottom:22px}
   .nav-ig{display:inline-flex;color:var(--text);opacity:0.85}
@@ -1088,7 +1150,34 @@ let currentPage='home';
 
 const SITE_URL='https://muso-design.github.io/art-website';
 
+// Route transition (Phase 4): a position-preserving "ghost" of the outgoing
+// page fades out on top while the incoming page (already made active
+// synchronously) animates in underneath. Purely cosmetic — it never delays
+// navigate()'s logic, so the lightbox, footer overscroll and scroll handling
+// are all untouched.
+let _ghostTimer=null;
+function _clearRouteGhost(){
+  if(_ghostTimer){clearTimeout(_ghostTimer);_ghostTimer=null;}
+  const g=document.querySelector('.page.route-ghost');
+  if(g){g.classList.remove('route-ghost');g.style.cssText='';}
+}
+function _routeGhost(leaving,scrollY){
+  leaving.style.cssText='position:fixed;top:'+(-scrollY)+'px;left:0;right:0;'+
+    'z-index:50;opacity:1;pointer-events:none';
+  leaving.classList.add('route-ghost');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    leaving.style.transition='opacity 0.25s cubic-bezier(0.22,1,0.36,1)';
+    leaving.style.opacity='0';
+  }));
+  _ghostTimer=setTimeout(()=>{
+    leaving.classList.remove('route-ghost');leaving.style.cssText='';
+    _ghostTimer=null;
+  },300);
+}
 function navigate(page,skipPush){
+  _clearRouteGhost();   // cancel any ghost still fading from a rapid prior nav
+  const _leaving=_motionRoute?document.querySelector('.page.active'):null;
+  const _leaveScrollY=window.scrollY||document.documentElement.scrollTop||0;
   if(document.getElementById('lightbox').classList.contains('open'))closeLb(true);
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
@@ -1099,6 +1188,9 @@ function navigate(page,skipPush){
   });
   currentPage=page;
   window.scrollTo(0,0);
+  if(_leaving&&_leaving.id!=='page-'+page)_routeGhost(_leaving,_leaveScrollY);
+  // Scroll-reveal: observe this page's items now that it's visible (Phase 4).
+  {const _pg=document.getElementById('page-'+page);requestAnimationFrame(()=>_revealScan(_pg));}
   const ft=document.getElementById('site-footer');
   if(ft)ft.style.display=page==='home'?'none':'flex';
   /* Reset the nav auto-hide on every page change; footer visibility is
@@ -1233,6 +1325,43 @@ let _hoverSwap=true; // gallery thumbnail hover-swap (set from settings.csv)
 // applySettings() and read by the renderers. All have safe empty defaults so the
 // site works fine before the optimize script has ever run.
 let VARIANTS={},SIZES={},GRID_WH={w:1000,h:1000};
+// Motion (Phase 4). Flags come from settings.csv via applySettings (and are
+// forced off under prefers-reduced-motion). _motionReveal gates scroll-reveal;
+// route fade + Ken Burns are driven by the html.motion-* classes.
+let _motionReveal=false,_motionRoute=false;
+// One shared IntersectionObserver for BOTH the works grid and the lightbox
+// gallery (threshold 0.15). Reveals once, with an 80ms sibling stagger capped
+// at 4 steps for items that enter the viewport together.
+let _revealObs=null;
+function _getRevealObs(){
+  if(_revealObs)return _revealObs;
+  _revealObs=new IntersectionObserver(entries=>{
+    const show=entries.filter(e=>e.isIntersecting);
+    show.sort((a,b)=>(a.boundingClientRect.top-b.boundingClientRect.top)
+                   ||(a.boundingClientRect.left-b.boundingClientRect.left));
+    show.forEach((e,k)=>{
+      e.target.style.transitionDelay=(Math.min(k,4)*80)+'ms';
+      e.target.classList.add('is-revealed');
+      _revealObs.unobserve(e.target);
+    });
+  },{threshold:0.15});
+  return _revealObs;
+}
+// Mark an element for scroll-reveal: add the hidden state NOW (synchronously,
+// before paint, so there's no flash). No-op when reveal is disabled.
+function _markReveal(el){
+  if(_motionReveal&&el)el.classList.add('reveal');
+}
+// Observe the not-yet-revealed items inside a container that just became
+// visible. We observe HERE (rather than when items are created) because
+// IntersectionObserver does not reliably fire when an element flips from
+// display:none to visible — but observing an already-visible element does fire.
+// Called from navigate() (page shown) and lbRender() (lightbox opened).
+function _revealScan(container){
+  if(!_motionReveal||!container)return;
+  const obs=_getRevealObs();
+  container.querySelectorAll('.reveal:not(.is-revealed)').forEach(el=>obs.observe(el));
+}
 
 function renderWorks(data){
   works=data.filter(w=>w.title||w.image);
@@ -1261,6 +1390,7 @@ function renderWorks(data){
         ${w.series?`<div class="work-series">${esc(w.series)}</div>`:''}
       </div>`;
     grid.appendChild(c);
+    _markReveal(c);   // scroll-reveal (Phase 4) — observed when the page is shown
   });
 }
 
@@ -1372,8 +1502,11 @@ function lbRender(){
     const img=fig.querySelector('img');
     const imgIdx=i;img.onclick=()=>openZoom(imgIdx);
     gallery.appendChild(fig);
+    _markReveal(fig);   // scroll-reveal (Phase 4) — hidden state added pre-paint
     imgs.push(img);
   });
+  // Observe once the gallery is on screen (openLb adds .open right after this).
+  requestAnimationFrame(()=>_revealScan(gallery));
 
   // Dots — one per view; hidden entirely when a piece has just one photo
   const dotsEl=document.getElementById('lb-dots');
@@ -2206,6 +2339,18 @@ function applySettings(s){
   const hoverMobile=['yes','on','true','1'].includes(String(s.gallery_hover_swap_mobile||'').toLowerCase().trim());
   const wg=document.getElementById('works-grid');
   if(wg)wg.classList.toggle('mobile-hover-on',hoverMobile);
+
+  /* Motion knobs (Phase 4) — all disabled when the visitor prefers reduced
+     motion. Defaults: motion_reveal yes, motion_route_fade yes, motion_kenburns no. */
+  const _reduceMotion=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches);
+  const _knob=(val,def)=>{const t=String(val==null?'':val).toLowerCase().trim();
+    return t===''?def:['yes','on','true','1'].includes(t);};
+  _motionReveal=_knob(s.motion_reveal,true)&&!_reduceMotion;
+  _motionRoute =_knob(s.motion_route_fade,true)&&!_reduceMotion;
+  const _kenburns=_knob(s.motion_kenburns,false)&&!_reduceMotion;
+  const _root=document.documentElement;
+  _root.classList.toggle('motion-route',_motionRoute);
+  _root.classList.toggle('motion-kenburns',_kenburns);
 
   /* Light/dark theme switcher button (default shown) */
   const themeOn=!['no','off','false','0'].includes(String(s.theme_switcher||'').toLowerCase().trim());
