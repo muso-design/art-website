@@ -246,18 +246,27 @@ nav.light .nav-burger{color:#ffffff}
     transparent 100%);
   z-index:4;pointer-events:none
 }
-/* Home scroll-to-newsletter (5.3): the hero fades into the page background at
-   its bottom, then a newsletter section sits below it so the home page scrolls. */
+/* Home scroll-to-newsletter (5.3): the hero fades into a permanently DARK
+   newsletter section (so it always reads against the dark hero, independent of
+   the light/dark theme). --home-nl-bg is the fixed dark backdrop the hero fades
+   into and the section sits on. */
+:root{--home-nl-bg:#161514}
 .home-has-newsletter .slideshow::before{
   content:'';position:absolute;left:0;right:0;bottom:0;height:34vh;
   z-index:4;pointer-events:none;
-  background:linear-gradient(to bottom,transparent,var(--bg))
+  background:linear-gradient(to bottom,transparent,var(--home-nl-bg))
 }
 .home-newsletter{
-  background:var(--bg);
+  /* Force the dark-theme palette here permanently — the newsletter's child
+     styles all use these variables, so the whole section goes dark regardless
+     of the site theme. Values mirror html[data-theme="dark"]. */
+  --bg:#161514;--bg2:#211f1d;--bg3:#2b2926;
+  --text:#ecebe8;--mid:#a7a29b;--dim:#736d66;--border:rgba(255,255,255,0.14);
+  background:var(--home-nl-bg);color:var(--text);
   padding:72px var(--page-padding) 120px;
-  max-width:var(--contact-max-width,760px);margin:0 auto
+  max-width:none;margin:0
 }
+.home-newsletter>*{max-width:var(--contact-max-width,760px);margin-left:auto;margin-right:auto}
 
 /* ── WORKS ───────────────────────────────────────────────── */
 #page-works{padding-top:0;background:var(--bg)}
@@ -1314,7 +1323,7 @@ function buildSlideshow(s){
   track.className='ss-track';track.id='ss-track';
   seq.forEach((d,i)=>{
     const sl=document.createElement('div');sl.className='ss-slide';
-    sl.innerHTML=pictureHTML(normPath(d.img),{alt:d.cap||'',sizes:SIZES.slideshow,
+    sl.innerHTML=pictureHTML(normPath(d.img),{alt:d.cap||'',sizes:SIZES.slideshow,fullOnDesktop:true,
       loading:i<=1?'eager':'lazy',extra:'draggable="false"'});
     if(d.cap){
       const c=document.createElement('div');c.className='slide-caption';
@@ -2515,15 +2524,23 @@ function applySettings(s){
       const src=normPath(s.slideshow_1);
       const v=VARIANTS[src];
       const fmt=(v&&v.avif&&v.avif.length)?'avif':((v&&v.webp&&v.webp.length)?'webp':'');
+      let mob=document.getElementById('hero-preload-mobile');
       if(fmt){
-        const ws=v[fmt];
-        preload.setAttribute('type','image/'+fmt);
-        preload.setAttribute('imagesrcset',ws.map(w=>variantPath(src,w,fmt)+' '+w+'w').join(', '));
-        preload.setAttribute('imagesizes','100vw');
-        preload.href=variantPath(src,ws[ws.length-1],fmt);
-      }else{
-        preload.removeAttribute('imagesrcset');preload.removeAttribute('type');
+        // Match what the hero <picture> loads: the full-res ORIGINAL on desktop
+        // (wide screens), an optimized variant on small screens. Two media-
+        // scoped preloads so neither device double-fetches.
+        preload.setAttribute('media','(min-width:1024px)');
+        preload.removeAttribute('imagesrcset');preload.removeAttribute('type');preload.removeAttribute('imagesizes');
         preload.href=src;
+        if(!mob){mob=document.createElement('link');mob.id='hero-preload-mobile';mob.rel='preload';mob.as='image';mob.setAttribute('fetchpriority','high');document.head.appendChild(mob);}
+        mob.setAttribute('media','(max-width:1023.98px)');
+        mob.setAttribute('type','image/'+fmt);
+        mob.setAttribute('imagesrcset',v[fmt].map(w=>variantPath(src,w,fmt)+' '+w+'w').join(', '));
+        mob.setAttribute('imagesizes','100vw');
+      }else{
+        preload.removeAttribute('media');preload.removeAttribute('imagesrcset');preload.removeAttribute('type');
+        preload.href=src;
+        if(mob)mob.remove();
       }
     }
   }
@@ -2615,6 +2632,10 @@ function pictureHTML(path,opts){
   const img=ss=>`<img${cls} src="${esc(src)}"${ss?(' srcset="'+ss+'"'+sz):''} alt="${esc(opts.alt||'')}"${wh}${ld}${extra}>`;
   if(v){
     let sources='';
+    // fullOnDesktop (home hero): on wide screens load the full-resolution
+    // ORIGINAL from the library for best quality; smaller screens still get the
+    // optimized variants below. This <source> is first, so it wins on desktop.
+    if(opts.fullOnDesktop)sources+=`<source media="(min-width:1024px)" srcset="${esc(src)}">`;
     const a=set('avif');if(a)sources+=`<source type="image/avif" srcset="${a}"${sz}>`;
     const wb=set('webp');if(wb)sources+=`<source type="image/webp" srcset="${wb}"${sz}>`;
     return`<picture>${sources}${img(set('jpg'))}</picture>`;
@@ -2769,16 +2790,9 @@ function _updateChrome(){
     if(_scrollAccum>HIDE_AFTER)_setNav(true);
     else if(_scrollAccum<-SHOW_AFTER)_setNav(false);
   }
-  if(currentPage==='home'){
-    // Home scrolls to the newsletter below the hero (5.3). Keep the nav legible
-    // when visible: light over the dark hero, dark once over the light section.
-    const nv=document.getElementById('main-nav');
-    const overHero=y<window.innerHeight*0.82;
-    nv.classList.toggle('light',overHero);
-    nv.classList.toggle('dark',!overHero);
-    _updateFooter();   // footer stays hidden on home (handled inside)
-    return;
-  }
+  // Home: the newsletter section below the hero is permanently dark, so the
+  // light nav stays legible the whole way down — no variant switching needed.
+  if(currentPage==='home'){_updateFooter();return;}
   _updateFooter();
 }
 window.addEventListener('scroll',()=>{
