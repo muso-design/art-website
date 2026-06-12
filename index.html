@@ -207,6 +207,30 @@ nav.light .nav-burger{color:#ffffff}
   color:rgba(255,255,255,0.6);font-size:12px;letter-spacing:0.1em;
   text-transform:uppercase;z-index:5
 }
+/* Caption-as-door (5.5): inherits the caption's look, generous tap target via
+   padding (negative margin keeps layout), underline-draw affordance on hover. */
+.slide-caption-link{
+  color:inherit;text-decoration:none;display:inline-block;position:relative;
+  padding:10px 6px;margin:-10px -6px;-webkit-tap-highlight-color:transparent
+}
+.slide-caption-link::after{
+  content:'';position:absolute;left:6px;right:6px;bottom:6px;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:left;
+  transition:transform 0.3s cubic-bezier(0.22,1,0.36,1)
+}
+.slide-caption-link:hover::after,.slide-caption-link:focus-visible::after{transform:scaleX(1)}
+/* First-slide swipe/scroll hint (5.4): low-contrast horizontal nudge. */
+.ss-hint{
+  position:absolute;left:0;right:0;bottom:92px;z-index:5;
+  display:flex;justify-content:center;pointer-events:none;
+  transition:opacity 0.6s ease
+}
+.ss-hint--gone{opacity:0}
+.ss-hint-inner{
+  color:rgba(255,255,255,0.5);font-size:20px;letter-spacing:0.3em;
+  animation:ssHintNudge 2.2s ease-in-out infinite
+}
+@keyframes ssHintNudge{0%,100%{transform:translateX(-7px)}50%{transform:translateX(7px)}}
 .ss-arrows{display:none}
 
 /* Top gradient for nav legibility */
@@ -221,6 +245,18 @@ nav.light .nav-burger{color:#ffffff}
     rgba(0,0,0,var(--ss-gradient-opacity)) calc(var(--ss-gradient-intensity,0.35) * 100%),
     transparent 100%);
   z-index:4;pointer-events:none
+}
+/* Home scroll-to-newsletter (5.3): the hero fades into the page background at
+   its bottom, then a newsletter section sits below it so the home page scrolls. */
+.home-has-newsletter .slideshow::before{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:34vh;
+  z-index:4;pointer-events:none;
+  background:linear-gradient(to bottom,transparent,var(--bg))
+}
+.home-newsletter{
+  background:var(--bg);
+  padding:72px var(--page-padding) 120px;
+  max-width:var(--contact-max-width,760px);margin:0 auto
 }
 
 /* ── WORKS ───────────────────────────────────────────────── */
@@ -657,11 +693,11 @@ a.nav-name{text-decoration:none}
 /* 4.1 Scroll-reveal — hidden state applies only when JS ran (html.js) AND the
    renderer tagged the element .reveal (gated by the motion_reveal knob). */
 html.js .reveal{
-  opacity:0;transform:translateY(18px);
-  transition:opacity 0.7s cubic-bezier(0.22,1,0.36,1),
-             transform 0.7s cubic-bezier(0.22,1,0.36,1)
+  opacity:0;transform:translateY(20px);will-change:opacity,transform;
+  transition:opacity 0.8s cubic-bezier(0.22,1,0.36,1),
+             transform 0.8s cubic-bezier(0.22,1,0.36,1)
 }
-html.js .reveal.is-revealed{opacity:1;transform:none}
+html.js .reveal.is-revealed{opacity:1;transform:none;will-change:auto}
 
 /* 4.2 Route transition — incoming page fades + drifts in (motion_route_fade).
    A pure-CSS keyframe means navigate()'s timing is untouched, so it cannot
@@ -950,6 +986,8 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
     </div>
     <div class="ss-dots" id="ss-dots"></div>
   </div>
+  <!-- Newsletter below the hero — the home page scrolls down to it (5.3) -->
+  <div class="home-newsletter" id="home-newsletter" style="display:none"></div>
 </section>
 
 <!-- WORKS -->
@@ -1247,10 +1285,19 @@ function navigate(page,skipPush){
 // ═══════════════════════════════════════════════════════════
 let ssIdx=0,ssSlides=[],ssTimer=null,ssInterval=5000;
 let _ssTrack=null,_ssW=0,_ssReal=0,_ssN=0,_ssLoop=false;
+let _ssHint=null,_ssHintGone=false,_ssReady=false;   // first-slide swipe hint (5.4)
+function _ssDismissHint(){
+  if(_ssHintGone)return;_ssHintGone=true;
+  const h=_ssHint;_ssHint=null;
+  if(h){h.classList.add('ss-hint--gone');setTimeout(()=>{if(h.parentNode)h.remove();},700);}
+}
 
 function buildSlideshow(s){
   const wrap=document.getElementById('slideshow');
   ssInterval=parseInt(s.slideshow_interval||'5000')||5000;
+  const _yes=(v,def)=>{const t=String(v==null?'':v).toLowerCase().trim();return t===''?def:['yes','on','true','1'].includes(t);};
+  const captionLinks=_yes(s.slideshow_caption_links,true);  // 5.5 captions → works
+  const showHint=_yes(s.slideshow_hint,true);               // 5.4 first-slide hint
   ssSlides=[];
   for(let n=1;s['slideshow_'+n];n++)
     ssSlides.push({img:s['slideshow_'+n],cap:s['slideshow_caption_'+n]||''});
@@ -1269,12 +1316,43 @@ function buildSlideshow(s){
     const sl=document.createElement('div');sl.className='ss-slide';
     sl.innerHTML=pictureHTML(normPath(d.img),{alt:d.cap||'',sizes:SIZES.slideshow,
       loading:i<=1?'eager':'lazy',extra:'draggable="false"'});
-    if(d.cap){const c=document.createElement('div');c.className='slide-caption';c.textContent=d.cap;sl.appendChild(c);}
+    if(d.cap){
+      const c=document.createElement('div');c.className='slide-caption';
+      // Caption becomes a door to the matching work (5.5): match caption text to
+      // a work title case-insensitively via the existing slugify. No match ->
+      // plain text. (works[] is populated — renderWorks runs before this.)
+      let wi=-1;
+      if(captionLinks){const cs=slugify(d.cap);wi=works.findIndex(w=>slugify(w.title)===cs);}
+      if(captionLinks&&wi>=0){
+        const a=document.createElement('a');a.className='slide-caption-link';
+        a.href='#/works/'+(works[wi].id||slugify(works[wi].title));
+        a.textContent=d.cap;
+        const idx=wi;
+        a.addEventListener('click',e=>{e.preventDefault();navigate('works');openLb(idx);});
+        c.appendChild(a);
+      }else{
+        c.textContent=d.cap;
+      }
+      sl.appendChild(c);
+    }
     track.appendChild(sl);
   });
-  wrap.querySelectorAll('.slide,.ss-arrows,.ss-dots,.ss-track').forEach(el=>el.remove());
+  wrap.querySelectorAll('.slide,.ss-arrows,.ss-dots,.ss-track,.ss-hint').forEach(el=>el.remove());
   wrap.insertBefore(track,wrap.firstChild);
   _ssTrack=track;
+
+  // First-slide swipe/scroll hint (5.4): a subtle horizontal cue matching the
+  // gesture (the track is a horizontal scroll-snap). Removed permanently on the
+  // first swipe, arrow, or autoplay advance (see _ssDismissHint hooks).
+  _ssHintGone=false;_ssHint=null;_ssReady=false;
+  if(showHint&&_ssLoop){
+    const hint=document.createElement('div');hint.className='ss-hint';hint.setAttribute('aria-hidden','true');
+    hint.innerHTML='<div class="ss-hint-inner">&#8249;&ensp;&#8250;</div>';
+    wrap.appendChild(hint);_ssHint=hint;
+  }else{_ssHintGone=true;}
+  // Ignore touch events fired during initial layout/render (so the hint isn't
+  // dismissed before the visitor has actually done anything).
+  setTimeout(()=>{_ssReady=true;},700);
 
   const rawIndex=()=>_ssW?Math.round(track.scrollLeft/_ssW):0;
   const realFromRaw=raw=>loop?(((raw-1)%n)+n)%n:Math.max(0,Math.min(n-1,raw));
@@ -1287,7 +1365,10 @@ function buildSlideshow(s){
   }
   let raf=false;
   track.addEventListener('scroll',()=>{
-    if(!raf){raf=true;requestAnimationFrame(()=>{raf=false;_ssReal=realFromRaw(rawIndex());ssIdx=_ssReal;});}
+    if(!raf){raf=true;requestAnimationFrame(()=>{raf=false;_ssReal=realFromRaw(rawIndex());ssIdx=_ssReal;
+      // Hint (5.4) dismisses permanently once the slide actually changes —
+      // covers swipe, arrow and autoplay; immune to stray touch/pointer events.
+      if(_ssReady&&_ssReal!==0)_ssDismissHint();});}
     clearTimeout(track._st);track._st=setTimeout(settle,120);
   },{passive:true});
   if('onscrollend' in window)track.addEventListener('scrollend',settle);
@@ -1344,7 +1425,10 @@ function _getRevealObs(){
       e.target.classList.add('is-revealed');
       _revealObs.unobserve(e.target);
     });
-  },{threshold:0.15});
+  // threshold 0 + a bottom rootMargin pre-rolls the reveal slightly BEFORE the
+  // item scrolls fully into view, so on mobile it eases in smoothly instead of
+  // popping in late (Phase 5.1).
+  },{threshold:0,rootMargin:'0px 0px 12% 0px'});
   return _revealObs;
 }
 // Mark an element for scroll-reveal: add the hidden state NOW (synchronously,
@@ -2247,52 +2331,60 @@ function renderContact(c,s){
   //   • later (your domain): point newsletter_action at your real endpoint —
   //     a tiny server that accepts a POST with an "email" field and stores it,
   //     OR a GDPR provider's form URL. Nothing else changes.
-  const nl=document.getElementById('newsletter');
-  if(nl){
-    const action=(s&&s.newsletter_action||'').trim();
-    if(!action){nl.style.display='none';nl.innerHTML='';}
-    else{
-      nl.style.display='';
-      const heading=esc((s.newsletter_heading||'Newsletter').trim());
-      const note=(s.newsletter_note||'').trim();
-      const btn=esc((s.newsletter_button||'Subscribe').trim());
-      const field=(s.newsletter_email_field||'email').trim()||'email';
-      const consent=(s.newsletter_consent||
-        'By subscribing you agree your email is processed for this newsletter only.').trim();
-      nl.innerHTML=
-        `<div class="newsletter-heading">${heading}</div>`+
-        (note?`<p class="newsletter-note">${esc(note)}</p>`:'')+
-        `<form class="newsletter-form" id="nl-form" action="${esc(action)}" method="post">`+
-        `<input type="email" name="${esc(field)}" required autocomplete="email" placeholder="your@email.com" aria-label="Email address">`+
-        `<button type="submit">${btn}</button>`+
-        `</form>`+
-        `<p class="newsletter-msg" id="nl-msg" role="status" hidden></p>`+
-        `<p class="newsletter-consent">${esc(consent)} <a href="datenschutz.html">Datenschutz</a></p>`;
-      const form=nl.querySelector('#nl-form');
-      const msg=nl.querySelector('#nl-msg');
-      const input=form.querySelector('input[type=email]');
-      const button=form.querySelector('button');
-      const say=(text,ok)=>{msg.hidden=false;msg.textContent=text;msg.classList.toggle('is-error',!ok);};
-      form.addEventListener('submit',async e=>{
-        e.preventDefault();
-        const email=input.value.trim();
-        if(!email)return;
-        button.disabled=true;
-        try{
-          const res=await fetch(action,{
-            method:'POST',
-            headers:{'Content-Type':'application/x-www-form-urlencoded'},
-            body:new URLSearchParams({[field]:email})
-          });
-          if(res.ok){say('Thank you — you’re on the list.',true);form.reset();}
-          else say('Hm, that didn’t go through. Please try again.',false);
-        }catch(err){
-          say('Could not reach the server. Please try again later.',false);
-        }
-        button.disabled=false;
+  buildNewsletter(document.getElementById('newsletter'),s,false);
+}
+
+// Builds a newsletter signup into `el` from the settings.csv newsletter_* keys.
+// Shared by the Contact page (#newsletter) and the home page (#home-newsletter).
+// alwaysShow=false (Contact): an empty newsletter_action hides it (Phase 2 —
+// never POST to a 404). alwaysShow=true (home, Phase 5.3): it always renders;
+// with no endpoint set, submit shows a friendly note instead of POSTing.
+// Returns whether a signup was rendered.
+function buildNewsletter(el,s,alwaysShow){
+  if(!el)return false;
+  const action=((s&&s.newsletter_action)||'').trim();
+  if(!action&&!alwaysShow){el.style.display='none';el.innerHTML='';return false;}
+  el.style.display='';
+  const heading=esc((s.newsletter_heading||'Newsletter').trim());
+  const note=(s.newsletter_note||'').trim();
+  const btn=esc((s.newsletter_button||'Subscribe').trim());
+  const field=(s.newsletter_email_field||'email').trim()||'email';
+  const consent=(s.newsletter_consent||
+    'By subscribing you agree your email is processed for this newsletter only.').trim();
+  el.innerHTML=
+    `<div class="newsletter-heading">${heading}</div>`+
+    (note?`<p class="newsletter-note">${esc(note)}</p>`:'')+
+    `<form class="newsletter-form" action="${esc(action)}" method="post" novalidate>`+
+    `<input type="email" name="${esc(field)}" required autocomplete="email" placeholder="your@email.com" aria-label="Email address">`+
+    `<button type="submit">${btn}</button>`+
+    `</form>`+
+    `<p class="newsletter-msg" role="status" hidden></p>`+
+    `<p class="newsletter-consent">${esc(consent)} <a href="datenschutz.html">Datenschutz</a></p>`;
+  const form=el.querySelector('.newsletter-form');
+  const msg=el.querySelector('.newsletter-msg');
+  const input=form.querySelector('input[type=email]');
+  const button=form.querySelector('button');
+  const say=(text,ok)=>{msg.hidden=false;msg.textContent=text;msg.classList.toggle('is-error',!ok);};
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const email=input.value.trim();
+    if(!email)return;
+    if(!action){say('The newsletter isn’t live yet — please check back soon.',true);return;}
+    button.disabled=true;
+    try{
+      const res=await fetch(action,{
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded'},
+        body:new URLSearchParams({[field]:email})
       });
+      if(res.ok){say('Thank you — you’re on the list.',true);form.reset();}
+      else say('Hm, that didn’t go through. Please try again.',false);
+    }catch(err){
+      say('Could not reach the server. Please try again later.',false);
     }
-  }
+    button.disabled=false;
+  });
+  return true;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2665,7 +2757,6 @@ window.addEventListener('touchend',()=>{_ftTouchY=null;},{passive:true});
 function _updateChrome(){
   _scrollTick=false;
   if(document.getElementById('lightbox').classList.contains('open'))return;
-  if(currentPage==='home'){_updateFooter();return;}
   const y=Math.max(0,window.scrollY||document.documentElement.scrollTop||0);
   const dy=y-_lastScrollY;
   _lastScrollY=y;
@@ -2677,6 +2768,16 @@ function _updateChrome(){
     _scrollAccum+=dy;
     if(_scrollAccum>HIDE_AFTER)_setNav(true);
     else if(_scrollAccum<-SHOW_AFTER)_setNav(false);
+  }
+  if(currentPage==='home'){
+    // Home scrolls to the newsletter below the hero (5.3). Keep the nav legible
+    // when visible: light over the dark hero, dark once over the light section.
+    const nv=document.getElementById('main-nav');
+    const overHero=y<window.innerHeight*0.82;
+    nv.classList.toggle('light',overHero);
+    nv.classList.toggle('dark',!overHero);
+    _updateFooter();   // footer stays hidden on home (handled inside)
+    return;
   }
   _updateFooter();
 }
@@ -2777,10 +2878,14 @@ async function init(){
     applySettings(s);
     initTheme();
     initNavMenu();
+    renderWorks(w);     // before buildSlideshow so caption→work links can match (5.5)
     buildSlideshow(s);
-    renderWorks(w);
     renderBio(b,s);
     renderContact(c,s);
+    // Home newsletter (5.3): always rendered so the home page scrolls down to
+    // it; the gradient (home-has-newsletter) blends the hero into the section.
+    const _nlHome=buildNewsletter(document.getElementById('home-newsletter'),s,true);
+    document.getElementById('page-home').classList.toggle('home-has-newsletter',_nlHome);
     document.getElementById('site-footer').innerHTML=footerHTML(s);
     /* Read hash before showing UI so the correct page/work is open first */
     if(location.hash&&location.hash.length>1){

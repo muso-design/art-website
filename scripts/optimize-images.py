@@ -44,7 +44,9 @@ MANIFEST = os.path.join(ROOT, 'images', 'variants.json')
 
 # Tunables — single source of truth for both the generated files and (via the
 # manifest) the srcset the site emits. Change here, then re-run.
-WIDTHS = [480, 800, 2000]
+# 2560 keeps the full-screen home hero sharp on large / retina PC displays
+# (100vw can need >2000px there); smaller contexts never request it.
+WIDTHS = [480, 800, 2000, 2560]
 QUALITY = 80
 
 # ── Pillow + AVIF detection ────────────────────────────────────────────

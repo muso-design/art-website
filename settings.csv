@@ -123,6 +123,8 @@
 "slideshow_gradient_height","200px","SIZE — how far down the vignette reaches (e.g. 120px small  200px medium  320px tall)."
 "slideshow_interval",5000,"Time between automatic slide changes in milliseconds. 5000 = 5 seconds. Set to 0 to disable auto-advance."
 "slideshow_fade_duration","700ms","Duration of the crossfade transition between slides. Use ms (milliseconds)."
+"slideshow_hint","yes","Show a faint ‹ › swipe hint on the first slide. It disappears for good after the first swipe, arrow, or auto-advance. no = no hint."
+"slideshow_caption_links","yes","Make each slide caption a link to that artwork (when the caption matches a work title). Click it to open the piece. no = plain captions."
 "slideshow_1","images/too_much/roman_chystakhovskyi_too_much.webp","First slideshow image — path relative to the site folder"
 "slideshow_caption_1","Too Much","Caption for slide 1 — leave empty for no caption"
 "slideshow_2","images/though_your_eyes/roman_chystakhovskyi_through_your_eyes_main.jpg","Second image path — add slideshow_3  slideshow_4  etc. as needed"

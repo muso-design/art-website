@@ -66,6 +66,12 @@ To add more slides, fill in `slideshow_2`, `slideshow_3`, etc.
 To add a caption under a slide, fill in `slideshow_caption_1`, `slideshow_caption_2`, etc.
 To remove a slide, delete the row or clear the value.
 
+**Two slideshow touches** (in `settings.csv`, on/off with `yes` / `no`):
+- `slideshow_hint` (default `yes`) — a faint `‹ ›` hint on the first slide showing it can be swiped. It disappears for good after the first swipe, arrow, or auto-advance.
+- `slideshow_caption_links` (default `yes`) — if a slide's caption matches an artwork title, the caption becomes a link that opens that piece. Captions that don't match a work stay plain text.
+
+The home page scrolls down past the slideshow to a **newsletter signup** (the hero fades into the page background). It uses the same `newsletter_*` settings as the Contact page — set `newsletter_action` to your provider's form URL (or `/subscribe` for local testing) to make it submit. Until then the form shows a friendly "not live yet" note.
+
 ---
 
 ## Changing colors
