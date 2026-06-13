@@ -70,7 +70,9 @@ To remove a slide, delete the row or clear the value.
 - `slideshow_hint` (default `yes`) — a faint `‹ ›` hint on the first slide showing it can be swiped. It disappears for good after the first swipe, arrow, or auto-advance.
 - `slideshow_caption_links` (default `yes`) — if a slide's caption matches an artwork title, the caption becomes a link that opens that piece. Captions that don't match a work stay plain text.
 
-The home page scrolls down past the slideshow to a **newsletter signup** (the hero fades into the page background). It uses the same `newsletter_*` settings as the Contact page — set `newsletter_action` to your provider's form URL (or `/subscribe` for local testing) to make it submit. Until then the form shows a friendly "not live yet" note.
+The home page scrolls down past the slideshow to a **newsletter signup** (the hero fades into a dark section). It uses the same `newsletter_*` settings as the Contact page — set `newsletter_action` to your provider's form URL (or `/subscribe` for local testing) to make it submit. Until then the form shows a friendly "not live yet" note. Two looks you can tune in `settings.csv`:
+- `newsletter_gradient_height` (default `34vh`) — how tall the fade is where the photo blends into the newsletter section (taller = softer).
+- `nav_blur` (default `14px`) — frosted-glass blur behind the top nav bar, including over the home photo. `0px` turns it off. (Desktop only — off on phones.)
 
 ---
 

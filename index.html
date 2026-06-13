@@ -125,10 +125,15 @@ nav.nav-hidden{transform:translateY(-100%)}
 nav.dark{
   background:var(--bg); /* fallback for browsers without color-mix */
   background:color-mix(in srgb,var(--bg) 80%,transparent);
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(var(--nav-blur,14px));backdrop-filter:blur(var(--nav-blur,14px));
   border-bottom:1px solid var(--border)
 }
-nav.light{background:transparent;border-bottom:1px solid transparent}
+/* Home nav: transparent over the hero, but with a frosted blur of the photo
+   behind it (nav_blur in settings.csv). */
+nav.light{
+  background:transparent;border-bottom:1px solid transparent;
+  -webkit-backdrop-filter:blur(var(--nav-blur,14px));backdrop-filter:blur(var(--nav-blur,14px))
+}
 .nav-name{
   font-size:var(--nav-name-size);letter-spacing:0.18em;text-transform:uppercase;
   font-weight:600;cursor:pointer;text-decoration:none
@@ -192,12 +197,14 @@ nav.light .nav-burger{color:#ffffff}
 .slideshow{position:relative;width:100%;height:100vh;overflow:hidden;background:#111}
 /* Home images: a horizontal scroll-snap track (animated slide transitions).
    Desktop: overflow hidden = no manual scroll, JS auto-advances.
-   Mobile: overflow auto = native swipe; vertical gestures fall through to the
-   page (touch-action:pan-x), so scrolling vs swiping never fight.            */
+   Mobile: overflow-x auto = native horizontal swipe. touch-action: pan-x pan-y
+   so a HORIZONTAL swipe changes the slide while a VERTICAL swipe scrolls the
+   page down to the newsletter (the track has no vertical overflow of its own,
+   so the vertical gesture bubbles up to the page).                            */
 .ss-track{
   display:flex;width:100%;height:100%;
   overflow-x:hidden;overflow-y:hidden;
-  scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x
+  scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x pan-y
 }
 .ss-track::-webkit-scrollbar{display:none}
 .ss-slide{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;position:relative}
@@ -252,7 +259,7 @@ nav.light .nav-burger{color:#ffffff}
    into and the section sits on. */
 :root{--home-nl-bg:#161514}
 .home-has-newsletter .slideshow::before{
-  content:'';position:absolute;left:0;right:0;bottom:0;height:34vh;
+  content:'';position:absolute;left:0;right:0;bottom:0;height:var(--home-nl-gradient-height,34vh);
   z-index:4;pointer-events:none;
   background:linear-gradient(to bottom,transparent,var(--home-nl-bg))
 }
@@ -2472,6 +2479,8 @@ function applySettings(s){
   v('--ss-gradient-opacity','slideshow_gradient_opacity');
   v('--ss-gradient-intensity','slideshow_gradient_intensity');
   v('--slide-transition','slideshow_fade_duration');
+  v('--nav-blur','nav_blur');                              // frosted nav blur
+  v('--home-nl-gradient-height','newsletter_gradient_height');  // home hero→newsletter fade
   /* KEY FIX: inject as a <style> block (not inline style on :root).
      Inline styles beat every media-query rule — that's why the old code
      made the site look broken on phones despite the responsive CSS.

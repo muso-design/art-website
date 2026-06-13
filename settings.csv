@@ -51,6 +51,7 @@
 "spacing_page_padding","60px","Left and right padding on all pages. Reduce for less white space."
 "spacing_grid_gap","56px","Gap between gallery thumbnails. Flexible units OK e.g. clamp(28px 4vw 72px) (keep it in ONE cell). 16px tight  56px generous."
 "spacing_nav_padding","20px","Vertical padding inside the navigation bar (top and bottom). Larger = taller nav."
+"nav_blur","14px","Frosted-glass blur behind the top navigation bar (incl. over the home photo). e.g. 14px. Set 0px for none. (Desktop only — turned off on phones.)"
 "spacing_footer_padding","20px","Vertical padding inside the footer bar."
 "spacing_content_padding","48px","Minimum side padding for page content (works grid  bio  contact). Changing this does NOT affect the nav or footer — those use spacing_page_padding."
 "#",,
@@ -110,6 +111,7 @@
 "newsletter_note","Occasional notes on new work, exhibitions, and studio happenings. No spam, unsubscribe anytime.","One line shown above the email field."
 "newsletter_button","Subscribe","Text on the submit button."
 "newsletter_consent","By subscribing you agree your email is handled by my newsletter provider for this purpose only.","Small consent line (a Datenschutz link is added automatically)."
+"newsletter_gradient_height","34vh","How tall the fade is where the home photo blends down into the dark newsletter section. e.g. 34vh (taller = longer, softer fade)."
 "#",,
 "# ── SLIDESHOW ─────────────────────────────────────────────────────────────────",,
 "# Add images by filling in slideshow_1  slideshow_2  slideshow_3  …",,
