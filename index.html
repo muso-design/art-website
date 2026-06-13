@@ -125,18 +125,25 @@ nav.nav-hidden{transform:translateY(-100%)}
 nav.dark{
   background:var(--bg); /* fallback for browsers without color-mix */
   background:color-mix(in srgb,var(--bg) 80%,transparent);
-  -webkit-backdrop-filter:blur(var(--nav-blur,14px));backdrop-filter:blur(var(--nav-blur,14px));
   border-bottom:1px solid var(--border)
 }
-/* Home nav: transparent over the hero, but with a frosted blur of the photo
-   behind it (nav_blur in settings.csv). */
-nav.light{
-  background:transparent;border-bottom:1px solid transparent;
-  -webkit-backdrop-filter:blur(var(--nav-blur,14px));backdrop-filter:blur(var(--nav-blur,14px))
+nav.light{background:transparent;border-bottom:1px solid transparent}
+/* Frosted blur behind the nav (nav_blur = radius, nav_blur_height = how tall),
+   feathered out at the bottom with a gradient mask so it dissolves into the
+   page/photo instead of ending in a hard cut line. It's a pseudo-element behind
+   the nav content (z-index:-1) and above the nav's own background, so it moves
+   with the nav's auto-hide and blurs the page/photo, not the nav text. */
+nav::before{
+  content:'';position:absolute;left:0;right:0;top:0;
+  height:var(--nav-blur-height,110px);z-index:-1;pointer-events:none;
+  -webkit-backdrop-filter:blur(var(--nav-blur,14px));backdrop-filter:blur(var(--nav-blur,14px));
+  -webkit-mask-image:linear-gradient(to bottom,#000 45%,transparent);
+          mask-image:linear-gradient(to bottom,#000 45%,transparent)
 }
 .nav-name{
+  font-family:var(--font-display,var(--font));
   font-size:var(--nav-name-size);letter-spacing:0.18em;text-transform:uppercase;
-  font-weight:600;cursor:pointer;text-decoration:none
+  font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap
 }
 nav.dark .nav-name{color:var(--text)}
 nav.light .nav-name{color:#ffffff}
@@ -378,6 +385,7 @@ picture{display:contents}
 .lb-close:hover{opacity:0.9}
 
 .lb-title{
+  font-family:var(--font-display,var(--font));
   font-size:34px;font-weight:400;
   margin-bottom:20px;line-height:1.15;
   letter-spacing:0.01em;color:var(--text)
@@ -776,6 +784,15 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
    (grid-template-columns) or class-based selectors (nav.light).          */
 
 /* ─ Tablet (≤1024px) ─ */
+/* The long display-font nav name + the full nav links only both fit on wide
+   screens. Between the hamburger breakpoint (≤700) and ~1150px, scale the name,
+   the links and their gap down together so they never collide or wrap (6.4).
+   In #responsive so it overrides the font_size_nav_name injected by JS. */
+@media(max-width:1150px) and (min-width:701px){
+  :root{--nav-name-size:clamp(17px,2.4vw,33px);--nav-link-size:clamp(12px,1.4vw,19px)}
+  .nav-links{gap:clamp(14px,2.2vw,42px)}
+}
+
 @media(max-width:1024px){
   :root{--page-padding:40px;--grid-gap:20px;--content-pad:24px}
   .works-grid{max-width:100%}
@@ -817,6 +834,7 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
      containing block for the fixed menu, shrinking it to the bar. (Nav is
      opaque here anyway, and the auto-hide transform still works without the hint.) */
   nav{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;will-change:auto!important}
+  nav::before{display:none}   /* frosted nav blur is desktop-only */
   nav.dark{
     background:var(--bg)!important;
     border-bottom:1px solid var(--border)!important
@@ -2418,6 +2436,7 @@ function applySettings(s){
   v('--dim','color_text_dim');
   v('--border','color_border');
   v('--font','font_family');
+  v('--font-display','font_family_display');   // display face for nav name + lightbox title
   v('--body-size','font_size_body');
   v('--body-lh','line_height_body');
   v('--nav-name-size','font_size_nav_name');
@@ -2479,7 +2498,8 @@ function applySettings(s){
   v('--ss-gradient-opacity','slideshow_gradient_opacity');
   v('--ss-gradient-intensity','slideshow_gradient_intensity');
   v('--slide-transition','slideshow_fade_duration');
-  v('--nav-blur','nav_blur');                              // frosted nav blur
+  v('--nav-blur','nav_blur');                              // frosted nav blur radius
+  v('--nav-blur-height','nav_blur_height');                // how tall the frosted blur is
   v('--home-nl-gradient-height','newsletter_gradient_height');  // home hero→newsletter fade
   /* KEY FIX: inject as a <style> block (not inline style on :root).
      Inline styles beat every media-query rule — that's why the old code
@@ -2905,9 +2925,14 @@ async function init(){
     buildSlideshow(s);
     renderBio(b,s);
     renderContact(c,s);
-    // Home newsletter (5.3): always rendered so the home page scrolls down to
-    // it; the gradient (home-has-newsletter) blends the hero into the section.
-    const _nlHome=buildNewsletter(document.getElementById('home-newsletter'),s,true);
+    // Home newsletter (5.3; toggle 6.6): shown by default so the home page
+    // scrolls down to it (gradient home-has-newsletter blends the hero into the
+    // section). Set home_newsletter=no to hide it — home then stays single-screen.
+    const _homeNlEl=document.getElementById('home-newsletter');
+    const _showHomeNl=!['no','off','false','0'].includes(String(s.home_newsletter||'').toLowerCase().trim());
+    let _nlHome=false;
+    if(_showHomeNl){_nlHome=buildNewsletter(_homeNlEl,s,true);}
+    else if(_homeNlEl){_homeNlEl.style.display='none';_homeNlEl.innerHTML='';}
     document.getElementById('page-home').classList.toggle('home-has-newsletter',_nlHome);
     document.getElementById('site-footer').innerHTML=footerHTML(s);
     /* Read hash before showing UI so the correct page/work is open first */

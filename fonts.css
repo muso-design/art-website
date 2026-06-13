@@ -7,3 +7,10 @@
 @font-face{font-family:"Josefin Sans";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/JosefinSans-400.woff2") format("woff2")}
 @font-face{font-family:"Josefin Sans";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/JosefinSans-500.woff2") format("woff2")}
 @font-face{font-family:"Josefin Sans";font-style:normal;font-weight:600;font-display:swap;src:url("fonts/JosefinSans-600.woff2") format("woff2")}
+
+/* ===== ADDITIONAL SELF-HOSTED FONTS (added by hand; preserved across get-font.py runs) ===== */
+/* Cormorant Garamond — display family for the nav name + lightbox title,
+   and the legal pages (impressum / datenschutz / 404). Latin subset.
+   It's a VARIABLE font, so one woff2 covers the 400–600 weight range.
+   Self-hosted (GDPR-safe); no external font requests. */
+@font-face{font-family:"Cormorant Garamond";font-style:normal;font-weight:400 600;font-display:swap;src:url("fonts/CormorantGaramond.woff2") format("woff2")}

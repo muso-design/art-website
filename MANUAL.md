@@ -70,9 +70,11 @@ To remove a slide, delete the row or clear the value.
 - `slideshow_hint` (default `yes`) — a faint `‹ ›` hint on the first slide showing it can be swiped. It disappears for good after the first swipe, arrow, or auto-advance.
 - `slideshow_caption_links` (default `yes`) — if a slide's caption matches an artwork title, the caption becomes a link that opens that piece. Captions that don't match a work stay plain text.
 
-The home page scrolls down past the slideshow to a **newsletter signup** (the hero fades into a dark section). It uses the same `newsletter_*` settings as the Contact page — set `newsletter_action` to your provider's form URL (or `/subscribe` for local testing) to make it submit. Until then the form shows a friendly "not live yet" note. Two looks you can tune in `settings.csv`:
+The home page scrolls down past the slideshow to a **newsletter signup** (the hero fades into a dark section). It uses the same `newsletter_*` settings as the Contact page — set `newsletter_action` to your provider's form URL (or `/subscribe` for local testing) to make it submit. Until then the form shows a friendly "not live yet" note. Knobs in `settings.csv`:
+- `home_newsletter` (default `yes`) — show the newsletter at the bottom of the home page. `no` hides it and keeps home a single screen.
 - `newsletter_gradient_height` (default `34vh`) — how tall the fade is where the photo blends into the newsletter section (taller = softer).
 - `nav_blur` (default `14px`) — frosted-glass blur behind the top nav bar, including over the home photo. `0px` turns it off. (Desktop only — off on phones.)
+- `nav_blur_height` (default `110px`) — how far down that blur reaches; it feathers out softly at the bottom (no hard edge), so taller = a longer fade.
 
 ---
 
@@ -98,6 +100,10 @@ Open `settings.csv`. Find the `# FONT` section.
 
 **To use system fonts** — clear `font_url` and set `font_family` to:
 `system-ui, -apple-system, sans-serif`
+
+**`font_family` vs `font_family_display`** — `font_family` is the main font used everywhere; `font_family_display` is a second "display" font used *only* for the big name in the top-left and the artwork title in the lightbox (it's set to Cormorant Garamond, which is already self-hosted). Leave `font_family_display` empty to use the main font everywhere instead.
+
+**Self-hosting a new font** (so no data goes to Google — required in Germany): run `python scripts/get-font.py "Font Name"`, then set `font_family` to what it prints. This swaps the *main* font; the display font (Cormorant) is preserved automatically.
 
 ---
 

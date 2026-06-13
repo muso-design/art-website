@@ -22,11 +22,12 @@
 "#   Georgia  serif                          (classic serif)",,
 "font_url",,"Leave EMPTY — Cormorant Garamond is self-hosted from /fonts/ (GDPR). Do not paste a Google Fonts URL here."
 "font_family","""Josefin Sans"", sans-serif","CSS font-family value. To swap: run  python scripts/get-font.py ""Font Name""  then put that name here."
+"font_family_display","""Cormorant Garamond"", Georgia, serif","Second ""display"" font, used ONLY for the big nav name + the artwork title in the lightbox. Leave EMPTY to use the main font everywhere. (Cormorant Garamond is already self-hosted.)"
 "#",,
 "# ── FONT SIZES ────────────────────────────────────────────────────────────────",,
 "# Use px (20px)  em (1.2em)  or clamp for responsive: clamp(16px"," 2vw"," 22px)"
 "font_size_body","19px","Main reading text size (bio paragraphs  contact intro)"
-"font_size_nav_name","25px","Size of your name in the top-left corner of the nav"
+"font_size_nav_name","34px","Size of your name in the top-left corner of the nav"
 "font_size_nav_links","20px","Size of the Works / Bio / Contact nav links"
 "font_size_grid_title","16px","Artwork title shown below each image in the works grid"
 "font_size_grid_series","12px","Series label shown below the artwork title in the grid"
@@ -51,7 +52,8 @@
 "spacing_page_padding","60px","Left and right padding on all pages. Reduce for less white space."
 "spacing_grid_gap","56px","Gap between gallery thumbnails. Flexible units OK e.g. clamp(28px 4vw 72px) (keep it in ONE cell). 16px tight  56px generous."
 "spacing_nav_padding","20px","Vertical padding inside the navigation bar (top and bottom). Larger = taller nav."
-"nav_blur","14px","Frosted-glass blur behind the top navigation bar (incl. over the home photo). e.g. 14px. Set 0px for none. (Desktop only — turned off on phones.)"
+"nav_blur","7px","Frosted-glass blur behind the top navigation bar (incl. over the home photo). e.g. 14px. Set 0px for none. (Desktop only — turned off on phones.)"
+"nav_blur_height","110px","How tall the frosted nav blur reaches down the screen (px or vh). It feathers out at the bottom (no hard edge), so taller = a longer, softer fade. e.g. 110px."
 "spacing_footer_padding","20px","Vertical padding inside the footer bar."
 "spacing_content_padding","48px","Minimum side padding for page content (works grid  bio  contact). Changing this does NOT affect the nav or footer — those use spacing_page_padding."
 "#",,
@@ -105,13 +107,14 @@
 "# URL into newsletter_action, and the email field's name into newsletter_email_field",,
 "# (Buttondown: email   Mailchimp: EMAIL   EmailOctopus: usually email_address).",,
 "# LOCAL TEST ONLY — to try the signup with serve.bat, put  /subscribe  back as the value below (the dev server saves entries to subscribers.txt). It MUST be empty on the live site.",,
-"newsletter_action","","Where the signup form POSTs. LEAVE EMPTY for the live site — the whole signup box auto-hides when this is empty. ""/subscribe"" works ONLY with the local test server (serve.bat); on GitHub Pages there is no server, so it returns 404. For real signups, paste your newsletter provider's form-action URL (double opt-in — see notes above)."
+"newsletter_action",,"Where the signup form POSTs. LEAVE EMPTY for the live site — the whole signup box auto-hides when this is empty. ""/subscribe"" works ONLY with the local test server (serve.bat); on GitHub Pages there is no server, so it returns 404. For real signups, paste your newsletter provider's form-action URL (double opt-in — see notes above)."
 "newsletter_email_field","email","The name of the email field your provider expects (see note above)."
 "newsletter_heading","Newsletter","Small heading above the signup."
 "newsletter_note","Occasional notes on new work, exhibitions, and studio happenings. No spam, unsubscribe anytime.","One line shown above the email field."
 "newsletter_button","Subscribe","Text on the submit button."
 "newsletter_consent","By subscribing you agree your email is handled by my newsletter provider for this purpose only.","Small consent line (a Datenschutz link is added automatically)."
-"newsletter_gradient_height","34vh","How tall the fade is where the home photo blends down into the dark newsletter section. e.g. 34vh (taller = longer, softer fade)."
+"newsletter_gradient_height","8vh","How tall the fade is where the home photo blends down into the dark newsletter section. e.g. 34vh (taller = longer, softer fade)."
+"home_newsletter","yes","Show the newsletter signup at the bottom of the home page (the page scrolls down to it). no = hide it and keep home a single screen."
 "#",,
 "# ── SLIDESHOW ─────────────────────────────────────────────────────────────────",,
 "# Add images by filling in slideshow_1  slideshow_2  slideshow_3  …",,
@@ -125,7 +128,7 @@
 "slideshow_gradient_height","200px","SIZE — how far down the vignette reaches (e.g. 120px small  200px medium  320px tall)."
 "slideshow_interval",5000,"Time between automatic slide changes in milliseconds. 5000 = 5 seconds. Set to 0 to disable auto-advance."
 "slideshow_fade_duration","700ms","Duration of the crossfade transition between slides. Use ms (milliseconds)."
-"slideshow_hint","yes","Show a faint ‹ › swipe hint on the first slide. It disappears for good after the first swipe, arrow, or auto-advance. no = no hint."
+"slideshow_hint","no","Show a faint ‹ › swipe hint on the first slide. It disappears for good after the first swipe, arrow, or auto-advance. no = no hint."
 "slideshow_caption_links","yes","Make each slide caption a link to that artwork (when the caption matches a work title). Click it to open the piece. no = plain captions."
 "slideshow_1","images/too_much/roman_chystakhovskyi_too_much.webp","First slideshow image — path relative to the site folder"
 "slideshow_caption_1","Too Much","Caption for slide 1 — leave empty for no caption"
