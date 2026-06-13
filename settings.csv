@@ -27,7 +27,7 @@
 "# ── FONT SIZES ────────────────────────────────────────────────────────────────",,
 "# Use px (20px)  em (1.2em)  or clamp for responsive: clamp(16px"," 2vw"," 22px)"
 "font_size_body","19px","Main reading text size (bio paragraphs  contact intro)"
-"font_size_nav_name","34px","Size of your name in the top-left corner of the nav"
+"font_size_nav_name","27px","Size of your name in the top-left corner of the nav"
 "font_size_nav_links","20px","Size of the Works / Bio / Contact nav links"
 "font_size_grid_title","16px","Artwork title shown below each image in the works grid"
 "font_size_grid_series","12px","Series label shown below the artwork title in the grid"
