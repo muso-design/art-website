@@ -22,7 +22,7 @@
 "#   Georgia  serif                          (classic serif)",,
 "font_url",,"Leave EMPTY — Cormorant Garamond is self-hosted from /fonts/ (GDPR). Do not paste a Google Fonts URL here."
 "font_family","""Josefin Sans"", sans-serif","CSS font-family value. To swap: run  python scripts/get-font.py ""Font Name""  then put that name here."
-"font_family_display","""Cormorant Garamond"", Georgia, serif","Second ""display"" font, used ONLY for the big nav name + the artwork title in the lightbox. Leave EMPTY to use the main font everywhere. (Cormorant Garamond is already self-hosted.)"
+"font_family_display","""Josefin Sans"", sans-serif","Second ""display"" font, used ONLY for the big nav name + the artwork title in the lightbox. Leave EMPTY to use the main font everywhere. (Cormorant Garamond is already self-hosted.)"
 "#",,
 "# ── FONT SIZES ────────────────────────────────────────────────────────────────",,
 "# Use px (20px)  em (1.2em)  or clamp for responsive: clamp(16px"," 2vw"," 22px)"
@@ -109,6 +109,8 @@
 "# LOCAL TEST ONLY — to try the signup with serve.bat, put  /subscribe  back as the value below (the dev server saves entries to subscribers.txt). It MUST be empty on the live site.",,
 "newsletter_action",,"Where the signup form POSTs. LEAVE EMPTY for the live site — the whole signup box auto-hides when this is empty. ""/subscribe"" works ONLY with the local test server (serve.bat); on GitHub Pages there is no server, so it returns 404. For real signups, paste your newsletter provider's form-action URL (double opt-in — see notes above)."
 "newsletter_email_field","email","The name of the email field your provider expects (see note above)."
+"newsletter_collect_name","yes","Also ask for the subscriber's name (so you know how to address them). no = email only."
+"newsletter_name_field","name","The name of the NAME field your provider expects (Buttondown/Mailchimp etc. — often ""name"" or ""first_name"")."
 "newsletter_heading","Newsletter","Small heading above the signup."
 "newsletter_note","Occasional notes on new work, exhibitions, and studio happenings. No spam, unsubscribe anytime.","One line shown above the email field."
 "newsletter_button","Subscribe","Text on the submit button."

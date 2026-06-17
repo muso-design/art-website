@@ -55,6 +55,22 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             pass
         return ''
 
+    def _find_name(self, raw):
+        # The optional name field (so you know how to address subscribers).
+        try:
+            qs = urllib.parse.parse_qs(raw)
+            for key in ('name', 'first_name', 'fname', 'full_name', 'NAME'):
+                if qs.get(key) and qs[key][0].strip():
+                    return qs[key][0].strip()
+            for vals in qs.values():          # fallback: any non-email value
+                for val in vals:
+                    v = val.strip()
+                    if v and not EMAIL_RE.fullmatch(v):
+                        return v
+        except Exception:
+            pass
+        return ''
+
     def do_POST(self):
         if self.path.split('?')[0].rstrip('/') == '/subscribe':
             length = int(self.headers.get('Content-Length', 0) or 0)
@@ -62,10 +78,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             email = self._find_email(raw)
             if not email:
                 return self._json(400, {'ok': False, 'error': 'no valid email'})
+            name = self._find_name(raw)
             ts = datetime.datetime.now().isoformat(timespec='seconds')
             with open(SUBSCRIBERS, 'a', encoding='utf-8') as f:
-                f.write(f'{ts}\t{email}\n')
-            print(f'  + subscribed: {email}')
+                f.write(f'{ts}\t{email}\t{name}\n')
+            print(f'  + subscribed: {email}' + (f' ({name})' if name else ''))
             return self._json(200, {'ok': True})
         self._json(404, {'ok': False, 'error': 'not found'})
 
