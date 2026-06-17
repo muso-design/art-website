@@ -2464,6 +2464,7 @@ function buildNewsletter(el,s,alwaysShow){
 // on the right. Email + Instagram come from contact.csv so there's one source.
 function buildHomeNewsletter(el,s,c){
   if(!el)return false;
+  el.style.display='';   // clear the inline display:none from the HTML
   const name=esc((s.site_name||'').trim());
   const year=esc(String(s.site_year||new Date().getFullYear()));
   const bits=[(s.site_role||'').trim(),(s.site_location||'').trim()].filter(Boolean).join(', ');
