@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /scripts/
 
-Sitemap: https://muso-design.github.io/art-website/sitemap.xml
+Sitemap: https://romanchystakhovskyi.com/sitemap.xml
