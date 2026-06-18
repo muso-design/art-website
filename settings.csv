@@ -68,6 +68,7 @@
 "grid_columns_mobile",1,"Columns on PHONE (screens up to 620px wide). Use 1 for one big image per row."
 "grid_max_width","1500px","Max total width of the gallery. SMALLER = smaller thumbnails. Bigger = larger."
 "grid_image_ratio","1/1","Thumbnail shape. 1/1 (square)  4/5 (portrait)  3/4  16/9 (landscape)."
+"series_filter","yes","Show an ""All / <series>"" filter bar on the Works page (built automatically from the series in works.csv). Appears only when you have 2+ series. no = one combined grid."
 "gallery_hover_swap","yes","Hover a thumbnail to cross-fade to its hover_image (set per work in works.csv). yes = swap  no = just the zoom."
 "gallery_hover_swap_mobile","no","Also do the hover-swap on phones/tablets (tap-and-hold). Usually no — touch screens have no real hover."
 "theme_switcher","yes","Show the light/dark theme toggle in the nav so visitors can switch. no = hide it (site stays light)."

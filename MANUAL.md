@@ -133,6 +133,28 @@ On mobile the grid automatically reduces to fewer columns regardless.
 
 ---
 
+## Series (grouping works)
+
+Each artwork's `series` (in `works.csv`) groups it. When you have **two or more
+different series**, an **All / <series> …** filter bar appears at the top of the
+Works page automatically — built from whatever series you've typed, in the order
+they first appear. Clicking a series shows just those pieces (and the next/prev
+arrows inside a piece stay within that series).
+
+- Spell a series the **same way every time** so pieces group together (e.g. always `Variants of love`).
+- With only one series it stays a single grid (no bar).
+- Turn the bar off entirely with `series_filter` = `no` in `settings.csv`.
+
+---
+
+## Link preview image
+
+The picture shown when your site is shared (WhatsApp, iMessage, X, etc.) is
+`images/og-image.jpg`, 1200×630. To change it, replace that file (keep the same
+name and size). JPG/PNG is safest — some apps don't render WebP previews.
+
+---
+
 ## Motion & animation
 
 Open `settings.csv`, `# MOTION` section. Three on/off knobs (`yes` / `no`):

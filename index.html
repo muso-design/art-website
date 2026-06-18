@@ -28,7 +28,7 @@
 <meta property="og:url" id="og-url" content="https://romanchystakhovskyi.com/">
 <meta property="og:title" id="og-title" content="Roman Chystakhovskyi — Sculptor">
 <meta property="og:description" id="og-description" content="Portfolio of Roman Chystakhovskyi — figurative sculptor working at the intersection of physical and digital material. Leipzig, Germany.">
-<meta property="og:image" id="og-image" content="https://romanchystakhovskyi.com/images/og-image.png">
+<meta property="og:image" id="og-image" content="https://romanchystakhovskyi.com/images/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
@@ -36,7 +36,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" id="tw-title" content="Roman Chystakhovskyi — Sculptor">
 <meta name="twitter:description" id="tw-description" content="Portfolio of Roman Chystakhovskyi — figurative sculptor working at the intersection of physical and digital material. Leipzig, Germany.">
-<meta name="twitter:image" id="tw-image" content="https://romanchystakhovskyi.com/images/og-image.png">
+<meta name="twitter:image" id="tw-image" content="https://romanchystakhovskyi.com/images/og-image.jpg">
 
 <!-- Hero preload — set by applySettings() once settings.csv is loaded -->
 <link rel="preload" id="hero-preload" as="image" href="" fetchpriority="high">
@@ -318,6 +318,27 @@ nav.light .nav-burger{color:#ffffff}
   margin:0 auto;
   padding:calc(28px + 28px + 1.2em + 28px) var(--content-pad) 140px;
 }
+/* Series filter bar (shown when there are 2+ series). Sits in the nav-clearance
+   space above the grid; the grid tucks up under it when present. */
+.works-filter{
+  display:none;flex-wrap:wrap;gap:6px 26px;justify-content:center;align-items:center;
+  max-width:var(--grid-max-width);margin:0 auto;
+  padding:calc(28px + 28px + 1.2em + 28px) var(--content-pad) 0
+}
+.works-filter.show{display:flex}
+#page-works.has-filter .works-grid{padding-top:34px}
+.works-filter-btn{
+  background:none;border:none;cursor:pointer;color:var(--dim);
+  font-family:var(--font-ui);font-size:13px;letter-spacing:0.14em;text-transform:uppercase;
+  padding:8px 3px;position:relative;transition:color 0.25s
+}
+.works-filter-btn:hover{color:var(--text)}
+.works-filter-btn.active{color:var(--text)}
+.works-filter-btn::after{
+  content:'';position:absolute;left:3px;right:3px;bottom:1px;height:1px;background:currentColor;
+  transform:scaleX(0);transform-origin:center;transition:transform 0.3s cubic-bezier(0.22,1,0.36,1)
+}
+.works-filter-btn.active::after,.works-filter-btn:hover::after{transform:scaleX(1)}
 /* Images stand directly on the page, no card chrome */
 .work-card{background:transparent;cursor:pointer;position:relative;overflow:hidden}
 .work-img-wrap{overflow:hidden;aspect-ratio:var(--grid-img-ratio);background:var(--bg2);position:relative}
@@ -914,6 +935,8 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
     max-width:100%;
     padding:92px 16px 72px!important
   }
+  .works-filter{padding:92px 16px 0;gap:4px 18px}
+  #page-works.has-filter .works-grid{padding-top:24px!important}
   /* No hover-swap on touch screens by default (gallery_hover_swap_mobile) */
   .work-img-hover{display:none}
   .works-grid.mobile-hover-on .work-img-hover{display:block}
@@ -1054,6 +1077,7 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
 <!-- WORKS -->
 <section id="page-works" class="page" aria-labelledby="h1-works">
   <h1 class="visually-hidden" id="h1-works">Works</h1>
+  <div class="works-filter" id="works-filter" role="tablist" aria-label="Filter works by series"></div>
   <div class="works-grid" id="works-grid"></div>
 </section>
 
@@ -1462,6 +1486,8 @@ function slidePrev(){ssGoTrack(-1);ssRestart();}
 // ═══════════════════════════════════════════════════════════
 let works=[],lbIdx=0,_zoomImgs=[],_zoomImgIdx=0;
 let _hoverSwap=true; // gallery thumbnail hover-swap (set from settings.csv)
+let _worksFilter='';      // active series filter on the Works page ('' = all)
+let _seriesFilterOn=true; // series_filter knob (set in applySettings)
 // Responsive images (Phase 3). VARIANTS = images/variants.json manifest written
 // by scripts/optimize-images.py; SIZES/GRID_WH are derived from settings.csv in
 // applySettings() and read by the renderers. All have safe empty defaults so the
@@ -1515,6 +1541,7 @@ function renderWorks(data){
   works.forEach((w,i)=>{
     const c=document.createElement('div');
     c.className='work-card';
+    c.dataset.series=slugify(w.series||'');c.dataset.idx=i;   // for series filter
     c.onclick=()=>openLb(i);
     const mainImg=normPath(w.image);
     const hover=_hoverSwap?normPath(w.hover_image):'';
@@ -1537,6 +1564,55 @@ function renderWorks(data){
     grid.appendChild(c);
     _markReveal(c);   // scroll-reveal (Phase 4) — observed when the page is shown
   });
+  _buildWorksFilter();
+}
+
+// ── Series filter (Works page) ───────────────────────────────────────────────
+// Build the "All / <series> …" bar from the unique series in works.csv. Shown
+// only when series_filter is on AND there are 2+ series. Pure client-side
+// filter — clicking shows just that series' cards.
+function _buildWorksFilter(){
+  const bar=document.getElementById('works-filter');
+  const page=document.getElementById('page-works');
+  if(!bar)return;
+  const series=[],seen=new Set();
+  works.forEach(w=>{
+    const label=(w.series||'').trim(),sl=slugify(label);
+    if(label&&!seen.has(sl)){seen.add(sl);series.push({label,slug:sl});}
+  });
+  if(!_seriesFilterOn||series.length<2){
+    bar.classList.remove('show');bar.innerHTML='';
+    if(page)page.classList.remove('has-filter');
+    return;
+  }
+  bar.innerHTML=
+    `<button class="works-filter-btn" data-filter="" role="tab">All</button>`+
+    series.map(s=>`<button class="works-filter-btn" data-filter="${esc(s.slug)}" role="tab">${esc(s.label)}</button>`).join('');
+  bar.querySelectorAll('.works-filter-btn').forEach(btn=>
+    btn.addEventListener('click',()=>_applyWorksFilter(btn.dataset.filter)));
+  bar.classList.add('show');
+  if(page)page.classList.add('has-filter');
+  if(_worksFilter&&!series.some(s=>s.slug===_worksFilter))_worksFilter='';
+  _applyWorksFilter(_worksFilter);
+}
+function _applyWorksFilter(slug){
+  _worksFilter=slug||'';
+  const grid=document.getElementById('works-grid');
+  if(grid)grid.querySelectorAll('.work-card').forEach(c=>{
+    c.style.display=(!_worksFilter||c.dataset.series===_worksFilter)?'':'none';
+  });
+  const bar=document.getElementById('works-filter');
+  if(bar)bar.querySelectorAll('.works-filter-btn').forEach(b=>{
+    const on=(b.dataset.filter||'')===_worksFilter;
+    b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false');
+  });
+}
+// Work indices matching the current filter (for in-lightbox prev/next).
+function _activeWorkIdxs(){
+  const all=works.map((_,i)=>i);
+  if(!_worksFilter)return all;
+  const f=all.filter(i=>slugify(works[i].series||'')===_worksFilter);
+  return f.length?f:all;
 }
 
 function slugify(str){
@@ -1599,7 +1675,11 @@ function closeLb(skipHash){
   const ldEl=document.getElementById('ld-json');
   if(ldEl)ldEl.dataset.mode='person';
 }
-function lbStep(d){lbIdx=(lbIdx+d+works.length)%works.length;lbRender();
+function lbStep(d){
+  // Step within the active series filter so prev/next stays in the series.
+  const act=_activeWorkIdxs();
+  let pos=act.indexOf(lbIdx);if(pos<0)pos=0;
+  lbIdx=act[(pos+d+act.length)%act.length];lbRender();
   /* Update hash when navigating between works */
   const w=works[lbIdx];const slug=w.id||slugify(w.title);
   history.replaceState(null,'','#/works/'+slug);
@@ -1687,8 +1767,9 @@ function lbRender(){
 
   // Prev/next arrows — only show when there are multiple works
   const lbPrev=document.getElementById('lb-prev'),lbNext=document.getElementById('lb-next');
-  if(lbPrev)lbPrev.style.display=works.length>1?'':'none';
-  if(lbNext)lbNext.style.display=works.length>1?'':'none';
+  const _multiWork=_activeWorkIdxs().length>1;
+  if(lbPrev)lbPrev.style.display=_multiWork?'':'none';
+  if(lbNext)lbNext.style.display=_multiWork?'':'none';
 
   // Info panel
   document.getElementById('lb-title').textContent=w.title;
@@ -2552,6 +2633,7 @@ function applySettings(s){
 
   /* Gallery thumbnail hover-swap toggle (default on) + mobile toggle (default off) */
   _hoverSwap=!['no','off','false','0'].includes(String(s.gallery_hover_swap||'').toLowerCase().trim());
+  _seriesFilterOn=!['no','off','false','0'].includes(String(s.series_filter||'').toLowerCase().trim());
   const hoverMobile=['yes','on','true','1'].includes(String(s.gallery_hover_swap_mobile||'').toLowerCase().trim());
   const wg=document.getElementById('works-grid');
   if(wg)wg.classList.toggle('mobile-hover-on',hoverMobile);
