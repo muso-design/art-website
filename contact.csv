@@ -16,7 +16,7 @@
 "# Add more items as needed: item_label_4 / item_value_4 / item_link_4  etc.",,
 "#",,
 "item_label_1","Email","Label shown on the left of the first contact row"
-"item_value_1","chistahovskiy12@gmail.com","The actual email address (or any text) shown on the right"
+"item_value_1","hello@romanchystakhovskyi.com","The actual email address (or any text) shown on the right"
 "item_link_1","mailto:chistahovskiy12@gmail.com","Makes the value a clickable link. Use mailto: for emails  https:// for web links. Leave empty for plain text."
 "#",,
 "item_label_2","Instagram","Label for the second row"

@@ -34,9 +34,9 @@
 "# Add as many paragraphs as you need: bio_1  bio_2  bio_3  …",,
 "# Each value becomes one paragraph of text on the Bio page.",,
 "# To remove a paragraph  delete its row or leave the value empty.",,
-"bio_1","Roman Chystakhovskyi (b. 1997, Ukraine) is a sculptor based in Leipzig, Germany. Trained as a classical painter in Kyiv and forged through eight years as a senior digital sculptor for international studios, he now makes wall-mounted and freestanding sculptures of hands pressing into faces — capturing emotional states that have no clean name.","First paragraph of the bio"
-"bio_2","He cannot leave the moment when a feeling becomes physical: the hands that simultaneously comfort and crush, the face that cannot be read as one thing. Each work begins with a single line of music or poetry that unlocks something — he chases the image before it disappears, sculpts it digitally, then forces it into reality through 3D printing, hand-sculpting, silicone molding and gypsum casting. The friction between the weightless digital and the heavy physical is part of what the work is about.","Second paragraph"
-"bio_3","Nothing is resolved. That's the point.","Third paragraph"
+"bio_1","Roman Chystakhovskyi (b. 1997, Ukraine) is a Leipzig-based sculptor. He makes wall-mounted and freestanding works of hands pressing into faces - states that can't be read as one thing. He trained as a classical painter in Kyiv and has spent eight years as a senior digital sculptor for studios including Blizzard Entertainment. His work is held in private collections across Europe and the US.","First paragraph of the bio"
+"bio_2","Each piece begins with a single line of music or poetry that unlocks something - he chases the image before it disappears, sculpts it digitally, then casts it by hand into acrylic gypsum. He isn't trying to answer anything. He wants the work to raise a question in the viewer they didn't know they needed to hear.","Second paragraph"
+"bio_3","Nothing is resolved. That's the point. ","Third paragraph"
 "#",,
 "# ── FACTS (born / based / materials) ──────────────────────────────────────────",,
 "# A short row of facts shown under the studio slideshow.",,
@@ -46,7 +46,7 @@
 "detail_label_2","Based","Label for the second fact"
 "detail_value_2","Leipzig, Germany","Value for the second fact"
 "detail_label_3","Materials","Label for the third fact"
-"detail_value_3","Gypsum, resin cast, bronze (forthcoming)","Value for the third fact"
+"detail_value_3","Gypsum, resin cast","Value for the third fact"
 "#",,
 "# ── EDUCATIONS (collapsible dropdowns) ─────────────────────────",,
 "# Each group appears as a dropdown. To HIDE a group entirely, clear its heading.",,
