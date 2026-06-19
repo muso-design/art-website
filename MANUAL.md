@@ -141,7 +141,7 @@ Works page automatically — built from whatever series you've typed, in the ord
 they first appear. Clicking a series shows just those pieces (and the next/prev
 arrows inside a piece stay within that series).
 
-- Spell a series the **same way every time** so pieces group together (e.g. always `Variants of love`).
+- Spell a series the **same way every time** so pieces group together (e.g. always `Variants of Love`).
 - With only one series it stays a single grid (no bar).
 - Turn the bar off entirely with `series_filter` = `no` in `settings.csv`.
 
