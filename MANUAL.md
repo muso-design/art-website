@@ -147,6 +147,13 @@ arrows inside a piece stay within that series).
 
 ---
 
+## Analytics & Search Console
+
+- **Cloudflare Web Analytics** (cookieless, GDPR-friendly — no consent banner): in your Cloudflare dashboard → Web Analytics → your site, copy the token from the snippet (`data-cf-beacon='{"token":"…"}'`) and paste just that token into `cloudflare_analytics_token` in `settings.csv`. Empty = off. The privacy policy already discloses it.
+- **Google Search Console** is verified by a meta tag already in the page — nothing to set. In Search Console, submit your sitemap once: `sitemap.xml`.
+
+---
+
 ## Link preview image
 
 The picture shown when your site is shared (WhatsApp, iMessage, X, etc.) is

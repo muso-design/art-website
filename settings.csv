@@ -11,6 +11,13 @@
 "site_location","Leipzig, Germany","City and country shown in the footer"
 "site_year",2026,"Year shown in the copyright line  e.g.  © 2026"
 "#",,
+"# ── ANALYTICS (optional, privacy-friendly) ───────────────────────────────────",,
+"# Cloudflare Web Analytics: cookieless, GDPR-friendly, NO consent banner needed.",,
+"# In Cloudflare dashboard → Web Analytics → your site, copy the TOKEN from the",,
+"# snippet (the long value inside  data-cf-beacon='{""token"":""…""}')  and paste it",,
+"# below. Empty = no analytics. datenschutz.html already discloses this.",,
+"cloudflare_analytics_token",,"Cloudflare Web Analytics site token (cookieless). Empty = off. (Google Search Console is verified separately via a meta tag — nothing to set here.)"
+"#",,
 "# ── FONT ─────────────────────────────────────────────────────────────────────",,
 "# To use a Google Font:",,
 "#   1. Go to fonts.google.com  → pick a font → click ""Get font"" → ""Get embed code""",,

@@ -2696,6 +2696,19 @@ function applySettings(s){
     document.head.appendChild(l);
   }
 
+  /* Cloudflare Web Analytics — cookieless and privacy-first, so it needs NO
+     consent banner (GDPR-friendly; disclosed in datenschutz.html). Loads only
+     when cloudflare_analytics_token is set in settings.csv. Not Google Analytics
+     / not a cookie tracker, so it's allowed under BRIEF §Forbidden. */
+  const cfTok=(s.cloudflare_analytics_token||'').trim();
+  if(cfTok && !document.getElementById('cf-analytics')){
+    const cf=document.createElement('script');
+    cf.id='cf-analytics';cf.defer=true;
+    cf.src='https://static.cloudflareinsights.com/beacon.min.js';
+    cf.setAttribute('data-cf-beacon',JSON.stringify({token:cfTok}));
+    document.head.appendChild(cf);
+  }
+
   const name=s.site_name||'Roman Chystakhovskyi';
   const role=s.site_role||'Sculptor';
   const siteTitle=name+' — '+role;
