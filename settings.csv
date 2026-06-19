@@ -16,7 +16,7 @@
 "# In Cloudflare dashboard → Web Analytics → your site, copy the TOKEN from the",,
 "# snippet (the long value inside  data-cf-beacon='{""token"":""…""}')  and paste it",,
 "# below. Empty = no analytics. datenschutz.html already discloses this.",,
-"cloudflare_analytics_token",,"Cloudflare Web Analytics site token (cookieless). Empty = off. (Google Search Console is verified separately via a meta tag — nothing to set here.)"
+"cloudflare_analytics_token","6132be643beb4447a860fa6925d83ff7","Cloudflare Web Analytics site token (cookieless). Empty = off. (Google Search Console is verified separately via a meta tag — nothing to set here.)"
 "#",,
 "# ── FONT ─────────────────────────────────────────────────────────────────────",,
 "# To use a Google Font:",,
