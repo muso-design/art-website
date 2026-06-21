@@ -303,8 +303,10 @@ nav.light .nav-burger{color:#ffffff}
 }
 .home-nl-social{display:flex;gap:14px;margin-top:28px}
 /* newsletter_signup = no → only the brand remains; center it so it stays balanced */
-.home-nl--brand-only .home-nl-grid{justify-content:center;text-align:center}
-.home-nl--brand-only .home-nl-brand{flex:0 1 auto}
+/* brand-only: center the block itself (align-items) — not just its text — so it
+   stays centered when the column stacks on mobile, not drifted to the left edge */
+.home-nl--brand-only .home-nl-grid{justify-content:center;align-items:center;text-align:center}
+.home-nl--brand-only .home-nl-brand{flex:0 1 auto;text-align:center}
 .home-nl--brand-only .home-nl-social{justify-content:center}
 .home-nl-ico{
   display:inline-flex;width:42px;height:42px;align-items:center;justify-content:center;
@@ -859,7 +861,7 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
   /* Lightbox: panel to bottom — avoids right-side overflow on tablets */
   .lb-gallery{padding-bottom:185px}
   .lb-gallery-img{width:60vw;max-width:none}
-  .lb-dots{left:16px}
+  .lb-dots{display:none}   /* image-pagination dots don't belong on tablet */
   /* Bottom info bar: a tidy 2-column grid — title / series / description on the
      left, the meta line + INQUIRE on the right — instead of a crooked wrap. */
   .lb-panel{
@@ -1001,8 +1003,11 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
   .lb-meta{display:block;margin:0!important}
   .lb-meta dt{font-size:11px}
   .lb-meta dd{font-size:16px}
-  .lb-compact{font-size:14px;margin-top:11px;padding-top:11px;line-height:1.6;text-align:left!important;border-top:1px solid var(--border)}
-  .lb-compact span{display:inline;white-space:nowrap}   /* keep "58 × 58 × 15 cm" intact; wrap only between values */
+  /* meta as a wrapping row of intact chips: each value stays whole
+     ("58 × 58 × 15 cm", "not available") and wraps only between values — no clipping */
+  .lb-compact{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 0;
+    font-size:14px;margin-top:11px;padding-top:11px;line-height:1.5;text-align:left!important;border-top:1px solid var(--border)}
+  .lb-compact span{display:inline-block;white-space:nowrap}
   .lb-description{margin-top:12px;padding-top:11px;border-top:1px solid var(--border);font-size:15px;line-height:1.5;text-align:left!important}
   .lb-inquire{margin-top:16px;align-self:flex-start!important}
   .lb-close{position:fixed;font-size:40px;top:72px;right:20px}
@@ -1813,7 +1818,7 @@ function lbRender(){
   const compact=document.getElementById('lb-compact');
   const vals=[w.year,w.material,w.dimensions,w.available].filter(Boolean);
   compact.innerHTML=vals.map(v=>`<span>${esc(v)}</span>`).join('');
-  compact.style.display=vals.length?'block':'none';
+  compact.style.display=vals.length?'':'none';   // '' = let CSS pick (flex-wrap on mobile, block on desktop)
 }
 
 let _lbZoomLevel=2.5;
