@@ -147,7 +147,7 @@
 "slideshow_gradient_height","200px","SIZE — how far down the vignette reaches (e.g. 120px small  200px medium  320px tall)."
 "slideshow_interval",5000,"Time between automatic slide changes in milliseconds. 5000 = 5 seconds. Set to 0 to disable auto-advance."
 "slideshow_fade_duration","700ms","Duration of the crossfade transition between slides. Use ms (milliseconds)."
-"slideshow_hint","yes","Show a faint ‹ › swipe hint on the first slide. It disappears for good after the first swipe, arrow, or auto-advance. no = no hint."
+"slideshow_hint","no","Show a faint ‹ › swipe hint on the first slide. It disappears for good after the first swipe, arrow, or auto-advance. no = no hint."
 "slideshow_caption_links","yes","Make each slide caption a link to that artwork (when the caption matches a work title). Click it to open the piece. no = plain captions."
 "#",,
 "# ── SLIDESHOW SIDE ARROWS (desktop) ───────────────────────────────────────────",,
@@ -165,7 +165,7 @@
 "# Width/zoom are unaffected. Add a slideshow_position_N row for any slide you like.",,
 "slideshow_1","images/too_much/roman_chystakhovskyi_too_much.webp","First slideshow image — path relative to the site folder"
 "slideshow_caption_1","Too Much","Caption for slide 1 — leave empty for no caption"
-"slideshow_position_1",,"Optional (PC): vertical framing for slide 1. e.g. ""center 30%"" to lift it higher. Empty = centered."
+"slideshow_position_1","Center 45%","Optional (PC): vertical framing for slide 1. e.g. ""center 30%"" to lift it higher. Empty = centered."
 "slideshow_2","images/variants_of_love/roman_chystakhovskyi_VOL_forest.jpg","Second image path — add slideshow_3  slideshow_4  etc. as needed"
 "slideshow_caption_2","Variants Of Love","Caption for slide 2"
 "slideshow_position_2",,
@@ -173,6 +173,7 @@
 "slideshow_caption_3","Through Your Eyes","Caption for slide 3"
 "slideshow_4","images/variants_of_love/roman_chystakhovskyi_VOL_forest_02.jpg",
 "slideshow_caption_4","Variants Of Love",
-"slideshow_position_4","Center 25%",
+"slideshow_position_4","Center 85%",
 "slideshow_5","images/with_a_smile/roman_chystakhovskyi_with_smile_main.jpg",
 "slideshow_caption_5","With A Smile",
+"slideshow_position_5","Center 45%",
