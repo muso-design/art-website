@@ -151,9 +151,11 @@
 "slideshow_caption_links","yes","Make each slide caption a link to that artwork (when the caption matches a work title). Click it to open the piece. no = plain captions."
 "slideshow_1","images/too_much/roman_chystakhovskyi_too_much.webp","First slideshow image — path relative to the site folder"
 "slideshow_caption_1","Too Much","Caption for slide 1 — leave empty for no caption"
-"slideshow_2","images/though_your_eyes/roman_chystakhovskyi_through_your_eyes_main.jpg","Second image path — add slideshow_3  slideshow_4  etc. as needed"
-"slideshow_caption_2","Through Your Eyes","Caption for slide 2"
-"slideshow_3","images/with_a_smile/roman_chystakhovskyi_with_smile_main.jpg","Third image path"
-"slideshow_caption_3","With A Smile","Caption for slide 3"
-"slideshow_4","images/variants_of_love/roman_chystakhovskyi_VOL_forest.jpg",
+"slideshow_2","images/variants_of_love/roman_chystakhovskyi_VOL_forest.jpg","Second image path — add slideshow_3  slideshow_4  etc. as needed"
+"slideshow_caption_2","Variants Of Love","Caption for slide 2"
+"slideshow_3","images/though_your_eyes/roman_chystakhovskyi_through_your_eyes_main.jpg","Third image path"
+"slideshow_caption_3","Through Your Eyes","Caption for slide 3"
+"slideshow_4","images/variants_of_love/roman_chystakhovskyi_VOL_forest_02.jpg",
 "slideshow_caption_4","Variants Of Love",
+"slideshow_5","images/with_a_smile/roman_chystakhovskyi_with_smile_main.jpg",
+"slideshow_caption_5","With A Smile",
