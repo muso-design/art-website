@@ -854,25 +854,31 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
   .lb-gallery{padding-bottom:185px}
   .lb-gallery-img{width:60vw;max-width:none}
   .lb-dots{left:16px}
+  /* Bottom info bar: a tidy 2-column grid — title / series / description on the
+     left, the meta line + INQUIRE on the right — instead of a crooked wrap. */
   .lb-panel{
     width:100%;height:auto;position:fixed;
     bottom:0;top:auto;left:0;right:0;
-    flex-direction:row;flex-wrap:wrap;align-content:flex-start;
     border-left:none;border-top:1px solid var(--border);
-    padding:1.2em var(--page-padding);
-    gap:0 2.5em;justify-content:flex-start;
-    background:var(--bg);overflow-y:visible
+    padding:1.1em var(--page-padding) 1.4em;
+    background:var(--bg);overflow-y:visible;
+    display:grid;align-items:start;
+    grid-template-columns:minmax(0,1fr) auto;
+    column-gap:3em;row-gap:7px;
+    grid-template-areas:"title meta" "series meta" "desc inquire"
   }
-  .lb-title{font-size:20px;margin-bottom:6px;flex-basis:100%;line-height:1.2}
-  .lb-meta{display:flex;flex-wrap:wrap;gap:0 2em}
+  .lb-title{grid-area:title;font-size:20px;margin:0;line-height:1.2}
+  .lb-meta{grid-area:series;display:flex;flex-wrap:wrap;gap:0 0.5em;align-items:baseline;margin:3px 0 0}
   .lb-meta dt{margin-top:0}
   .lb-meta dd{font-size:16px}
-  /* Bottom panel has width, not height — flow the meta on one line (· between)
-     instead of a vertical ladder. */
-  .lb-compact{font-size:12px;margin-top:8px;padding-top:8px;line-height:1.6}
+  /* Meta on one line (· between), top-right */
+  .lb-compact{grid-area:meta;justify-self:end;text-align:right;
+    margin:0;border-top:none;padding-top:0;font-size:12px;line-height:1.6}
   .lb-compact span{display:inline}
   .lb-compact span:not(:last-child)::after{content:'·';margin:0 0.55em;color:var(--dim)}
-  .lb-description{display:none}
+  .lb-description{grid-area:desc;align-self:end;margin:0;border-top:none;padding-top:0;
+    font-size:14px;line-height:1.5}
+  .lb-inquire{grid-area:inquire;justify-self:end;align-self:end;margin:0;white-space:nowrap}
 }
 
 /* ─ Mobile (≤700px) ─ */
@@ -962,7 +968,7 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
   .lightbox{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
   .lightbox.open{display:flex;flex-direction:column}
   .lb-panel{
-    order:1;
+    order:1;display:flex!important;   /* override the tablet grid → vertical stack */
     position:relative!important;width:100%!important;
     height:auto!important;top:auto!important;bottom:auto!important;
     left:auto!important;right:auto!important;
@@ -983,8 +989,9 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
   .lb-meta{display:block}
   .lb-meta dt{font-size:11px}
   .lb-meta dd{font-size:16px}
-  .lb-compact{font-size:15px;margin-top:14px;padding-top:12px;line-height:1.7}
-  .lb-inquire{margin-top:22px}
+  .lb-compact{font-size:15px;margin-top:14px;padding-top:12px;line-height:1.7;text-align:left;border-top:1px solid var(--border)}
+  .lb-description{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:15px;text-align:left}
+  .lb-inquire{margin-top:22px;align-self:flex-start}
   .lb-close{position:fixed;font-size:40px;top:72px;right:20px}
   .lb-dot{width:9px;height:9px}
 
