@@ -979,10 +979,16 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
     height:auto!important;top:auto!important;bottom:auto!important;
     left:auto!important;right:auto!important;
     flex-direction:column!important;flex-wrap:nowrap!important;
+    align-items:stretch!important;
     justify-content:flex-start!important;align-content:flex-start!important;
     border-left:none;border-bottom:1px solid var(--border);
-    padding:74px 20px 24px!important;
+    padding:64px 20px 22px!important;
     background:var(--bg);overflow-y:visible!important
+  }
+  /* Neutralise every grid-placement prop the ≤1024 tablet rules set, so the
+     children form a clean left-aligned vertical stack (no right-drift). */
+  .lb-title,.lb-meta,.lb-compact,.lb-description,.lb-inquire{
+    grid-area:auto!important;justify-self:auto!important;align-self:auto!important
   }
   .lb-gallery{
     order:2;
@@ -991,13 +997,14 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
   }
   .lb-gallery-img{width:88vw}
   .lb-dots{display:none!important}
-  .lb-title{font-size:30px!important;margin-bottom:14px;line-height:1.05}
-  .lb-meta{display:block}
+  .lb-title{font-size:28px!important;margin:0 0 10px!important;line-height:1.08}
+  .lb-meta{display:block;margin:0!important}
   .lb-meta dt{font-size:11px}
   .lb-meta dd{font-size:16px}
-  .lb-compact{font-size:15px;margin-top:14px;padding-top:12px;line-height:1.7;text-align:left;border-top:1px solid var(--border)}
-  .lb-description{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:15px;text-align:left}
-  .lb-inquire{margin-top:22px;align-self:flex-start}
+  .lb-compact{font-size:14px;margin-top:11px;padding-top:11px;line-height:1.6;text-align:left!important;border-top:1px solid var(--border)}
+  .lb-compact span{display:inline;white-space:nowrap}   /* keep "58 × 58 × 15 cm" intact; wrap only between values */
+  .lb-description{margin-top:12px;padding-top:11px;border-top:1px solid var(--border);font-size:15px;line-height:1.5;text-align:left!important}
+  .lb-inquire{margin-top:16px;align-self:flex-start!important}
   .lb-close{position:fixed;font-size:40px;top:72px;right:20px}
   .lb-dot{width:9px;height:9px}
 
