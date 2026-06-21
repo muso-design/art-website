@@ -14,6 +14,11 @@ echo Optimizing images...
 python scripts\optimize-images.py
 if errorlevel 1 goto :err_optimize
 
+:: ── Step 1c: bake SEO / link-sharing meta from settings.csv ────────────
+echo.
+echo Baking SEO + link-preview tags...
+python scripts\build-meta.py
+
 :: ── Step 2: check git identity ─────────────────────────────────────────
 git config user.email >nul 2>&1
 if errorlevel 1 goto :err_identity

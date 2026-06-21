@@ -11,6 +11,14 @@
 "site_location","Leipzig, Germany","City and country shown in the footer"
 "site_year",2026,"Year shown in the copyright line  e.g.  © 2026"
 "#",,
+"# ── SEO / LINK SHARING ───────────────────────────────────────────────────────",,
+"# Controls your Google/Bing result + the preview card when the link is shared",,
+"# (WhatsApp, iMessage, Slack…). Baked into the page at deploy time so even apps",,
+"# that don't run JavaScript see them. Tip: after changing these, re-share the",,
+"# link or run it through the Facebook Sharing Debugger to refresh cached previews.",,
+"site_description","Portfolio of Roman Chystakhovskyi — figurative sculptor working at the intersection of physical and digital material. Leipzig, Germany.","One–two sentences: the grey text under your Google result and inside link previews."
+"og_image","images/og-image.webp","Preview image when the link is shared. 1200×630. Put it in images/ (jpg/png/webp — it's auto-converted to a share-safe jpg)."
+"#",,
 "# ── ANALYTICS (optional, privacy-friendly) ───────────────────────────────────",,
 "# Cloudflare Web Analytics: cookieless, GDPR-friendly, NO consent banner needed.",,
 "# In Cloudflare dashboard → Web Analytics → your site, copy the TOKEN from the",,
@@ -124,7 +132,8 @@
 "newsletter_button","Subscribe","Text on the submit button."
 "newsletter_consent","By subscribing you agree your email is handled by my newsletter provider for this purpose only.","Small consent line (a Datenschutz link is added automatically)."
 "newsletter_gradient_height","8vh","How tall the fade is where the home photo blends down into the dark newsletter section. e.g. 34vh (taller = longer, softer fade)."
-"home_newsletter","yes","Show the newsletter signup at the bottom of the home page (the page scrolls down to it). no = hide it and keep home a single screen."
+"home_newsletter","yes","Show the bottom block on the home page (your name, ©, social icons — and the newsletter signup). no = hide the whole block and keep home a single screen."
+"newsletter_signup","yes","Show the email signup form inside that block. no = keep your name + social icons but drop the signup (the block re-centers). Toggle this while you decide on a newsletter."
 "#",,
 "# ── SLIDESHOW ─────────────────────────────────────────────────────────────────",,
 "# Add images by filling in slideshow_1  slideshow_2  slideshow_3  …",,

@@ -72,6 +72,7 @@ To remove a slide, delete the row or clear the value.
 
 The home page scrolls down past the slideshow to a dark section that pairs your **name + © line + email/Instagram icons** (taken from `contact.csv`) on the left with a **newsletter signup** on the right. The signup uses the same `newsletter_*` settings as the Contact page — set `newsletter_action` to your provider's form URL (or `/subscribe` for local testing) to make it submit. Until then the form shows a friendly "not live yet" note. Knobs in `settings.csv`:
 - `home_newsletter` (default `yes`) — show that whole bottom block on the home page. `no` hides it and keeps home a single screen.
+- `newsletter_signup` (default `yes`) — show the email signup form inside the block. `no` keeps your name + © + social icons (centered) but drops the form — handy while you decide whether to run a newsletter.
 - `newsletter_collect_name` (default `yes`) — also ask for the subscriber's name (so you know how to address them). `no` = email only. `newsletter_name_field` sets the field name your provider expects (often `name` or `first_name`).
 - `newsletter_gradient_height` (default `34vh`) — how tall the fade is where the photo blends into the newsletter section (taller = softer).
 - `nav_blur` (default `14px`) — frosted-glass blur behind the top nav bar, including over the home photo. `0px` turns it off. (Desktop only — off on phones.)
@@ -151,14 +152,19 @@ arrows inside a piece stay within that series).
 
 - **Cloudflare Web Analytics** (cookieless, GDPR-friendly — no consent banner): in your Cloudflare dashboard → Web Analytics → your site, copy the token from the snippet (`data-cf-beacon='{"token":"…"}'`) and paste just that token into `cloudflare_analytics_token` in `settings.csv`. Empty = off. The privacy policy already discloses it.
 - **Google Search Console** is verified by a meta tag already in the page — nothing to set. In Search Console, submit your sitemap once: `sitemap.xml`.
+- **Bing & DuckDuckGo** (DuckDuckGo uses Bing's index): add the site at [Bing Webmaster Tools](https://www.bing.com/webmasters) and submit the same `sitemap.xml`. New sites take a while to appear — that's normal, not a bug.
 
 ---
 
-## Link preview image
+## Link preview & search text (Google / Bing / when you share the link)
 
-The picture shown when your site is shared (WhatsApp, iMessage, X, etc.) is
-`images/og-image.jpg`, 1200×630. To change it, replace that file (keep the same
-name and size). JPG/PNG is safest — some apps don't render WebP previews.
+All of these live in `settings.csv` and are baked into the page on every deploy:
+
+- `site_description` — the grey summary under your Google/Bing result and inside link previews. One or two sentences.
+- `site_name` + `site_role` — combine into the title (`Name — Role`) shown in the tab, search results, and previews.
+- `og_image` — the preview picture (1200×630). Point it at any image in `images/` (jpg, png, **or webp**); on deploy it's auto-converted/cropped to a share-safe `images/og-image.jpg`.
+
+**If a shared link still shows the old/no image:** chat apps cache previews. Paste your URL into the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) and click *Scrape Again* — that refreshes the cache for most apps (WhatsApp included). iMessage caches hardest; it usually just needs a day.
 
 ---
 
