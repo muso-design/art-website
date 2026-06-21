@@ -220,7 +220,9 @@ nav.light .nav-burger{color:#ffffff}
 }
 .ss-track::-webkit-scrollbar{display:none}
 .ss-slide{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;position:relative}
-.ss-slide img{width:100%;height:100%;object-fit:cover;display:block}
+/* --ss-pos (per slide, desktop only) nudges which part of a cover-cropped image
+   shows — e.g. "center 25%" lifts the subject higher. Set via slideshow_position_N. */
+.ss-slide img{width:100%;height:100%;object-fit:cover;object-position:var(--ss-pos,50% 50%);display:block}
 .slide-caption{
   position:absolute;bottom:48px;left:var(--page-padding);
   color:rgba(255,255,255,0.6);font-size:12px;letter-spacing:0.1em;
@@ -251,6 +253,31 @@ nav.light .nav-burger{color:#ffffff}
 }
 @keyframes ssHintNudge{0%,100%{transform:translateX(-7px)}50%{transform:translateX(7px)}}
 .ss-arrows{display:none}
+/* Home scroll cue (desktop only): a down-chevron that fades in from the "fog"
+   when the mouse moves over the hero, then scrolls down to the newsletter.
+   Knobs: home_scroll_cue (on/off) + _size / _color / _opacity / _offset. */
+.home-scroll-cue{
+  position:absolute;left:50%;bottom:var(--home-cue-offset,34px);
+  transform:translateX(-50%);
+  z-index:6;display:none;   /* enabled only on desktop, and only when a newsletter exists */
+  width:var(--home-cue-size,42px);height:var(--home-cue-size,42px);
+  align-items:center;justify-content:center;padding:0;
+  background:none;border:0;cursor:pointer;
+  color:var(--home-cue-color,rgba(255,255,255,0.9));
+  opacity:0;transition:opacity 0.8s ease;pointer-events:auto
+}
+.home-scroll-cue svg{width:100%;height:100%;fill:none;stroke:currentColor;
+  stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.home-scroll-cue.cue-show{opacity:var(--home-cue-opacity,0.72)}
+.home-scroll-cue.cue-show svg{animation:cueBob 2.1s ease-in-out infinite}
+@keyframes cueBob{0%,100%{transform:translateY(-3px)}50%{transform:translateY(4px)}}
+@media(hover:hover) and (min-width:1025px){
+  .home-has-newsletter .home-scroll-cue{display:flex}
+}
+@media(prefers-reduced-motion:reduce){
+  .home-scroll-cue{transition:none}
+  .home-scroll-cue.cue-show svg{animation:none}
+}
 
 /* Top gradient for nav legibility */
 /* Top scrim behind the nav — a vignette with 3 knobs (see settings.csv):
@@ -857,6 +884,7 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
   :root{--page-padding:40px;--grid-gap:20px;--content-pad:24px}
   .works-grid{max-width:100%}
   .bio-wrap{max-width:100%}
+  .ss-slide img{object-position:50% 50%}   /* per-image slideshow_position_N is PC-only for now */
 
   /* Lightbox: panel to bottom — avoids right-side overflow on tablets */
   .lb-gallery{padding-bottom:185px}
@@ -1103,6 +1131,11 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
       <button class="ss-arrow" onclick="slideNext()">&#8594;</button>
     </div>
     <div class="ss-dots" id="ss-dots"></div>
+    <!-- Scroll cue (desktop): fades in from the "fog" on mouse movement, scrolls
+         down to the newsletter. Knobs: home_scroll_cue + size/color/opacity/offset. -->
+    <button class="home-scroll-cue" id="home-scroll-cue" type="button" aria-label="Scroll down" tabindex="-1">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg>
+    </button>
   </div>
   <!-- Newsletter below the hero — the home page scrolls down to it (5.3) -->
   <div class="home-newsletter" id="home-newsletter" style="display:none"></div>
@@ -1419,7 +1452,7 @@ function buildSlideshow(s){
   const showHint=_yes(s.slideshow_hint,true);               // 5.4 first-slide hint
   ssSlides=[];
   for(let n=1;s['slideshow_'+n];n++)
-    ssSlides.push({img:s['slideshow_'+n],cap:s['slideshow_caption_'+n]||''});
+    ssSlides.push({img:s['slideshow_'+n],cap:s['slideshow_caption_'+n]||'',pos:(s['slideshow_position_'+n]||'').trim()});
   if(!ssSlides.length)return;
   const n=ssSlides.length;_ssN=n;_ssLoop=n>1;const loop=_ssLoop;
 
@@ -1433,6 +1466,7 @@ function buildSlideshow(s){
   track.className='ss-track';track.id='ss-track';
   seq.forEach((d,i)=>{
     const sl=document.createElement('div');sl.className='ss-slide';
+    if(d.pos)sl.style.setProperty('--ss-pos',d.pos);   // per-image vertical nudge (PC)
     sl.innerHTML=pictureHTML(normPath(d.img),{alt:d.cap||'',sizes:SIZES.slideshow,fullOnDesktop:true,
       loading:i<=1?'eager':'lazy',extra:'draggable="false"'});
     if(d.cap){
@@ -2692,6 +2726,14 @@ function applySettings(s){
   const tBtn=document.getElementById('theme-toggle');
   if(tBtn)tBtn.classList.toggle('hidden',!themeOn);
 
+  /* Home scroll cue on/off (default on) — CSS further gates it to desktop + has-newsletter */
+  const cueEl=document.getElementById('home-scroll-cue');
+  if(cueEl){
+    const cr=String(s.home_scroll_cue==null?'':s.home_scroll_cue).toLowerCase().trim();
+    const cueOn=cr===''?true:!['no','off','false','0'].includes(cr);
+    cueEl.style.display=cueOn?'':'none';
+  }
+
   /* Mobile hamburger + menu alignment (left / center / right) */
   const nav=document.getElementById('main-nav');
   if(nav){
@@ -2706,6 +2748,10 @@ function applySettings(s){
   v('--ss-gradient-opacity','slideshow_gradient_opacity');
   v('--ss-gradient-intensity','slideshow_gradient_intensity');
   v('--slide-transition','slideshow_fade_duration');
+  v('--home-cue-size','home_scroll_cue_size');            // desktop scroll cue
+  v('--home-cue-color','home_scroll_cue_color');
+  v('--home-cue-opacity','home_scroll_cue_opacity');
+  v('--home-cue-offset','home_scroll_cue_offset');
   v('--nav-blur','nav_blur');                              // frosted nav blur radius
   v('--nav-blur-height','nav_blur_height');                // how tall the frosted blur is
   v('--home-nl-gradient-height','newsletter_gradient_height');  // home hero→newsletter fade
@@ -3057,7 +3103,7 @@ window.addEventListener('scroll',()=>{
 (function(){
   const lb=document.getElementById('lightbox');
   if(!lb)return;
-  const sw={active:false,startY:0,startX:0,dy:0,decided:false,dismiss:false,closing:false};
+  const sw={active:false,startY:0,startX:0,dx:0,dy:0,decided:false,dismiss:false,back:false,closing:false};
   const isMobile=()=>window.matchMedia('(max-width:700px)').matches;
   function snapReset(){
     lb.style.transition='transform 0.32s cubic-bezier(0.22,1,0.36,1),opacity 0.32s ease';
@@ -3067,7 +3113,7 @@ window.addEventListener('scroll',()=>{
   lb.addEventListener('touchstart',e=>{
     if(sw.closing||!isMobile()||e.touches.length!==1)return;
     if(document.getElementById('lb-zoom').classList.contains('open'))return;
-    sw.active=true;sw.decided=false;sw.dismiss=false;sw.dy=0;
+    sw.active=true;sw.decided=false;sw.dismiss=false;sw.back=false;sw.dx=0;sw.dy=0;
     sw.startY=e.touches[0].clientY;sw.startX=e.touches[0].clientX;
   },{passive:true});
   lb.addEventListener('touchmove',e=>{
@@ -3076,11 +3122,20 @@ window.addEventListener('scroll',()=>{
     // Decide on the FIRST real movement so we can claim the gesture before
     // the browser starts its own overscroll (late preventDefault is ignored).
     if(!sw.decided){
-      if(Math.abs(dy)<4&&Math.abs(dx)<4)return;
+      if(Math.abs(dy)<5&&Math.abs(dx)<5)return;
       sw.decided=true;
-      // Dismiss only when pulling DOWN, mostly vertically, from the very top
+      // DOWN from the top → dismiss as a sheet. RIGHT (clearly horizontal) →
+      // slide back to the works gallery, Instagram-style (the page sits behind).
       sw.dismiss=(dy>0&&Math.abs(dy)>Math.abs(dx)&&lb.scrollTop<=0);
-      if(!sw.dismiss){sw.active=false;return;} // hand back to native scroll
+      sw.back=(!sw.dismiss&&dx>0&&Math.abs(dx)>Math.abs(dy)*1.3);
+      if(!sw.dismiss&&!sw.back){sw.active=false;return;} // hand back to native scroll
+    }
+    if(sw.back){
+      e.preventDefault();
+      sw.dx=Math.max(0,dx);
+      lb.style.transform='translateX('+sw.dx+'px)';
+      lb.style.opacity=String(Math.max(0.5,1-sw.dx/900));
+      return;
     }
     if(!sw.dismiss)return;
     if(lb.scrollTop>0){sw.dismiss=false;sw.active=false;snapReset();return;}
@@ -3092,6 +3147,19 @@ window.addEventListener('scroll',()=>{
   function end(){
     if(!sw.active)return;
     sw.active=false;
+    if(sw.back){
+      // Past the threshold → finish sliding fully off to the right, then close.
+      if(sw.dx>80){
+        sw.closing=true;
+        lb.style.transition='transform 0.3s cubic-bezier(0.4,0,0.2,1),opacity 0.3s ease';
+        lb.style.transform='translateX(100%)';lb.style.opacity='0';
+        setTimeout(()=>{
+          lb.style.transition='';lb.style.transform='';lb.style.opacity='';
+          sw.closing=false;closeLb();
+        },300);
+      }else{snapReset();}
+      return;
+    }
     if(!sw.dismiss)return;
     if(sw.dy>110){
       sw.closing=true;
@@ -3107,6 +3175,33 @@ window.addEventListener('scroll',()=>{
   }
   lb.addEventListener('touchend',end);
   lb.addEventListener('touchcancel',end);
+})();
+
+// ── Home scroll cue: a down-chevron that fades in from the "fog" when the mouse
+// moves over the hero, and scrolls down to the newsletter on click. Desktop-only
+// display is handled in CSS; here we just toggle the .cue-show fade + the click.
+(function(){
+  const cue=document.getElementById('home-scroll-cue');
+  if(!cue)return;
+  let hideT=null;
+  const heroVisible=()=>{
+    const ss=document.getElementById('slideshow');
+    if(!ss)return false;
+    return ss.getBoundingClientRect().bottom>window.innerHeight*0.55; // hero still mostly on screen
+  };
+  const onHome=()=>currentPage==='home'
+    &&document.getElementById('page-home').classList.contains('home-has-newsletter');
+  document.addEventListener('mousemove',()=>{
+    if(!onHome()||!heroVisible())return;
+    cue.classList.add('cue-show');
+    clearTimeout(hideT);
+    hideT=setTimeout(()=>cue.classList.remove('cue-show'),1900);
+  },{passive:true});
+  window.addEventListener('scroll',()=>{ if(!heroVisible())cue.classList.remove('cue-show'); },{passive:true});
+  cue.addEventListener('click',()=>{
+    const nl=document.getElementById('home-newsletter');
+    if(nl)nl.scrollIntoView({behavior:'smooth',block:'start'});
+  });
 })();
 
 // ═══════════════════════════════════════════════════════════

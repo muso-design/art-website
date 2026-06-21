@@ -149,8 +149,24 @@
 "slideshow_fade_duration","700ms","Duration of the crossfade transition between slides. Use ms (milliseconds)."
 "slideshow_hint","no","Show a faint ‹ › swipe hint on the first slide. It disappears for good after the first swipe, arrow, or auto-advance. no = no hint."
 "slideshow_caption_links","yes","Make each slide caption a link to that artwork (when the caption matches a work title). Click it to open the piece. no = plain captions."
+"#",,
+"# ── HOME SCROLL CUE (desktop) ─────────────────────────────────────────────────",,
+"# A down-arrow on the home hero that fades in when the mouse moves (""out of the",,
+"# fog"") and scrolls down to the newsletter when clicked. PC only; needs the home",,
+"# newsletter to be on. Tune its look below.",,
+"home_scroll_cue","yes","Show the scroll-down arrow on the home hero (PC only). no = hide it."
+"home_scroll_cue_size","42px","Arrow size (width & height). e.g. 34px small  42px medium  56px large."
+"home_scroll_cue_color","rgba(255,255,255,0.9)","Arrow colour. Any CSS colour — #ffffff  or rgba(255,255,255,0.9) for soft white."
+"home_scroll_cue_opacity","0.72","How visible it becomes when faded in. 0 = invisible  1 = solid."
+"home_scroll_cue_offset","34px","Distance up from the bottom of the hero. e.g. 24px low  34px medium  60px higher."
+"#",,
+"# ── PER-IMAGE FRAMING (desktop only) ──────────────────────────────────────────",,
+"# slideshow_position_N nudges which part of a cover-cropped photo shows on PC.",,
+"# ""center 25%"" lifts the subject HIGHER  ""center 70%"" lowers it  ""center"" = default.",,
+"# Width/zoom are unaffected. Add a slideshow_position_N row for any slide you like.",,
 "slideshow_1","images/too_much/roman_chystakhovskyi_too_much.webp","First slideshow image — path relative to the site folder"
 "slideshow_caption_1","Too Much","Caption for slide 1 — leave empty for no caption"
+"slideshow_position_1","","Optional (PC): vertical framing for slide 1. e.g. ""center 30%"" to lift it higher. Empty = centered."
 "slideshow_2","images/variants_of_love/roman_chystakhovskyi_VOL_forest.jpg","Second image path — add slideshow_3  slideshow_4  etc. as needed"
 "slideshow_caption_2","Variants Of Love","Caption for slide 2"
 "slideshow_3","images/though_your_eyes/roman_chystakhovskyi_through_your_eyes_main.jpg","Third image path"
