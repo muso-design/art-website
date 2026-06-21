@@ -72,9 +72,9 @@ To remove a slide, delete the row or clear the value.
 
 **Framing a slide higher/lower (PC only).** If a photo's subject sits too low (or high) when cropped to fill the screen, add a `slideshow_position_N` row for that slide: `center 25%` lifts the subject higher, `center 70%` lowers it, `center` (or blank) is the default. Width/zoom are unchanged. This only affects desktop; phones and tablets stay centered.
 
-**Scroll-down arrow on the home hero (PC only).** A down-arrow fades in "out of the fog" when the mouse moves and scrolls to the newsletter when clicked. It only appears on desktop and only when the home newsletter is on. Knobs in `settings.csv`:
-- `home_scroll_cue` (default `yes`) — show it. `no` hides it.
-- `home_scroll_cue_size` (`42px`), `home_scroll_cue_color` (`rgba(255,255,255,0.9)`), `home_scroll_cue_opacity` (`0.72`, how visible when faded in), `home_scroll_cue_offset` (`34px` up from the bottom).
+**Side arrows on the home hero (PC only).** `‹ ›` arrows sit at the left and right edges and fade in "out of the fog" when the cursor approaches that side; click to change the slide. Desktop only — phones use swipe. Knobs in `settings.csv`:
+- `slideshow_arrows` (default `yes`) — show them. `no` hides them.
+- `slideshow_arrows_size` (`48px`), `slideshow_arrows_color` (`rgba(255,255,255,0.92)`), `slideshow_arrows_opacity` (`0.85`, how visible when faded in).
 
 **On a phone**, inside an artwork you can **swipe right** to slide back to the gallery (or swipe down to dismiss) — like Instagram.
 

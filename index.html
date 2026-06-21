@@ -253,30 +253,27 @@ nav.light .nav-burger{color:#ffffff}
 }
 @keyframes ssHintNudge{0%,100%{transform:translateX(-7px)}50%{transform:translateX(7px)}}
 .ss-arrows{display:none}
-/* Home scroll cue (desktop only): a down-chevron that fades in from the "fog"
-   when the mouse moves over the hero, then scrolls down to the newsletter.
-   Knobs: home_scroll_cue (on/off) + _size / _color / _opacity / _offset. */
-.home-scroll-cue{
-  position:absolute;left:50%;bottom:var(--home-cue-offset,34px);
-  transform:translateX(-50%);
-  z-index:6;display:none;   /* enabled only on desktop, and only when a newsletter exists */
-  width:var(--home-cue-size,42px);height:var(--home-cue-size,42px);
-  align-items:center;justify-content:center;padding:0;
+/* Slideshow side arrows (desktop only): ‹ › at the left/right edges that fade in
+   from the "fog" when the cursor approaches that side. Knobs: slideshow_arrows
+   (on/off) + _size / _color / _opacity. The container ignores pointer events so
+   it never blocks the photos; only the buttons are clickable. */
+.ss-side-arrows{position:absolute;inset:0;z-index:6;pointer-events:none}
+.ss-side{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:var(--ss-arrow-size,48px);height:var(--ss-arrow-size,48px);
+  display:none;align-items:center;justify-content:center;padding:0;
   background:none;border:0;cursor:pointer;
-  color:var(--home-cue-color,rgba(255,255,255,0.9));
-  opacity:0;transition:opacity 0.8s ease;pointer-events:auto
+  color:var(--ss-arrow-color,rgba(255,255,255,0.92));
+  opacity:0;transition:opacity 0.5s ease;pointer-events:auto
 }
-.home-scroll-cue svg{width:100%;height:100%;fill:none;stroke:currentColor;
-  stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.home-scroll-cue.cue-show{opacity:var(--home-cue-opacity,0.72)}
-.home-scroll-cue.cue-show svg{animation:cueBob 2.1s ease-in-out infinite}
-@keyframes cueBob{0%,100%{transform:translateY(-3px)}50%{transform:translateY(4px)}}
+.ss-side svg{width:100%;height:100%;fill:none;stroke:currentColor;
+  stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.ss-side-prev{left:max(18px,2vw)}
+.ss-side-next{right:max(18px,2vw)}
+.ss-side.show{opacity:var(--ss-arrow-opacity,0.85)}
+.ss-side:hover,.ss-side:focus-visible{opacity:1}
 @media(hover:hover) and (min-width:1025px){
-  .home-has-newsletter .home-scroll-cue{display:flex}
-}
-@media(prefers-reduced-motion:reduce){
-  .home-scroll-cue{transition:none}
-  .home-scroll-cue.cue-show svg{animation:none}
+  .ss-side{display:flex}
 }
 
 /* Top gradient for nav legibility */
@@ -1131,11 +1128,6 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
       <button class="ss-arrow" onclick="slideNext()">&#8594;</button>
     </div>
     <div class="ss-dots" id="ss-dots"></div>
-    <!-- Scroll cue (desktop): fades in from the "fog" on mouse movement, scrolls
-         down to the newsletter. Knobs: home_scroll_cue + size/color/opacity/offset. -->
-    <button class="home-scroll-cue" id="home-scroll-cue" type="button" aria-label="Scroll down" tabindex="-1">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg>
-    </button>
   </div>
   <!-- Newsletter below the hero — the home page scrolls down to it (5.3) -->
   <div class="home-newsletter" id="home-newsletter" style="display:none"></div>
@@ -1490,7 +1482,7 @@ function buildSlideshow(s){
     }
     track.appendChild(sl);
   });
-  wrap.querySelectorAll('.slide,.ss-arrows,.ss-dots,.ss-track,.ss-hint').forEach(el=>el.remove());
+  wrap.querySelectorAll('.slide,.ss-arrows,.ss-side-arrows,.ss-dots,.ss-track,.ss-hint').forEach(el=>el.remove());
   wrap.insertBefore(track,wrap.firstChild);
   _ssTrack=track;
 
@@ -1506,6 +1498,28 @@ function buildSlideshow(s){
   // Ignore touch events fired during initial layout/render (so the hint isn't
   // dismissed before the visitor has actually done anything).
   setTimeout(()=>{_ssReady=true;},700);
+
+  // Side navigation arrows (desktop only; CSS gates display). They fade in from
+  // the "fog" when the cursor approaches that side — prev near the left edge,
+  // next near the right edge. Reuses slidePrev()/slideNext().
+  if(_ssLoop&&_yes(s.slideshow_arrows,true)){
+    const nav=document.createElement('div');nav.className='ss-side-arrows';
+    nav.innerHTML=
+      '<button class="ss-side ss-side-prev" type="button" aria-label="Previous slide" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>'+
+      '<button class="ss-side ss-side-next" type="button" aria-label="Next slide" tabindex="-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>';
+    wrap.appendChild(nav);
+    const prevB=nav.querySelector('.ss-side-prev'),nextB=nav.querySelector('.ss-side-next');
+    prevB.addEventListener('click',slidePrev);
+    nextB.addEventListener('click',slideNext);
+    // Proximity reveal: left third → prev, right third → next, middle → neither.
+    wrap.addEventListener('mousemove',e=>{
+      const r=wrap.getBoundingClientRect();if(!r.width)return;
+      const x=(e.clientX-r.left)/r.width;
+      prevB.classList.toggle('show',x<0.35);
+      nextB.classList.toggle('show',x>0.65);
+    });
+    wrap.addEventListener('mouseleave',()=>{prevB.classList.remove('show');nextB.classList.remove('show');});
+  }
 
   const rawIndex=()=>_ssW?Math.round(track.scrollLeft/_ssW):0;
   const realFromRaw=raw=>loop?(((raw-1)%n)+n)%n:Math.max(0,Math.min(n-1,raw));
@@ -2726,14 +2740,6 @@ function applySettings(s){
   const tBtn=document.getElementById('theme-toggle');
   if(tBtn)tBtn.classList.toggle('hidden',!themeOn);
 
-  /* Home scroll cue on/off (default on) — CSS further gates it to desktop + has-newsletter */
-  const cueEl=document.getElementById('home-scroll-cue');
-  if(cueEl){
-    const cr=String(s.home_scroll_cue==null?'':s.home_scroll_cue).toLowerCase().trim();
-    const cueOn=cr===''?true:!['no','off','false','0'].includes(cr);
-    cueEl.style.display=cueOn?'':'none';
-  }
-
   /* Mobile hamburger + menu alignment (left / center / right) */
   const nav=document.getElementById('main-nav');
   if(nav){
@@ -2748,10 +2754,9 @@ function applySettings(s){
   v('--ss-gradient-opacity','slideshow_gradient_opacity');
   v('--ss-gradient-intensity','slideshow_gradient_intensity');
   v('--slide-transition','slideshow_fade_duration');
-  v('--home-cue-size','home_scroll_cue_size');            // desktop scroll cue
-  v('--home-cue-color','home_scroll_cue_color');
-  v('--home-cue-opacity','home_scroll_cue_opacity');
-  v('--home-cue-offset','home_scroll_cue_offset');
+  v('--ss-arrow-size','slideshow_arrows_size');           // desktop side arrows
+  v('--ss-arrow-color','slideshow_arrows_color');
+  v('--ss-arrow-opacity','slideshow_arrows_opacity');
   v('--nav-blur','nav_blur');                              // frosted nav blur radius
   v('--nav-blur-height','nav_blur_height');                // how tall the frosted blur is
   v('--home-nl-gradient-height','newsletter_gradient_height');  // home hero→newsletter fade
@@ -3175,33 +3180,6 @@ window.addEventListener('scroll',()=>{
   }
   lb.addEventListener('touchend',end);
   lb.addEventListener('touchcancel',end);
-})();
-
-// ── Home scroll cue: a down-chevron that fades in from the "fog" when the mouse
-// moves over the hero, and scrolls down to the newsletter on click. Desktop-only
-// display is handled in CSS; here we just toggle the .cue-show fade + the click.
-(function(){
-  const cue=document.getElementById('home-scroll-cue');
-  if(!cue)return;
-  let hideT=null;
-  const heroVisible=()=>{
-    const ss=document.getElementById('slideshow');
-    if(!ss)return false;
-    return ss.getBoundingClientRect().bottom>window.innerHeight*0.55; // hero still mostly on screen
-  };
-  const onHome=()=>currentPage==='home'
-    &&document.getElementById('page-home').classList.contains('home-has-newsletter');
-  document.addEventListener('mousemove',()=>{
-    if(!onHome()||!heroVisible())return;
-    cue.classList.add('cue-show');
-    clearTimeout(hideT);
-    hideT=setTimeout(()=>cue.classList.remove('cue-show'),1900);
-  },{passive:true});
-  window.addEventListener('scroll',()=>{ if(!heroVisible())cue.classList.remove('cue-show'); },{passive:true});
-  cue.addEventListener('click',()=>{
-    const nl=document.getElementById('home-newsletter');
-    if(nl)nl.scrollIntoView({behavior:'smooth',block:'start'});
-  });
 })();
 
 // ═══════════════════════════════════════════════════════════
