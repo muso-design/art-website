@@ -188,9 +188,10 @@ html[data-theme="dark"] .theme-switch-knob{left:24px}
 nav.dark .theme-switch{color:var(--text)}
 nav.light .theme-switch{color:#ffffff}
 .theme-switch.hidden{display:none}
-/* Hide the light/dark toggle on the HOME page only (nav.light = home); it stays
-   on Works / Bio / Contact. */
-nav.light .nav-theme{display:none}
+/* Hide the light/dark toggle on the HOME page (nav.light = home) — but only in
+   the DESKTOP nav bar. On mobile the toggle lives in the hamburger menu, where it
+   should appear on every page (matching Works/Bio/Contact), so scope to desktop. */
+@media(min-width:701px){ nav.light .nav-theme{display:none} }
 
 /* Hamburger + Instagram — desktop hides them (mobile menu only) */
 .nav-burger{
