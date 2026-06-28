@@ -542,6 +542,21 @@ picture{display:contents}
 }
 .lb-prev{left:0}.lb-next{right:0}
 .lb-prev:hover,.lb-next:hover{opacity:0.8}
+/* Back-to-top button (PC + mobile): fades/slides in once you've scrolled down
+   inside an artwork; slides back down out of view when you scroll up. */
+.lb-totop{
+  position:fixed;right:max(18px,2.2vw);bottom:max(18px,2.2vw);z-index:204;
+  width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  background:var(--bg2);color:var(--text);border:1px solid var(--border);
+  cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,0.16);
+  opacity:0;transform:translateY(22px);pointer-events:none;
+  transition:opacity 0.35s ease,transform 0.4s cubic-bezier(0.22,1,0.36,1)
+}
+.lb-totop svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.lb-totop.show{opacity:1;transform:translateY(0);pointer-events:auto}
+.lb-totop:hover{background:var(--text);color:var(--bg)}
+@media(prefers-reduced-motion:reduce){.lb-totop{transition:opacity 0.2s ease;transform:none}}
 
 /* Zoom overlay: prev/next image arrows */
 .lb-zoom-prev,.lb-zoom-next{
@@ -1190,6 +1205,10 @@ html.motion-kenburns .ss-slide:nth-child(even) img{animation-name:kenBurnsAlt}
     <p class="lb-description" id="lb-desc"></p>
     <button class="lb-inquire" id="lb-inquire" type="button" onclick="inquireWork()">Inquire</button>
   </div>
+  <!-- Back-to-top: appears after scrolling down within an artwork, slides away on scroll-up -->
+  <button class="lb-totop" id="lb-totop" type="button" aria-label="Back to top" tabindex="-1">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14"/><path d="M12 20V10.5"/><path d="M7.5 15l4.5-4.5 4.5 4.5"/></svg>
+  </button>
   <div class="lb-zoom" id="lb-zoom">
     <button class="lb-zoom-close" onclick="closeZoom()">&#215;</button>
     <button class="lb-zoom-prev" id="lb-zoom-prev" onclick="prevZoomImg()">&lt;</button>
@@ -1777,6 +1796,7 @@ function lbRender(){
   gallery.innerHTML='';
   gallery.scrollTop=0;
   lb.scrollTop=0;
+  if(window._lbTotopReset)window._lbTotopReset();
 
   // Collect every view of this piece, in order:
   //   1. image (main, also the thumbnail)
@@ -3183,6 +3203,35 @@ window.addEventListener('scroll',()=>{
   }
   lb.addEventListener('touchend',end);
   lb.addEventListener('touchcancel',end);
+})();
+
+// ── Lightbox back-to-top: appears once you've scrolled down past a threshold
+// inside an artwork, and slides away again when you scroll up. The scroll
+// container differs by breakpoint — desktop scrolls .lb-gallery, mobile scrolls
+// the .lightbox itself — so we listen on both.
+(function(){
+  const lb=document.getElementById('lightbox');
+  const gal=document.getElementById('lb-gallery');
+  const btn=document.getElementById('lb-totop');
+  if(!lb||!btn)return;
+  let lastY=0;
+  function onScroll(e){
+    const y=e.target.scrollTop||0;
+    const thresh=Math.max(280,window.innerHeight*0.6);
+    if(y<=thresh)btn.classList.remove('show');
+    else if(y>lastY+2)btn.classList.add('show');   // scrolling down → reveal
+    else if(y<lastY-2)btn.classList.remove('show'); // scrolling up → slide away
+    lastY=y;
+  }
+  lb.addEventListener('scroll',onScroll,{passive:true});
+  if(gal)gal.addEventListener('scroll',onScroll,{passive:true});
+  btn.addEventListener('click',()=>{
+    const el=(gal&&gal.scrollTop>0)?gal:lb;
+    el.scrollTo({top:0,behavior:'smooth'});
+    btn.classList.remove('show');
+  });
+  // Reset when a (new) artwork opens.
+  window._lbTotopReset=()=>{lastY=0;btn.classList.remove('show');};
 })();
 
 // ═══════════════════════════════════════════════════════════
