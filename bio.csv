@@ -73,7 +73,7 @@
 "# FAST way — paste many photos in ONE cell, separated by a vertical bar |",,
 "# Reorder them by just rearranging the list. Swap by changing the paths.",,
 "process_images","images/bio_process/studio_shot.webp | images/bio_process/zbrush.webp | images/bio_process/smile_silicone_far.webp |
-images/bio_process/smile_silicone.jpg","Studio/process photos (| separated). Replace with your own."
+images/bio_process/smile_silicone.jpg | images/bio_process/workshop_01.jpg","Studio/process photos (| separated). Replace with your own."
 "# OR add them one per row with optional captions:",,
 "#   process_1, images/studio_a.jpg    +  process_caption_1, In the studio",,
 "#   process_2, images/studio_b.jpg    +  process_caption_2, Casting in gypsum",,
